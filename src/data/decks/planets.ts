@@ -1,0 +1,86 @@
+/* The Navagraha — nine grahas. Content complete (ported verbatim). */
+import type { Deck } from "./types";
+import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
+
+export const planets: Deck = {
+  id: "planets",
+  title: "The Navagraha",
+  subtitle: "Nine Grahas",
+  motif: "diamond",
+  accent: ACCENT,
+  status: "available",
+  cards: [
+    {
+      title: "Sun",
+      sanskrit: "Surya",
+      badge: "Rules Leo",
+      accentColor: PLANET_COLORS.sun,
+      icon: { kind: "planet", id: "sun" },
+      body: "The soul, ego and vitality; the father and authority. Exalted in Aries, debilitated in Libra. Moves through one sign a month.",
+    },
+    {
+      title: "Moon",
+      sanskrit: "Chandra",
+      badge: "Rules Cancer",
+      accentColor: PLANET_COLORS.moon,
+      icon: { kind: "planet", id: "moon" },
+      body: "The mind, emotions and receptivity; the mother and comfort. Exalted in Taurus, debilitated in Scorpio. The fastest graha.",
+    },
+    {
+      title: "Mars",
+      sanskrit: "Mangala",
+      badge: "Aries · Scorpio",
+      accentColor: PLANET_COLORS.mars,
+      icon: { kind: "planet", id: "mars" },
+      body: "Energy, courage, drive and conflict; the warrior and sibling. Exalted in Capricorn, debilitated in Cancer.",
+    },
+    {
+      title: "Mercury",
+      sanskrit: "Budha",
+      badge: "Gemini · Virgo",
+      accentColor: PLANET_COLORS.mercury,
+      icon: { kind: "planet", id: "mercury" },
+      body: "Intellect, speech, logic and commerce. Exalted in Virgo (its own sign), debilitated in Pisces. Quick and adaptable.",
+    },
+    {
+      title: "Jupiter",
+      sanskrit: "Guru",
+      badge: "Sagittarius · Pisces",
+      accentColor: PLANET_COLORS.jupiter,
+      icon: { kind: "planet", id: "jupiter" },
+      body: "Wisdom, expansion, dharma and fortune; the teacher. Exalted in Cancer, debilitated in Capricorn. The great benefic.",
+    },
+    {
+      title: "Venus",
+      sanskrit: "Shukra",
+      badge: "Taurus · Libra",
+      accentColor: PLANET_COLORS.venus,
+      icon: { kind: "planet", id: "venus" },
+      body: "Love, beauty, art and pleasure; relationships and luxury. Exalted in Pisces, debilitated in Virgo.",
+    },
+    {
+      title: "Saturn",
+      sanskrit: "Shani",
+      badge: "Capricorn · Aquarius",
+      accentColor: PLANET_COLORS.saturn,
+      icon: { kind: "planet", id: "saturn" },
+      body: "Discipline, time, karma and limitation; the patient teacher of hard lessons. Exalted in Libra, debilitated in Aries. The slowest graha.",
+    },
+    {
+      title: "Rahu",
+      sanskrit: "North Node",
+      badge: "Shadow node",
+      accentColor: PLANET_COLORS.rahu,
+      icon: { kind: "planet", id: "rahu" },
+      body: "The point of insatiable desire and obsession — the unconventional, the foreign, eclipses. A chāyā (shadow) graha; it rules no sign.",
+    },
+    {
+      title: "Ketu",
+      sanskrit: "South Node",
+      badge: "Shadow node",
+      accentColor: PLANET_COLORS.ketu,
+      icon: { kind: "planet", id: "ketu" },
+      body: "The point of detachment and release — spirituality, past karma, mokṣa. The other shadow graha, opposite Rahu; it rules no sign.",
+    },
+  ],
+};

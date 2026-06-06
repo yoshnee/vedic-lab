@@ -1,0 +1,31 @@
+/* ============================================================
+   tokens.css — THE SINGLE SOURCE OF TRUTH for design values.
+   "Verdant Night" theme: a deep pine-green canvas lit by warm gold.
+   Ported verbatim from the design-reference prototype (styles.css :root).
+
+   Colors only. The three font-family variables (--font-display,
+   --font-body, --font-mono) are owned by next/font (see app/layout.tsx),
+   which sets them on <body>; do NOT redeclare them here.
+
+   No ad-hoc colors/spacing anywhere else — pull from these tokens.
+   ============================================================ */
+:root {
+  /* surfaces (canvas → raised) */
+  --bg: #081410;
+  --bg-2: #0c1c15;
+  --surface: #10271c;
+  --surface-2: #173626;
+
+  /* borders */
+  --border: #274f38;
+  --border-soft: #16331f;
+
+  /* accent — the single warm gold */
+  --accent: #e4c257;
+  --accent-deep: #b8923a;
+
+  /* text */
+  --text: #ecf3ec;
+  --text-2: #a6bbab;
+  --text-3: #67806f;
+}

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="verdant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vedic Astrology Lab — Visual Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+/* ============ THEME TOKENS ============ */
+:root{
+  /* shared Navagraha palette */
+  --p-sun:#F2C23E; --p-moon:#C2D2E0; --p-mars:#E2503C; --p-mercury:#36B97A;
+  --p-jupiter:#E8913A; --p-venus:#B97FD6; --p-saturn:#6473E6; --p-rahu:#969CB0; --p-ketu:#AC9B79;
+  --maxw:1180px;
+}
+html[data-theme="verdant"]{
+  --bg:#081410; --bg-2:#0C1C15; --surface:#10271C; --surface-2:#173626;
+  --border:#274F38; --border-soft:#16331f;
+  --accent:#E4C257; --accent-deep:#B8923A;
+  --text:#ECF3EC; --text-2:#A6BBAB; --text-3:#67806F;
+  --glow:radial-gradient(1100px 560px at 50% -12%, rgba(58,170,110,.13), transparent 62%),
+         radial-gradient(900px 500px at 86% 8%, rgba(228,194,87,.06), transparent 60%);
+  --font-display:'Space Grotesk'; --font-body:'Outfit';
+  --dir-name:'Verdant Night';
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-body),system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.55;
+  background-image:var(--glow); background-attachment:fixed; background-repeat:no-repeat;
+  transition:background-color .5s ease, color .4s ease;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,56px);}
+.mono{font-family:'Space Mono',monospace;}
+.display{font-family:var(--font-display),sans-serif;}
+
+/* eyebrow / labels */
+.eyebrow{font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); display:inline-block;}
+.kicker{font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--text-3);}
+
+h1,h2,h3{font-family:var(--font-display),sans-serif; font-weight:600; line-height:1.08; margin:0;}
+p{margin:0;}
+
+/* ============ HEADER ============ */
+header.bar{
+  position:sticky; top:0; z-index:40;
+  backdrop-filter:saturate(140%) blur(14px);
+  background:color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom:1px solid var(--border-soft);
+}
+.bar-in{display:flex; align-items:center; justify-content:space-between; gap:24px;
+  height:64px; max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,56px);}
+.brand-mini{display:flex; align-items:center; gap:11px;}
+.brand-mini .mk{width:26px; height:26px; color:var(--accent);}
+.brand-mini b{font-family:var(--font-display),sans-serif; font-weight:600; font-size:15px;
+  letter-spacing:.01em; color:var(--text); white-space:nowrap;}
+.brand-mini span{color:var(--text-3); font-weight:400;}
+
+/* segmented toggle */
+.seg{display:inline-flex; background:var(--surface); border:1px solid var(--border);
+  border-radius:999px; padding:4px; gap:2px;}
+.seg button{appearance:none; border:0; cursor:pointer; background:transparent;
+  color:var(--text-3); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; padding:7px 13px; border-radius:999px; transition:.25s;}
+.seg button:hover{color:var(--text-2);}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#15110a;
+  box-shadow:0 2px 14px -4px var(--accent-deep);}
+html[data-theme="indigo"] .seg button[aria-pressed="true"]{color:#0b0a16;}
+
+/* ============ SECTIONS ============ */
+section{padding:clamp(56px,8vw,104px) 0; border-top:1px solid var(--border-soft);}
+section:first-of-type{border-top:0;}
+.sec-head{display:flex; align-items:baseline; gap:18px; flex-wrap:wrap; margin-bottom:18px;}
+.sec-head h2{font-size:clamp(26px,3.4vw,38px); letter-spacing:-.01em;}
+.sec-head .num{font-family:'Space Mono',monospace; color:var(--accent); font-size:13px; letter-spacing:.1em;}
+.sec-sub{color:var(--text-2); max-width:62ch; font-size:15.5px; margin-top:0; margin-bottom:36px;}
+
+/* ============ HERO ============ */
+.hero{padding-top:clamp(64px,9vw,120px); padding-bottom:clamp(56px,7vw,92px);}
+.hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(32px,5vw,72px); align-items:center;}
+.lockup{display:flex; align-items:center; gap:22px; margin-bottom:30px;}
+.lockup .symbol{width:clamp(72px,9vw,104px); height:clamp(72px,9vw,104px); color:var(--accent);
+  filter:drop-shadow(0 6px 26px color-mix(in srgb,var(--accent) 30%, transparent));}
+.lockup .word{display:flex; flex-direction:column; line-height:1;}
+.lockup .word .t1{font-family:var(--font-display),sans-serif; font-weight:600;
+  font-size:clamp(28px,4vw,46px); letter-spacing:-.015em; color:var(--text); white-space:nowrap;}
+.lockup .word .t2{font-family:'Space Mono',monospace; font-size:clamp(11px,1.3vw,13px);
+  letter-spacing:.42em; text-transform:uppercase; color:var(--accent); margin-top:10px;}
+.hero h1{font-size:clamp(30px,4.4vw,52px); letter-spacing:-.02em; margin-bottom:20px;}
+.hero h1 em{font-style:normal; color:var(--accent);}
+.hero p.lede{color:var(--text-2); font-size:clamp(16px,1.5vw,18px); max-width:46ch;}
+.dir-card{background:linear-gradient(180deg, var(--surface), var(--bg-2));
+  border:1px solid var(--border); border-radius:20px; padding:30px 30px 26px;}
+.dir-card .dot-row{display:flex; gap:8px; margin-bottom:18px;}
+.dir-card .dot-row i{width:24px; height:24px; border-radius:7px; display:block;}
+.dir-card h3{font-size:21px; margin-bottom:8px;}
+.dir-card h3 span{color:var(--accent);}
+.dir-card p{color:var(--text-2); font-size:14.5px;}
+.dir-card .swatches{display:flex; gap:0; margin-top:20px; border-radius:11px; overflow:hidden; height:46px; border:1px solid var(--border);}
+.dir-card .swatches i{flex:1;}
+
+/* ============ PALETTE SWATCHES ============ */
+.swatch-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:14px;}
+.sw{border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--surface);}
+.sw .chip{height:86px; position:relative;}
+.sw .meta{padding:12px 14px 14px;}
+.sw .meta .nm{font-size:13.5px; font-weight:600; color:var(--text); display:block;}
+.sw .meta .vr{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--text-3); letter-spacing:.04em;}
+.sw .meta .hx{font-family:'Space Mono',monospace; font-size:11.5px; color:var(--text-2);
+  letter-spacing:.06em; margin-top:7px; display:block; text-transform:uppercase;}
+
+/* ============ NAVAGRAHA CARDS ============ */
+.grahas{display:grid; grid-template-columns:repeat(auto-fill,minmax(248px,1fr)); gap:16px;}
+.graha{position:relative; border:1px solid var(--border); border-radius:18px;
+  background:linear-gradient(180deg, var(--surface), var(--bg-2)); padding:22px; overflow:hidden;}
+.graha::before{content:""; position:absolute; inset:0; opacity:.10; pointer-events:none;
+  background:radial-gradient(120px 120px at 84% 8%, var(--pc), transparent 70%);}
+.graha .ico{width:50px; height:50px; color:var(--pc); margin-bottom:18px;}
+.graha .gtop{display:flex; justify-content:space-between; align-items:flex-start;}
+.tag{font-family:'Space Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+  padding:4px 9px; border-radius:999px; border:1px solid var(--border);}
+.tag.ruler{color:var(--pc); border-color:color-mix(in srgb,var(--pc) 45%, var(--border));}
+.tag.node{color:var(--text-3);}
+.graha h3{font-size:19px; margin-bottom:1px;}
+.graha .sk{font-family:'Space Mono',monospace; font-size:11px; color:var(--text-3); letter-spacing:.08em;}
+.graha .hx{font-family:'Space Mono',monospace; font-size:12px; color:var(--pc); letter-spacing:.06em;
+  text-transform:uppercase; margin:14px 0 12px; display:flex; align-items:center; gap:8px;}
+.graha .hx i{width:11px; height:11px; border-radius:3px; background:var(--pc); display:inline-block;}
+.graha .rat{color:var(--text-2); font-size:13.5px; line-height:1.5;}
+.graha .rules{color:var(--text-3); font-size:11.5px; margin-top:11px; font-family:'Space Mono',monospace; letter-spacing:.03em;}
+
+.note{margin-top:26px; border:1px dashed var(--border); border-radius:14px; padding:18px 22px;
+  display:flex; gap:16px; align-items:flex-start; background:color-mix(in srgb,var(--surface) 60%, transparent);}
+.note .b{font-family:'Space Mono',monospace; color:var(--accent); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; white-space:nowrap; padding-top:2px;}
+.note p{color:var(--text-2); font-size:14px;}
+.note b{color:var(--text);}
+
+/* ============ ICON SET ============ */
+.icongrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px;}
+.icard{border:1px solid var(--border); border-radius:16px; background:var(--surface);
+  padding:24px 16px 16px; text-align:center; transition:.25s;}
+.icard:hover{border-color:color-mix(in srgb,var(--pc) 55%, var(--border)); transform:translateY(-2px);}
+.icard .big{width:80px; height:80px; margin:0 auto 16px;}
+.icard .vis{font-size:11px; color:var(--text-3); margin-top:9px; line-height:1.35; padding-top:11px; border-top:1px solid var(--border-soft);}
+.icard .row{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:14px;
+  padding-bottom:14px; border-bottom:1px solid var(--border-soft);}
+.icard .row svg{color:var(--text-2);}
+.icard .nm{font-size:13.5px; font-weight:600;}
+.icard .gl{font-family:'Space Mono',monospace; font-size:11px; color:var(--text-3); margin-top:1px;}
+
+/* ============ LOGO ============ */
+.logo-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:18px;}
+.lpanel{border:1px solid var(--border); border-radius:18px; padding:30px; display:flex; flex-direction:column; justify-content:center;}
+.lpanel.primary{background:linear-gradient(150deg, var(--surface-2), var(--bg-2)); align-items:flex-start; gap:8px;}
+.lpanel.invert{background:var(--accent);}
+.lpanel.invert .word .t1{color:#15110a;} .lpanel.invert .word .t2{color:color-mix(in srgb,#15110a 70%, transparent);}
+.lpanel.invert .symbol{color:#15110a; filter:none;}
+.lpanel .cap{font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); margin-bottom:22px;}
+.lpanel.invert .cap{color:color-mix(in srgb,#15110a 60%, transparent);}
+.logo-sub{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px;}
+.logo-sub .lpanel{align-items:center; text-align:center; min-height:150px;}
+.sizes{display:flex; align-items:center; gap:22px; justify-content:center;}
+.sizes .symbol{color:var(--accent);}
+
+/* ============ TYPOGRAPHY ============ */
+.type-spec{display:grid; gap:26px;}
+.type-row{border:1px solid var(--border); border-radius:16px; background:var(--surface); padding:26px 28px;}
+.type-row .lab{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--text-3); margin-bottom:14px; display:flex; justify-content:space-between;}
+.type-row .lab span{color:var(--accent);}
+.scale{display:flex; flex-direction:column; gap:6px;}
+.scale div{font-family:var(--font-display),sans-serif; font-weight:600; line-height:1.05; color:var(--text); letter-spacing:-.01em;}
+.bodyspec{font-size:16px; color:var(--text-2); max-width:64ch;}
+.bodyspec b{color:var(--text); font-weight:600;}
+.weights{display:flex; gap:26px; flex-wrap:wrap; font-family:var(--font-display),sans-serif; font-size:30px;}
+.weights span{color:var(--text);}
+.dataspec{font-family:'Space Mono',monospace; font-size:15px; color:var(--text-2); display:flex; flex-wrap:wrap; gap:8px 22px;}
+.dataspec b{color:var(--accent); font-weight:700;}
+
+/* ============ CHART (palette in context) ============ */
+.ctx-grid{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:34px; align-items:start;}
+.chartwrap{border:1px solid var(--border); border-radius:20px; background:linear-gradient(180deg,var(--surface),var(--bg-2));
+  padding:28px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;}
+.chartwrap svg{width:100%; height:auto;}
+.legend h3{font-size:17px; margin-bottom:6px;}
+.legend p{color:var(--text-2); font-size:13.5px; margin-bottom:18px;}
+.legkey{display:flex; flex-direction:column; gap:9px;}
+.legkey .lk{display:flex; align-items:center; gap:11px; font-size:13px; color:var(--text-2);}
+.legkey .lk i{width:15px; height:15px; border-radius:5px; flex:none;}
+.legkey .lk b{color:var(--text); font-weight:600;}
+.legkey .lk em{font-style:normal; color:var(--text-3); font-family:'Space Mono',monospace; font-size:11px; margin-left:auto;}
+
+/* chips */
+.chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px;}
+.chip-comp{display:inline-flex; align-items:center; gap:8px; padding:7px 13px 7px 9px; border-radius:999px;
+  background:color-mix(in srgb,var(--pc) 16%, var(--surface)); border:1px solid color-mix(in srgb,var(--pc) 40%, transparent);
+  color:var(--text); font-size:13px; font-weight:600;}
+.chip-comp svg{width:18px; height:18px; color:var(--pc);}
+.chip-comp em{font-style:normal; font-family:'Space Mono',monospace; color:var(--pc); font-size:11px; letter-spacing:.04em;}
+
+/* footer */
+footer{border-top:1px solid var(--border-soft); padding:40px 0 64px;}
+.foot{display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;
+  color:var(--text-3); font-family:'Space Mono',monospace; font-size:11.5px; letter-spacing:.06em;}
+.foot .mk{width:20px; height:20px; color:var(--accent); vertical-align:middle; margin-right:8px;}
+
+/* dignity states */
+.dignity-legend{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px;}
+.dleg{border:1px solid var(--border); border-radius:16px; background:var(--surface); padding:24px 18px 20px; text-align:center;}
+.dleg .ic{width:66px; height:66px; margin:0 auto 16px;}
+.dleg .nm{font-size:14.5px; font-weight:600; color:var(--text);}
+.dleg .sk{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--text-3); letter-spacing:.06em; margin-top:2px;}
+.dleg .ds{font-size:12.5px; color:var(--text-2); margin-top:10px; line-height:1.45;}
+.dmatrix{border:1px solid var(--border); border-radius:18px; overflow:hidden; background:var(--surface);}
+.dmrow{display:grid; grid-template-columns:160px repeat(4,1fr); align-items:center; border-top:1px solid var(--border-soft);}
+.dmrow:first-child{border-top:0;}
+.dmrow.dmhead{background:var(--bg-2);}
+.dmhead .cell{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--text-3); padding:14px 8px; text-align:center; display:block;}
+.dmrow .pl{display:flex; align-items:center; gap:11px; padding:13px 16px; font-size:13.5px; font-weight:600; color:var(--text);}
+.dmrow .pl .pic{width:28px; height:28px; flex:none;}
+.dmrow .pl small{display:block; font-family:'Space Mono',monospace; font-weight:400; font-size:10px; color:var(--text-3); letter-spacing:.04em; margin-top:1px;}
+.dmrow .cell{display:flex; justify-content:center; align-items:center; padding:12px 8px; min-height:70px;}
+.dmrow .cell .ic{width:48px; height:48px;}
+.dmrow .cell.na{color:var(--text-3); font-family:'Space Mono',monospace; font-size:14px;}
+.retro-row{display:grid; grid-template-columns:auto auto 1fr; align-items:center; gap:24px; margin-top:18px; border:1px dashed var(--border); border-radius:14px; padding:18px 22px; background:color-mix(in srgb,var(--surface) 55%, transparent);}
+.retro-label{font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); white-space:nowrap;}
+.retro-label small{display:block; color:var(--text-3); letter-spacing:.06em; margin-top:4px; text-transform:none; font-size:11px;}
+.retro-icons{display:flex; gap:12px;}
+.retro-icons .ic{width:46px; height:46px;}
+.retro-note{color:var(--text-2); font-size:13px; max-width:52ch; line-height:1.5;}
+@media (max-width:880px){ .retro-row{grid-template-columns:1fr; gap:14px;} }
+
+@media (max-width:880px){
+  .hero-grid{grid-template-columns:1fr;}
+  .logo-grid{grid-template-columns:1fr;}
+  .ctx-grid{grid-template-columns:1fr;}
+  .bar-in .brand-mini span{display:none;}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand-mini">
+      <svg class="mk" viewBox="0 0 100 100" id="mk-head" aria-hidden="true"></svg>
+      <b>Vedic Astrology Lab <span>· Visual Identity</span></b>
+    </div>
+    <div class="seg-note">Verdant Night</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="lockup">
+          <svg class="symbol" viewBox="0 0 100 100" id="hero-symbol" aria-hidden="true"></svg>
+          <div class="word">
+            <span class="t1">Vedic Astrology Lab</span>
+            <span class="t2">Navagraha · Houses · Dasha</span>
+          </div>
+        </div>
+        <h1>A <em>celestial study</em> tool, built like an instrument.</h1>
+        <p class="lede">One Navagraha palette and a set of modern celestial graphics, set in a deep pine-green night lit by warm gold.</p>
+      </div>
+      <div class="dir-card">
+        <span class="kicker">The look</span>
+        <h3><span id="dir-name">Verdant Night</span></h3>
+        <p id="dir-desc">A deep pine-green base instead of black, lit by warm gold. Botanical, nocturnal, emerald-and-gilt.</p>
+        <div class="swatches" id="dir-swatches"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDATIONS -->
+<section id="foundations">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">01</span><h2>Core UI palette</h2></div>
+    <p class="sec-sub">Dark-only. A deep pine-green canvas layered up through surfaces to a single warm gold accent.</p>
+    <div class="swatch-grid" id="ui-swatches"></div>
+  </div>
+</section>
+
+<!-- NAVAGRAHA -->
+<section id="navagraha">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02</span><h2>The Navagraha palette</h2></div>
+    <p class="sec-sub">Nine grahas, one palette. The seven sign-rulers are tuned to stay clearly distinct — they tint the houses of the chart. Rahu &amp; Ketu, the shadow nodes, are muted and rule nothing.</p>
+    <div class="grahas" id="graha-cards"></div>
+    <div class="note">
+      <span class="b">7 ≠ 9</span>
+      <p>Twelve houses map to only <b>seven ruler colors</b> — Sun and Moon rule one sign each; Mars, Mercury, Jupiter, Venus and Saturn rule two. So two houses sharing a color is expected, and meaningful. <b>Rahu &amp; Ketu</b> get icon colors but no house tint.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ICONS -->
+<section id="icons">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">03</span><h2>The Navagraha, rendered</h2></div>
+    <p class="sec-sub">Not glyphs — modern celestial bodies. Each graha is a gradient-built sphere recolored to its palette assignment; the shadow nodes become what they actually are — Rahu the <span class="mono">eclipse</span>, Ketu the <span class="mono">comet</span>. They read at chart-cell size and hold up enlarged in detail panels.</p>
+    <div class="icongrid" id="icon-grid"></div>
+  </div>
+</section>
+
+<!-- LOGO -->
+<section id="logo">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">04</span><h2>Logo &amp; mark</h2></div>
+    <p class="sec-sub">A combination mark. The symbol is the North Indian birth-chart grid — a square crossed by its diagonals with an inner diamond, the classic twelve-house layout — holding a single point of light where the diagonals meet. <span class="mono">Jyotish</span> means “science of light”; that gold spark is the soul of the mark. Short wordmark: <b>Vedic Lab</b>.</p>
+    <div class="logo-grid">
+      <div class="lpanel primary">
+        <span class="cap">Primary lockup</span>
+        <div class="lockup" style="margin:0;">
+          <svg class="symbol" viewBox="0 0 100 100" id="logo-symbol" aria-hidden="true"></svg>
+          <div class="word">
+            <span class="t1">Vedic Lab</span>
+            <span class="t2">Learn the science of light</span>
+          </div>
+        </div>
+      </div>
+      <div class="lpanel invert">
+        <span class="cap">On accent</span>
+        <div class="lockup" style="margin:0;">
+          <svg class="symbol" viewBox="0 0 100 100" id="logo-symbol-inv" aria-hidden="true"></svg>
+          <div class="word"><span class="t1">Vedic Lab</span><span class="t2">Learn the science of light</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-sub">
+      <div class="lpanel">
+        <span class="cap" style="margin-bottom:14px;">Symbol</span>
+        <svg class="symbol" viewBox="0 0 100 100" id="logo-symbol-2" style="color:var(--accent);" aria-hidden="true"></svg>
+      </div>
+      <div class="lpanel">
+        <span class="cap" style="margin-bottom:14px;">Wordmark</span>
+        <div class="word" style="display:flex;flex-direction:column;line-height:1;align-items:center;">
+          <span class="t1" style="font-family:var(--font-display);font-weight:600;font-size:30px;letter-spacing:-.015em;color:var(--text);">Vedic Lab</span>
+          <span class="t2" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);margin-top:9px;">Science of Light</span>
+        </div>
+      </div>
+      <div class="lpanel">
+        <span class="cap" style="margin-bottom:14px;">Scales down</span>
+        <div class="sizes">
+          <svg class="symbol" viewBox="0 0 100 100" style="width:18px;height:18px;" id="sz1" aria-hidden="true"></svg>
+          <svg class="symbol" viewBox="0 0 100 100" style="width:30px;height:30px;" id="sz2" aria-hidden="true"></svg>
+          <svg class="symbol" viewBox="0 0 100 100" style="width:48px;height:48px;" id="sz3" aria-hidden="true"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section id="type">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">05</span><h2>Typography</h2></div>
+    <p class="sec-sub">A geometric sans system with a monospace for data: Space Grotesk for display, Outfit for the interface, and Space Mono — for longitudes, degrees and dasha dates — as the “lab instrument” voice.</p>
+    <div class="type-spec">
+      <div class="type-row">
+        <div class="lab"><span id="type-display-name">Space Grotesk</span><span>Display · headings</span></div>
+        <div class="scale">
+          <div style="font-size:clamp(34px,6vw,68px);">Lagna &amp; Navagraha</div>
+          <div style="font-size:clamp(22px,3vw,34px);">Vimshottari Dasha timeline</div>
+          <div style="font-size:20px;font-weight:500;">Nakshatra, dignity &amp; house</div>
+        </div>
+      </div>
+      <div class="type-row">
+        <div class="lab"><span id="type-body-name">Manrope</span><span>Body · interface</span></div>
+        <p class="bodyspec"><b>Sade Sati</b> is the roughly seven-and-a-half year period when Saturn transits the signs adjacent to and over your natal Moon. The app derives it from Saturn's position over time — heavier to compute than a birth snapshot, and surfaced in the planet's expandable panel alongside its dignity and current dasha.</p>
+      </div>
+      <div class="type-row">
+        <div class="lab"><span>Space Mono</span><span>Data · constant across directions</span></div>
+        <div class="dataspec">
+          <span><b>Su</b> 14°22′ Vi</span><span><b>Mo</b> 03°51′ Sc · Anuradha</span><span><b>Asc</b> 21°08′ Ge</span><span><b>Ma</b> ℞ 09°44′ Cn</span><span><b>Dasha</b> Jupiter → Saturn · 2026–2029</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PALETTE IN CONTEXT -->
+<section id="context">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">06</span><h2>Palette in context</h2></div>
+    <p class="sec-sub">The system assembled: a North Indian chart (Aries ascendant, for demonstration) with houses tinted by their ruling planet's color, plus planet chips. This is a preview of the grid — not the full interactive build.</p>
+    <div class="ctx-grid">
+      <div class="chartwrap"><svg id="chart" viewBox="0 0 300 300" aria-label="North Indian chart, color-coded by ruling planet"></svg></div>
+      <div class="legend">
+        <h3>House coloring</h3>
+        <p>Each house takes the color of the planet that rules its sign. Seven colors fill twelve houses.</p>
+        <div class="legkey" id="legkey"></div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIGNITY STATES -->
+<section id="dignity">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">07</span><h2>Dignity states</h2></div>
+    <p class="sec-sub">A graha's strength is read from luminosity, halo and ring — <b>never</b> from its identity color. A debilitated Mars is still unmistakably red. The same visual language applies to all nine, so dignity reads at a glance regardless of planet. Rahu &amp; Ketu stay neutral — nodal dignity is debated in the classical texts.</p>
+    <div class="dignity-legend" id="dignity-legend"></div>
+    <div class="dmatrix" id="dignity-matrix"></div>
+    <div class="retro-row" id="retro-row"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div><svg class="mk" viewBox="0 0 100 100" id="foot-mk" aria-hidden="true"></svg>Vedic Astrology Lab — Visual Identity System</div>
+    <div>React · Next.js · client-side sidereal engine</div>
+  </div>
+</footer>
+
+<script>
+/* ===================== DATA ===================== */
+var PLANETS = [
+  {key:'sun',     name:'Sun',     sk:'Surya',       c:'#F2C230', ruler:true,  signs:'Leo',                rat:'Bright clean gold — high and luminous in value, the lightest warm in the set.'},
+  {key:'moon',    name:'Moon',    sk:'Chandra',     c:'#C2D2E0', ruler:true,  signs:'Cancer',             rat:'Soft silver-white — reflective and cool, never pure white so the cell holds on dark.'},
+  {key:'mars',    name:'Mars',    sk:'Mangala',     c:'#E2503C', ruler:true,  signs:'Aries · Scorpio',    rat:'Vermilion red. Heat, drive, the warrior\u2019s edge.'},
+  {key:'mercury', name:'Mercury', sk:'Budha',       c:'#36B97A', ruler:true,  signs:'Gemini · Virgo',     rat:'Emerald — the traditional association, quick and verdant intellect.'},
+  {key:'jupiter', name:'Jupiter', sk:'Guru',        c:'#B26A24', ruler:true,  signs:'Sagittarius · Pisces',rat:'Deep amber-bronze — pulled darker and browner than the Sun so the two never blur in the chart.'},
+  {key:'venus',   name:'Venus',   sk:'Shukra',      c:'#B97FD6', ruler:true,  signs:'Taurus · Libra',     rat:'Orchid violet. Beauty and grace, leaned violet to stay clear of Saturn\u2019s blue.'},
+  {key:'saturn',  name:'Saturn',  sk:'Shani',       c:'#3E78E0', ruler:true,  signs:'Capricorn · Aquarius',rat:'Deep sapphire blue. Cool discipline, distance, gravity.'},
+  {key:'rahu',    name:'Rahu',    sk:'North Node',  c:'#969CB0', ruler:false, signs:'\u2014',             rat:'Cool ash-grey. A shadow node — desaturated by design, no rulership.'},
+  {key:'ketu',    name:'Ketu',    sk:'South Node',  c:'#AC9B79', ruler:false, signs:'\u2014',             rat:'Earthen taupe. The other shadow node — muted, grounded, no rulership.'}
+];
+var P = {}; PLANETS.forEach(function(p){P[p.key]=p;});
+
+var THEMES = {
+  verdant:{name:'Verdant Night', display:'Space Grotesk', body:'Outfit',
+    desc:'A deep pine-green base instead of black, lit by warm gold. Botanical, nocturnal, emerald-and-gilt.',
+    ui:[
+      ['Canvas','--bg','#081410'],['Base','--bg-2','#0C1C15'],['Surface','--surface','#10271C'],
+      ['Surface raised','--surface-2','#173626'],['Border','--border','#274F38'],
+      ['Accent · Gold','--accent','#E4C257'],['Accent deep','--accent-deep','#B8923A'],
+      ['Text','--text','#ECF3EC'],['Text secondary','--text-2','#A6BBAB'],['Text muted','--text-3','#67806F']
+    ]}
+};
+
+/* signs in house order (Aries ascendant) */
+var SIGNS = [
+  {h:1, name:'Aries',       gl:'\u2648', ruler:'mars'},
+  {h:2, name:'Taurus',      gl:'\u2649', ruler:'venus'},
+  {h:3, name:'Gemini',      gl:'\u264A', ruler:'mercury'},
+  {h:4, name:'Cancer',      gl:'\u264B', ruler:'moon'},
+  {h:5, name:'Leo',         gl:'\u264C', ruler:'sun'},
+  {h:6, name:'Virgo',       gl:'\u264D', ruler:'mercury'},
+  {h:7, name:'Libra',       gl:'\u264E', ruler:'venus'},
+  {h:8, name:'Scorpio',     gl:'\u264F', ruler:'mars'},
+  {h:9, name:'Sagittarius', gl:'\u2650', ruler:'jupiter'},
+  {h:10,name:'Capricorn',   gl:'\u2651', ruler:'saturn'},
+  {h:11,name:'Aquarius',    gl:'\u2652', ruler:'saturn'},
+  {h:12,name:'Pisces',      gl:'\u2653', ruler:'jupiter'}
+];
+
+/* ===================== CELESTIAL GRAPHICS ===================== */
+/* Modern gradient-built celestial bodies (not glyphs). 48x48 viewBox. */
+var VIS = {
+  sun:'Radiant corona, white-hot core', moon:'Silver sphere, soft craters',
+  mars:'Rusted disc, polar caps', mercury:'Cratered emerald world',
+  jupiter:'Banded giant + great spot', venus:'Veiled in orchid cloud',
+  saturn:'Ringed indigo giant', rahu:'Eclipse — the devouring node',
+  ketu:'Comet & tail — the released node'
+};
+var _uid = 0;
+function sphereDefs(u){
+  return '<radialGradient id="sh'+u+'" cx="35%" cy="30%" r="78%">'
+    +'<stop offset="0%" stop-color="#fff" stop-opacity="0.52"/>'
+    +'<stop offset="42%" stop-color="#fff" stop-opacity="0"/>'
+    +'<stop offset="100%" stop-color="#000" stop-opacity="0.46"/>'
+    +'</radialGradient>'
+    +'<clipPath id="cp'+u+'"><circle cx="24" cy="24" r="16"/></clipPath>';
+}
+function craters(list){
+  return list.map(function(p){
+    return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+p[2]+'" fill="#000" fill-opacity="0.14"/>'
+      +'<circle cx="'+(p[0]-p[2]*0.32)+'" cy="'+(p[1]-p[2]*0.32)+'" r="'+(p[2]*0.62)+'" fill="#fff" fill-opacity="0.07"/>';
+  }).join('');
+}
+function band(y,h,col,op){ return '<rect x="6" y="'+(y-h/2)+'" width="36" height="'+h+'" fill="'+col+'" fill-opacity="'+op+'"/>'; }
+function features(key){
+  if(key==='moon') return craters([[18,18,3.2],[30,28,2.4],[22,32,2],[31,16,1.5]]);
+  if(key==='mercury') return craters([[19,19,3.4],[31,30,2.6],[28,18,1.8],[18,30,2]]);
+  if(key==='mars') return craters([[20,28,2.1],[30,21,1.7]])
+    +'<ellipse cx="24" cy="11" rx="6" ry="2.5" fill="#fff" fill-opacity="0.5"/>'
+    +'<ellipse cx="24" cy="37" rx="4" ry="1.8" fill="#fff" fill-opacity="0.34"/>'
+    +'<ellipse cx="27" cy="26" rx="7" ry="3" fill="#000" fill-opacity="0.12" transform="rotate(20 27 26)"/>';
+  if(key==='jupiter') return band(13,3,'#000',0.14)+band(18,2,'#fff',0.16)+band(24,3.4,'#000',0.12)
+    +band(30,2.4,'#fff',0.14)+band(35,3,'#000',0.13)
+    +'<ellipse cx="18" cy="30" rx="3.6" ry="2.3" fill="#6e2716" fill-opacity="0.6"/>';
+  if(key==='venus') return '<ellipse cx="20" cy="18" rx="12" ry="3.2" fill="#fff" fill-opacity="0.17" transform="rotate(-18 20 18)"/>'
+    +'<ellipse cx="27" cy="28" rx="11" ry="3" fill="#fff" fill-opacity="0.12" transform="rotate(-18 27 28)"/>'
+    +'<ellipse cx="22" cy="33" rx="8" ry="2.4" fill="#000" fill-opacity="0.10" transform="rotate(-18 22 33)"/>';
+  return '';
+}
+function bodyInner(key, u){
+  var c=P[key].c; var inner;
+  if(key==='sun'){
+    inner='<defs>'
+      +'<radialGradient id="sg'+u+'" cx="50%" cy="50%" r="50%">'
+        +'<stop offset="0%" stop-color="#FFF7DE"/><stop offset="40%" stop-color="'+c+'"/><stop offset="100%" stop-color="#D5851E"/>'
+      +'</radialGradient>'
+      +'<radialGradient id="gl'+u+'" cx="50%" cy="50%" r="50%">'
+        +'<stop offset="52%" stop-color="'+c+'" stop-opacity="0"/><stop offset="70%" stop-color="'+c+'" stop-opacity="0.34"/><stop offset="100%" stop-color="'+c+'" stop-opacity="0"/>'
+      +'</radialGradient></defs>'
+      +'<circle cx="24" cy="24" r="23.5" fill="url(#gl'+u+')"/>'
+      +'<circle cx="24" cy="24" r="14.5" fill="url(#sg'+u+')"/>'
+      +'<circle cx="24" cy="24" r="14.5" fill="none" stroke="#FFEFC2" stroke-opacity="0.35" stroke-width="0.8"/>';
+  } else if(key==='saturn'){
+    var rs=12.5;
+    inner='<defs><radialGradient id="sh'+u+'" cx="35%" cy="30%" r="78%">'
+      +'<stop offset="0%" stop-color="#fff" stop-opacity="0.5"/><stop offset="42%" stop-color="#fff" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity="0.46"/>'
+      +'</radialGradient></defs>'
+      +'<g transform="rotate(-20 24 24)"><ellipse cx="24" cy="24" rx="21" ry="6.3" fill="none" stroke="#AEB7F2" stroke-width="2.3" stroke-opacity="0.8"/></g>'
+      +'<circle cx="24" cy="24" r="'+rs+'" fill="'+c+'"/>'
+      +'<circle cx="24" cy="24" r="'+rs+'" fill="url(#sh'+u+')"/>'
+      +'<g transform="rotate(-20 24 24)"><path d="M3 24 A21 6.3 0 0 0 45 24" fill="none" stroke="#C6CDF8" stroke-width="2.3" stroke-opacity="0.95"/></g>';
+  } else if(key==='rahu'){
+    inner='<defs>'
+      +'<radialGradient id="rg'+u+'" cx="50%" cy="50%" r="50%"><stop offset="58%" stop-color="#14151C"/><stop offset="100%" stop-color="#2B2D38"/></radialGradient>'
+      +'<filter id="rb'+u+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.7"/></filter></defs>'
+      +'<circle cx="24" cy="24" r="16" fill="none" stroke="'+c+'" stroke-width="3.2" stroke-opacity="0.8" filter="url(#rb'+u+')"/>'
+      +'<circle cx="24" cy="24" r="13.4" fill="url(#rg'+u+')"/>'
+      +'<circle cx="24" cy="24" r="14.1" fill="none" stroke="'+c+'" stroke-width="1.5"/>'
+      +'<circle cx="18.5" cy="18" r="1.5" fill="#fff" fill-opacity="0.7"/>';
+  } else if(key==='ketu'){
+    inner='<defs>'
+      +'<linearGradient id="kt'+u+'" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+c+'" stop-opacity="0.6"/><stop offset="100%" stop-color="'+c+'" stop-opacity="0"/></linearGradient>'
+      +'<radialGradient id="sh'+u+'" cx="34%" cy="30%" r="80%"><stop offset="0%" stop-color="#fff" stop-opacity="0.5"/><stop offset="42%" stop-color="#fff" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity="0.44"/></radialGradient></defs>'
+      +'<path d="M9 40 Q20 29 31 18 L35 22 Q24 33 13 44 Z" fill="url(#kt'+u+')"/>'
+      +'<circle cx="31" cy="17" r="9.5" fill="'+c+'"/>'
+      +'<circle cx="31" cy="17" r="9.5" fill="url(#sh'+u+')"/>';
+  } else {
+    inner='<defs>'+sphereDefs(u)+'</defs>'
+      +'<circle cx="24" cy="24" r="16" fill="'+c+'"/>'
+      +'<g clip-path="url(#cp'+u+')">'+features(key)+'</g>'
+      +'<circle cx="24" cy="24" r="16" fill="url(#sh'+u+')"/>';
+  }
+  return inner;
+}
+function body(key, size, state, retro){
+  _uid++; var u=_uid; var c=P[key].c;
+  state = state || 'neutral';
+  if(key==='rahu' || key==='ketu') state='neutral';
+  var out;
+  if(state==='debilitated'){
+    out='<defs><filter id="deb'+u+'" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0.38"/><feComponentTransfer><feFuncR type="linear" slope="0.8"/><feFuncG type="linear" slope="0.8"/><feFuncB type="linear" slope="0.8"/></feComponentTransfer></filter></defs>'
+      +'<g filter="url(#deb'+u+')" opacity="0.82">'+bodyInner(key,u)+'</g>'
+      +'<circle cx="24" cy="24" r="15.6" fill="#2A2F38" fill-opacity="0.16"/>'
+      +'<circle cx="24" cy="24" r="20" fill="none" stroke="#9097A3" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="2 4.5"/>';
+  } else if(state==='exalted'){
+    out='<defs><radialGradient id="exg'+u+'" cx="50%" cy="50%" r="50%"><stop offset="40%" stop-color="#FFE6A0" stop-opacity="0"/><stop offset="74%" stop-color="#FFD66B" stop-opacity="0.5"/><stop offset="100%" stop-color="#FFD66B" stop-opacity="0"/></radialGradient><filter id="exb'+u+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.3"/></filter></defs>'
+      +'<circle cx="24" cy="24" r="23.5" fill="url(#exg'+u+')"/>'
+      +bodyInner(key,u)
+      +'<circle cx="20" cy="19" r="8" fill="#fff" fill-opacity="0.12"/>'
+      +'<circle cx="24" cy="24" r="20.5" fill="none" stroke="#FFE8AE" stroke-width="1.5" stroke-opacity="0.9" filter="url(#exb'+u+')"/>'
+      +'<path d="M24 1.8 L25.1 5.3 L28.6 6.4 L25.1 7.5 L24 11 L22.9 7.5 L19.4 6.4 L22.9 5.3 Z" fill="#FFF0C6"/>';
+  } else if(state==='own'){
+    out=bodyInner(key,u)
+      +'<circle cx="24" cy="24" r="20.5" fill="none" stroke="'+c+'" stroke-width="1.6" stroke-opacity="0.92"/>'
+      +'<circle cx="24" cy="24" r="18" fill="none" stroke="'+c+'" stroke-width="1" stroke-opacity="0.32"/>'
+      +'<g stroke="'+c+'" stroke-width="1.7" stroke-opacity="0.92" stroke-linecap="round"><line x1="24" y1="1.6" x2="24" y2="4.3"/><line x1="24" y1="43.7" x2="24" y2="46.4"/><line x1="1.6" y1="24" x2="4.3" y2="24"/><line x1="43.7" y1="24" x2="46.4" y2="24"/></g>';
+  } else {
+    out=bodyInner(key,u);
+  }
+  if(retro) out += '<g><circle cx="39.5" cy="9" r="7.6" fill="#0E1B12" fill-opacity="0.5"/><text x="39.5" y="9" dy="0.34em" text-anchor="middle" font-family="Space Mono, monospace" font-weight="700" font-size="11.5" fill="#E7C977">R</text></g>';
+  return '<svg viewBox="0 0 48 48" width="'+size+'" height="'+size+'" style="display:block;">'+out+'</svg>';
+}
+
+/* North Indian chart mark — elevated, with a glowing point of light at center.
+   Jyotish = "science of light". Grid is currentColor; the spark is gold. */
+function chartGrid(){
+  return '<g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">'
+    + '<rect x="9" y="9" width="82" height="82" rx="7" stroke-width="4.4"/>'
+    + '<path d="M9 9 L91 91 M91 9 L9 91" stroke-width="2.3" stroke-opacity="0.78"/>'
+    + '<path d="M50 9 L91 50 L50 91 L9 50 Z" stroke-width="3.5"/>'
+    + '</g>';
+}
+/* glowing gold-light version — for dark backgrounds */
+var SYMBOL = '<defs>'
+  + '<radialGradient id="jlg" cx="50%" cy="50%" r="50%">'
+    + '<stop offset="0%" stop-color="#FFF6D8"/><stop offset="42%" stop-color="#F3C85A"/><stop offset="100%" stop-color="#F3C85A" stop-opacity="0"/>'
+  + '</radialGradient>'
+  + '<filter id="jlb" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur stdDeviation="3.4"/></filter>'
+  + '</defs>'
+  + chartGrid()
+  + '<circle cx="50" cy="50" r="23" fill="url(#jlg)" filter="url(#jlb)"/>'
+  + '<path d="M50 38 L52.6 47.4 L62 50 L52.6 52.6 L50 62 L47.4 52.6 L38 50 L47.4 47.4 Z" fill="#FFF3CE"/>'
+  + '<circle cx="50" cy="50" r="3.4" fill="#FFFBEF"/>';
+/* solid monochrome version — for use on the gold/accent surface */
+var SYMBOL_PLAIN = chartGrid() + '<circle cx="50" cy="50" r="5" fill="currentColor"/>';
+
+/* ===================== CHART GEOMETRY ===================== */
+var POLY = {
+  1:'150,0 225,75 150,150 75,75',
+  2:'0,0 150,0 75,75',
+  3:'0,0 75,75 0,150',
+  4:'75,75 150,150 75,225 0,150',
+  5:'0,150 75,225 0,300',
+  6:'0,300 75,225 150,300',
+  7:'75,225 150,150 225,225 150,300',
+  8:'150,300 225,225 300,300',
+  9:'300,300 225,225 300,150',
+  10:'150,150 225,75 300,150 225,225',
+  11:'300,150 225,75 300,0',
+  12:'300,0 225,75 150,0'
+};
+var CENTROID = {
+  1:[150,70],2:[75,28],3:[28,75],4:[70,150],5:[28,225],6:[75,272],
+  7:[150,230],8:[225,272],9:[272,225],10:[230,150],11:[272,75],12:[225,28]
+};
+
+/* ===================== RENDER ===================== */
+function el(html){var d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild;}
+
+function renderStatic(){
+  // symbols (glowing on dark; solid on the gold/accent panel)
+  ['hero-symbol','logo-symbol','logo-symbol-2','sz1','sz2','sz3','mk-head','foot-mk'].forEach(function(id){
+    var node=document.getElementById(id); if(node) node.innerHTML=SYMBOL;
+  });
+  var inv=document.getElementById('logo-symbol-inv'); if(inv) inv.innerHTML=SYMBOL_PLAIN;
+
+  // graha cards
+  var gc=document.getElementById('graha-cards'); gc.innerHTML='';
+  PLANETS.forEach(function(p){
+    var card=el('<article class="graha" style="--pc:'+p.c+'"></article>');
+    card.innerHTML =
+      '<div class="gtop"><div class="ico">'+body(p.key,50)+'</div>'+
+      (p.ruler?'<span class="tag ruler">Ruler</span>':'<span class="tag node">Shadow node</span>')+'</div>'+
+      '<h3>'+p.name+'</h3><div class="sk">'+p.sk+'</div>'+
+      '<div class="hx"><i></i>'+p.c.toUpperCase()+'</div>'+
+      '<p class="rat">'+p.rat+'</p>'+
+      '<div class="rules">'+(p.ruler?'Rules '+p.signs:'Rules \u2014 no house tint')+'</div>';
+    gc.appendChild(card);
+  });
+
+  // celestial graphics grid
+  var ig=document.getElementById('icon-grid'); ig.innerHTML='';
+  PLANETS.forEach(function(p){
+    var c=el('<div class="icard" style="--pc:'+p.c+'"></div>');
+    c.innerHTML='<div class="big">'+body(p.key,80)+'</div>'+
+      '<div class="nm">'+p.name+'</div><div class="gl">'+p.sk+'</div>'+
+      '<div class="vis">'+VIS[p.key]+'</div>';
+    ig.appendChild(c);
+  });
+
+  // chart
+  var svg=document.getElementById('chart'); var s='';
+  for(var i=1;i<=12;i++){
+    var sign=SIGNS[i-1]; var pc=P[sign.ruler].c;
+    s+='<polygon points="'+POLY[i]+'" fill="'+pc+'" fill-opacity="0.3" stroke="'+pc+'" stroke-opacity="0.75" stroke-width="1.2"/>';
+  }
+  // structural lines on top
+  s+='<g fill="none" stroke="var(--border)" stroke-width="1.4">'
+    +'<rect x="0.7" y="0.7" width="298.6" height="298.6"/>'
+    +'<path d="M0 0 L300 300 M300 0 L0 300"/>'
+    +'<path d="M150 0 L300 150 L150 300 L0 150 Z"/></g>';
+  // glyphs + house numbers
+  for(var j=1;j<=12;j++){
+    var sg=SIGNS[j-1]; var ct=CENTROID[j]; var col=P[sg.ruler].c;
+    s+='<text x="'+ct[0]+'" y="'+(ct[1]+3)+'" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" fill="'+col+'">'+sg.gl+'</text>';
+    s+='<text x="'+ct[0]+'" y="'+(ct[1]+18)+'" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="var(--text-3)" letter-spacing="1">H'+j+'</text>';
+  }
+  svg.innerHTML=s;
+
+  // legend (7 rulers)
+  var lk=document.getElementById('legkey'); lk.innerHTML='';
+  [['sun','Leo'],['moon','Cancer'],['mars','Aries · Scorpio'],['mercury','Gemini · Virgo'],
+   ['jupiter','Sag · Pisces'],['venus','Taurus · Libra'],['saturn','Cap · Aquarius']].forEach(function(r){
+    var p=P[r[0]];
+    lk.appendChild(el('<div class="lk"><i style="background:'+p.c+'"></i><b>'+p.name+'</b><em>'+r[1]+'</em></div>'));
+  });
+
+  // chips
+  var ch=document.getElementById('chips'); ch.innerHTML='';
+  [['sun','14°22′ Vi'],['moon','03°51′ Sc'],['saturn','℞ 28°10′ Aq']].forEach(function(r){
+    var p=P[r[0]];
+    ch.appendChild(el('<span class="chip-comp" style="--pc:'+p.c+'">'+body(r[0],20)+p.name+' <em>'+r[1]+'</em></span>'));
+  });
+
+  // dignity legend (Mars sample — red proves identity colour survives every state)
+  var dl=document.getElementById('dignity-legend'); dl.innerHTML='';
+  [['neutral','Neutral','Base','The graha as placed — no modifier.'],
+   ['exalted','Exalted','Uccha','Strongest. A radiant gold halo and lifted glow.'],
+   ['debilitated','Debilitated','Neecha','Weakened. Desaturated and dimmed — still its colour.'],
+   ['own','Own sign','Swakshetra','At home. A calm, anchored ring; settled, not amplified.']
+  ].forEach(function(s){
+    var t=el('<div class="dleg"></div>');
+    t.innerHTML='<div class="ic">'+body('mars',66,s[0])+'</div><div class="nm">'+s[1]+'</div><div class="sk">'+s[2]+'</div><div class="ds">'+s[3]+'</div>';
+    dl.appendChild(t);
+  });
+
+  // dignity matrix (9 grahas x 4 states)
+  var dm=document.getElementById('dignity-matrix'); dm.innerHTML='';
+  var head=el('<div class="dmrow dmhead"></div>');
+  head.innerHTML='<span class="cell" style="text-align:left;padding-left:16px;">Graha</span><span class="cell">Neutral</span><span class="cell">Exalted</span><span class="cell">Debilitated</span><span class="cell">Own sign</span>';
+  dm.appendChild(head);
+  PLANETS.forEach(function(p){
+    var node=(p.key==='rahu'||p.key==='ketu');
+    var row=el('<div class="dmrow"></div>');
+    var h='<div class="pl"><span class="pic">'+body(p.key,28)+'</span><span>'+p.name+'<small>'+p.sk+'</small></span></div>';
+    h+='<div class="cell"><span class="ic">'+body(p.key,48,'neutral')+'</span></div>';
+    ['exalted','debilitated','own'].forEach(function(st){
+      h+= node ? '<div class="cell na">—</div>'
+               : '<div class="cell"><span class="ic">'+body(p.key,48,st)+'</span></div>';
+    });
+    row.innerHTML=h;
+    dm.appendChild(row);
+  });
+
+  // retrograde modifier demo
+  var rr=document.getElementById('retro-row');
+  if(rr){
+    rr.innerHTML='<div class="retro-label">Modifier<small>Retrograde \u00b7 Vakr\u012b</small></div>'
+      +'<div class="retro-icons">'+['mercury','mars','jupiter','saturn'].map(function(k){return '<span class="ic">'+body(k,46,'neutral',true)+'</span>';}).join('')+'</div>'
+      +'<p class="retro-note">A soft gold \u201cR\u201d superscript marks a retrograde graha \u2014 secondary to its identity colour, and it stacks on any dignity state. (The Sun &amp; Moon never retrograde; Rahu &amp; Ketu always do.)</p>';
+  }
+}
+
+function renderTheme(t){
+  var th=THEMES[t];
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('[data-theme-btn]').forEach(function(b){
+    b.setAttribute('aria-pressed', b.getAttribute('data-theme-btn')===t ? 'true':'false');
+  });
+  document.getElementById('dir-name').textContent=th.name;
+  document.getElementById('dir-desc').textContent=th.desc;
+  document.getElementById('type-display-name').textContent=th.display;
+  document.getElementById('type-body-name').textContent=th.body;
+
+  // ui swatches
+  var grid=document.getElementById('ui-swatches'); grid.innerHTML='';
+  th.ui.forEach(function(u){
+    var dark = u[2].toLowerCase()<'#7';
+    var sw=el('<div class="sw"></div>');
+    sw.innerHTML='<div class="chip" style="background:'+u[2]+';border-bottom:1px solid var(--border-soft)"></div>'+
+      '<div class="meta"><span class="nm">'+u[0]+'</span><span class="vr">'+u[1]+'</span><span class="hx">'+u[2]+'</span></div>';
+    grid.appendChild(sw);
+  });
+
+  // hero direction swatches strip
+  var ds=document.getElementById('dir-swatches'); ds.innerHTML='';
+  [th.ui[0][2],th.ui[2][2],th.ui[3][2],th.ui[5][2],th.ui[7][2]].forEach(function(c){
+    ds.appendChild(el('<i style="background:'+c+'"></i>'));
+  });
+
+  try{localStorage.setItem('val-theme',t);}catch(e){}
+}
+
+/* init */
+renderStatic();
+renderTheme('verdant');
+</script>
+</body>
+</html>

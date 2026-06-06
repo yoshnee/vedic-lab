@@ -1,0 +1,4 @@
+/* Global stylesheet entry. Tokens first (the single source of truth),
+   then the component styles that consume them. */
+@import "../src/lib/design/tokens.css";
+@import "../src/lib/design/app.css";
