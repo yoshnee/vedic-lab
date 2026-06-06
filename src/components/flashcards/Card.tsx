@@ -3,7 +3,15 @@
 /* A single flashcard (front + back faces). An empty body renders a
    tasteful "coming soon" placeholder so scaffolded decks don't look broken. */
 import type { CSSProperties } from "react";
-import { body, glyph, diamond } from "@/celestial/celestial";
+import {
+  body,
+  glyph,
+  diamond,
+  chart,
+  zodiac,
+  combust,
+  conjunction,
+} from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
 import type { Card as CardData } from "@/data/decks/types";
 
@@ -18,11 +26,18 @@ function CardIcon({
 }) {
   if (!icon) return null;
   let html = "";
-  if (icon.kind === "planet") html = body(icon.id, size);
+  let cls = "fc-icon";
+  if (icon.kind === "planet") html = body(icon.id, size, icon.retro);
   else if (icon.kind === "house") html = glyph(String(icon.n), accent, size);
   else if (icon.kind === "diamond") html = diamond(size, { glow: true });
+  else if (icon.kind === "chart") {
+    html = chart(size, { highlight: icon.house });
+    cls = "fc-icon fc-icon--chart";
+  } else if (icon.kind === "zodiac") html = zodiac(icon.symbol, size, accent);
+  else if (icon.kind === "combust") html = combust(size, icon.planet);
+  else if (icon.kind === "conjunction") html = conjunction(size, icon.a, icon.b);
   if (!html) return null;
-  return <Svg className="fc-icon" html={html} />;
+  return <Svg className={cls} html={html} />;
 }
 
 export function Card({
@@ -35,7 +50,10 @@ export function Card({
   flipped: boolean;
 }) {
   const accent = card.accentColor || deckAccent;
+  const hasFacts = !!card.facts?.length;
+  const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
+  const hasBackContent = hasPoints || hasBody;
 
   return (
     <div className="fc-card">
@@ -43,20 +61,37 @@ export function Card({
         className={"fc-inner" + (flipped ? " is-flipped" : "")}
         style={{ "--accent": accent } as CSSProperties}
       >
-        <div className="fc-face fc-front">
+        <div className={"fc-face fc-front" + (hasFacts ? " fc-front--data" : "")}>
           {card.badge && <span className="fc-badge">{card.badge}</span>}
           <span className="fc-glow" />
           <CardIcon icon={card.icon} accent={accent} size={92} />
           <span className="fc-term">{card.title}</span>
           {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
-          <span className="fc-hint">Flip ↻</span>
+          {hasFacts ? (
+            <dl className="fc-facts">
+              {card.facts!.map((f) => (
+                <div className="fc-fact" key={f.label}>
+                  <dt className="fc-fact-label">{f.label}</dt>
+                  <dd className="fc-fact-value">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <span className="fc-hint">Flip ↻</span>
+          )}
         </div>
         <div className="fc-face fc-back">
           <div className="fc-back-head">
             <span className="fc-back-term">{card.title}</span>
             {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
           </div>
-          {hasBody ? (
+          {hasPoints ? (
+            <ul className="fc-points">
+              {card.points!.map((p, idx) => (
+                <li key={idx}>{p}</li>
+              ))}
+            </ul>
+          ) : hasBody ? (
             <p className="fc-body">{card.body}</p>
           ) : (
             <div className="fc-empty">
@@ -67,7 +102,7 @@ export function Card({
               </span>
             </div>
           )}
-          {card.badge && hasBody && (
+          {card.badge && hasBackContent && (
             <span className="fc-badge fc-badge--back">{card.badge}</span>
           )}
         </div>

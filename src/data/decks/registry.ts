@@ -12,6 +12,9 @@ import { houses } from "./houses";
 import { signs } from "./signs";
 import { nakshatras } from "./nakshatras";
 import { aspects } from "./aspects";
+import { combustion } from "./combustion";
+import { conjunctions } from "./conjunctions";
+import { retrogression } from "./retrogression";
 import { shadbala } from "./shadbala";
 import { karakas } from "./karakas";
 import { dashas } from "./dashas";
@@ -24,6 +27,9 @@ export const DECKS: Deck[] = [
   signs,
   nakshatras,
   aspects,
+  combustion,
+  conjunctions,
+  retrogression,
   shadbala,
   // coming soon
   karakas,

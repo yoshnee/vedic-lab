@@ -101,7 +101,13 @@ export function Deck({ deck, onClose }: { deck: DeckData; onClose: () => void })
   }
   function onTouchMove(e: React.TouchEvent) {
     const t = e.touches[0];
-    if (Math.abs(t.clientX - touch.current.x) > 10) touch.current.moved = true;
+    // any drag (horizontal swipe OR vertical scroll) counts as movement, so a
+    // scroll on a long card never registers as a tap-to-flip
+    if (
+      Math.abs(t.clientX - touch.current.x) > 10 ||
+      Math.abs(t.clientY - touch.current.y) > 10
+    )
+      touch.current.moved = true;
   }
   function onTouchEnd(e: React.TouchEvent) {
     const t = e.changedTouches[0];

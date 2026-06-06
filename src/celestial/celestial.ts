@@ -196,7 +196,119 @@ export function glyph(label: string | number, color: string | undefined, size: n
   );
 }
 
+/* North Indian chart house polygons (300×300 space, house 1 = top-centre,
+   counter-clockwise). The square + diagonals + inner diamond subdivide into
+   these twelve bhavas. */
+const HOUSE_POLY: Record<number, string> = {
+  1: "150,0 225,75 150,150 75,75",
+  2: "0,0 150,0 75,75",
+  3: "0,0 75,75 0,150",
+  4: "75,75 150,150 75,225 0,150",
+  5: "0,150 75,225 0,300",
+  6: "0,300 75,225 150,300",
+  7: "75,225 150,150 225,225 150,300",
+  8: "150,300 225,225 300,300",
+  9: "300,300 225,225 300,150",
+  10: "150,150 225,75 300,150 225,225",
+  11: "300,150 225,75 300,0",
+  12: "300,0 225,75 150,0",
+};
+
+/* The North Indian birth-chart mark (the logo grid) with one house filled.
+   Grid lines are gold (the logo); the highlighted bhava is washed in a dark
+   design-system surface color. Both pull from CSS tokens so they stay on-system.
+   Used by the Houses deck so flipping through walks the highlight 1 → 12. */
+export function chart(
+  size: number,
+  opts?: { highlight?: number; fill?: string; stroke?: string },
+): string {
+  const fill = opts?.fill || "var(--border)";
+  const line = opts?.stroke || "var(--accent)";
+  const hl = opts?.highlight;
+  let s =
+    '<svg viewBox="-6 -6 312 312" width="' + size + '" height="' + size + '" style="display:block">';
+  if (hl && HOUSE_POLY[hl]) {
+    s += '<polygon points="' + HOUSE_POLY[hl] + '" fill="' + fill + '"/>';
+  }
+  s +=
+    '<g fill="none" stroke="' + line + '" stroke-linejoin="round" stroke-linecap="round">' +
+    '<rect x="0" y="0" width="300" height="300" rx="8" stroke-width="8"/>' +
+    '<path d="M0 0 L300 300 M300 0 L0 300" stroke-width="4" stroke-opacity="0.78"/>' +
+    '<path d="M150 0 L300 150 L150 300 L0 150 Z" stroke-width="6"/>' +
+    "</g>";
+  return s + "</svg>";
+}
+
+/* Zodiac sign symbol (♈–♓) as a coin-like icon: the Unicode glyph in a soft
+   ruler-colored disc with a thin ring. Color is the sign's ruling-planet color,
+   tying into the design system's sign/house coloring. */
+export function zodiac(symbol: string, size: number, color?: string): string {
+  const c = color || ACCENT;
+  return (
+    '<svg viewBox="0 0 48 48" width="' + size + '" height="' + size + '" style="display:block">' +
+    '<circle cx="24" cy="24" r="21" fill="' + c + '" fill-opacity="0.09"/>' +
+    '<circle cx="24" cy="24" r="21" fill="none" stroke="' + c + '" stroke-width="1.4" stroke-opacity="0.5"/>' +
+    '<text x="24" y="24" dy="0.34em" text-anchor="middle" style="font-family:\'Apple Symbols\',\'Segoe UI Symbol\',\'Noto Sans Symbols\',sans-serif" font-size="27" fill="' +
+    c +
+    '">' +
+    symbol +
+    "</text>" +
+    "</svg>"
+  );
+}
+
+/* Combustion (asta) icon: a glowing Sun with a small dimmed planet hugging
+   its edge — the planet "burnt up" by the Sun's glare. `planet` tints the
+   trapped body (else a neutral grey); it's drawn scorched/dimmed regardless. */
+export function combust(size: number, planet?: string): string {
+  _u++;
+  const u = _u;
+  const pc = planet && COLORS[planet] ? COLORS[planet] : "#8B94A3";
+  return (
+    '<svg viewBox="0 0 48 48" width="' + size + '" height="' + size + '" style="display:block">' +
+    "<defs>" +
+    '<radialGradient id="csg' + u + '" cx="42%" cy="38%" r="62%">' +
+    '<stop offset="0%" stop-color="#FFF7DE"/><stop offset="42%" stop-color="#F2C230"/><stop offset="100%" stop-color="#D5851E"/>' +
+    "</radialGradient>" +
+    '<radialGradient id="cgl' + u + '" cx="50%" cy="50%" r="50%">' +
+    '<stop offset="46%" stop-color="#F4C84A" stop-opacity="0.55"/><stop offset="100%" stop-color="#F4C84A" stop-opacity="0"/>' +
+    "</radialGradient>" +
+    "</defs>" +
+    '<circle cx="24" cy="24" r="23" fill="url(#cgl' + u + ')"/>' +
+    '<circle cx="24" cy="24" r="13" fill="url(#csg' + u + ')"/>' +
+    '<circle cx="24" cy="24" r="13" fill="none" stroke="#FFEFC2" stroke-opacity="0.35" stroke-width="0.8"/>' +
+    '<circle cx="34" cy="17.5" r="5.6" fill="' + pc + '"/>' +
+    '<circle cx="34" cy="17.5" r="5.6" fill="#170F04" fill-opacity="0.36"/>' +
+    '<circle cx="34" cy="17.5" r="5.6" fill="none" stroke="#170F04" stroke-opacity="0.4" stroke-width="0.7"/>' +
+    "</svg>"
+  );
+}
+
+/* Conjunction (yuti) icon: two planet spheres overlapping — energies merging
+   at one point. `a` (back, larger) and `b` (front) are planet keys; a thin dark
+   separator keeps the front sphere distinct. Unknown keys fall back to grey. */
+export function conjunction(size: number, a: string, b: string): string {
+  _u++;
+  const u = _u;
+  const ca = COLORS[a] || "#8B94A3";
+  const cb = COLORS[b] || "#8B94A3";
+  return (
+    '<svg viewBox="0 0 48 48" width="' + size + '" height="' + size + '" style="display:block">' +
+    '<defs><radialGradient id="cj' + u + '" cx="36%" cy="30%" r="75%">' +
+    '<stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>' +
+    '<stop offset="42%" stop-color="#fff" stop-opacity="0"/>' +
+    '<stop offset="100%" stop-color="#000" stop-opacity="0.42"/>' +
+    "</radialGradient></defs>" +
+    '<circle cx="19" cy="28" r="12" fill="' + ca + '"/>' +
+    '<circle cx="19" cy="28" r="12" fill="url(#cj' + u + ')"/>' +
+    '<circle cx="31" cy="18" r="10.7" fill="#0B1A12"/>' +
+    '<circle cx="31" cy="18" r="9.5" fill="' + cb + '"/>' +
+    '<circle cx="31" cy="18" r="9.5" fill="url(#cj' + u + ')"/>' +
+    "</svg>"
+  );
+}
+
 export const colors = PLANET_COLORS;
 
-const Celestial = { body, diamond, glyph, colors };
+const Celestial = { body, diamond, glyph, chart, zodiac, combust, conjunction, colors };
 export default Celestial;

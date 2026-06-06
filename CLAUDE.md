@@ -34,10 +34,11 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 ## What the app is
 
 ### Study side
-- Data-driven **flashcard decks**. **Planets** and **Houses** have full content; **Signs (12)**,
-  **Nakshatras (27)**, **Aspects (4 rules)**, and **Shadbala (6)** are scaffolded (canonical titles
-  seeded, card bodies empty to fill in later); **Karakas / Dashas / Yogas** are registered as
-  "coming soon" roadmap tiles.
+- Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
+  the 12 signs as Lagnas, with functional lords/benefics/malefics), **Combustion** (Asta),
+  **Conjunctions** (Yuti), and **Retrogression** (Vakri) have full content; **Nakshatras (27)**, **Aspects (4 rules)**, and **Shadbala (6)** are
+  scaffolded (canonical titles seeded, card bodies empty to fill in later); **Karakas / Dashas /
+  Yogas** are registered as "coming soon" roadmap tiles.
 - **English-primary** with optional subtle Sanskrit.
 - Built on a reusable **Card / Deck** system: flip to reveal the meaning, swipe / arrow-key to advance.
 
@@ -103,8 +104,10 @@ Swiss Ephemeris data files (if needed) go in `public/`. The chart/analyzer becom
 - **Flashcards** — full reusable `Card` / `Deck` / `DeckGrid` with the prototype's a11y intact
   (←/→ nav, space/enter flip, Esc close, tab-trap, swipe, `aria-live`). Empty card bodies show a
   tasteful "coming soon"; coming-soon decks render as non-interactive tiles.
-- **Decks** — `Planets` + `Houses` (full content); `Signs`/`Nakshatras`/`Aspects`/`Shadbala`
+- **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` (full content); `Nakshatras`/`Aspects`/`Shadbala`
   (titles seeded, bodies empty); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
+  (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
+  into one; mixed card types in a single deck is fine.)
 
 **Not yet built (later phases):** the sidereal **engine** and the real **Birth Chart Analyzer**
 (chart, planet panels, dasha timeline) — the analyzer is a stub for now. Automated yoga detection and
@@ -118,14 +121,21 @@ the reference when building new UI; `HANDOFF-README.md` is the original handoff 
 
 ### Ported module APIs (reuse these; don't reinvent)
 - **`src/celestial/celestial.ts`** — `body(key, size, retro?)`, `diamond(size, {glow, stroke})`,
-  `glyph(label, color, size)`, `colors`. Returns SVG **markup strings**; render via `<Svg/>`.
+  `glyph(label, color, size)`, `chart(size, {highlight, fill, stroke})` (North Indian chart with one
+  house highlighted — Houses deck), `zodiac(symbol, size, color)` (zodiac glyph in a colored disc —
+  Ascendants deck), `combust(size, planet?)` (Sun engulfing a dimmed planet — Combustion deck),
+  `conjunction(size, a, b)` (two planet spheres merging — Conjunctions deck), `colors`. Returns SVG
+  **markup strings**; render via `<Svg/>`.
   ⚠️ Renders **neutral + retrograde only**. The **dignity-state rendering (exalted / debilitated /
   own)** lives only in the prototype `body(key,size,state,retro)` in `Vedic Astrology Lab -
   Identity.html` — **port it here** when the chart is built. (Determination of *which* state a planet
   is in is engine logic; the art only *draws* a known state.)
 - **`src/data/decks/types.ts`** — `Deck = {id,title,subtitle?,motif,accent,status?,cards[]}`;
-  `Card = {title,sanskrit?,body,badge?,accentColor?,icon?}`; `icon = {kind:'planet',id} |
-  {kind:'house',n} | {kind:'diamond'}`; `status?: 'available' | 'coming-soon'`. **Add a deck = new
+  `Card = {title,sanskrit?,body,badge?,accentColor?,icon?,facts?,points?}`; `icon = {kind:'planet',id,retro?}
+  | {kind:'house',n} | {kind:'diamond'} | {kind:'chart',house} | {kind:'zodiac',symbol} |
+  {kind:'combust',planet?} | {kind:'conjunction',a,b}`; `status?: 'available' | 'coming-soon'`. `facts` (label/value
+  pairs) render on the card **front** (e.g. planet placement + natural relationships); `points`
+  (string[]) render on the **back** as a bulleted list (used instead of `body`). **Add a deck = new
   data file + one entry in `registry.ts`. No component changes.**
 - **Flashcard components** (`src/components/flashcards/`) and **home components**
   (`src/components/home/`) — fully accessible; preserve that bar when extending.

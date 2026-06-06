@@ -201,6 +201,42 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .fc-back .fc-body { font-size: 16px; line-height: 1.62; color: var(--text-2); margin: 0; overflow: auto; text-wrap: pretty; }
 .fc-badge--back { top: auto; bottom: 22px; right: 24px; }
 
+/* placement & relationship data on the card FRONT (planet element /
+   ownership / dignity, then natural friends / neutral / enemies). A
+   two-column "spec sheet": fixed label column + a value column that
+   wraps for multi-planet lists. Top-aligned so the icon/name stay put. */
+.fc-front--data { justify-content: flex-start; gap: 9px; padding-top: 30px; }
+.fc-front--data .fc-icon, .fc-front--data .fc-icon svg { width: 58px; height: 58px; }
+.fc-front--data .fc-term { font-size: clamp(21px, 4.4vw, 27px); }
+/* the North Indian chart icon (Houses deck) is the focal visual — larger */
+.fc-front--data .fc-icon--chart, .fc-front--data .fc-icon--chart svg { width: 92px; height: 92px; }
+.fc-facts {
+  width: 100%; max-width: 270px; margin: 6px auto 0;
+  display: flex; flex-direction: column;
+}
+.fc-fact {
+  display: grid; grid-template-columns: 84px 1fr; gap: 10px; align-items: baseline;
+  padding: 5px 0; border-top: 1px solid var(--border-soft); text-align: left;
+}
+.fc-fact:first-child { border-top: 0; }
+.fc-fact-label {
+  margin: 0; font-family: var(--font-mono), monospace; font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--text-3);
+}
+.fc-fact-value {
+  margin: 0; font-family: var(--font-mono), monospace; font-size: 11.5px;
+  color: var(--text-2); line-height: 1.4;
+}
+
+/* characteristics on the card BACK as a bulleted list */
+.fc-points {
+  margin: 0; padding-left: 20px; flex: 1; min-height: 0; overflow: auto;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 14.5px; line-height: 1.45; color: var(--text-2); text-wrap: pretty;
+}
+.fc-points li { padding-left: 2px; }
+.fc-points li::marker { color: var(--accent); }
+
 /* empty (not-yet-written) card body → tasteful "coming soon" */
 .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; flex: 1; text-align: center; }
 .fc-empty-mark { opacity: .5; display: flex; }
@@ -244,6 +280,12 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   .fc-nav { display: none; }
   .fc-stack { width: 84vw; height: 62vh; }
   .fc-deckback { width: 100%; }
+  /* tighten the data-rich planet front so 8 rows fit on small screens */
+  .fc-front--data { padding-top: 22px; gap: 7px; }
+  .fc-front--data .fc-icon, .fc-front--data .fc-icon svg { width: 48px; height: 48px; }
+  .fc-front--data .fc-icon--chart, .fc-front--data .fc-icon--chart svg { width: 76px; height: 76px; }
+  .fc-fact { padding: 4px 0; grid-template-columns: 78px 1fr; }
+  .fc-fact-value { font-size: 10.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fc-inner { transition: none; }
