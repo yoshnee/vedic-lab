@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Space_Grotesk, Outfit, Space_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteHeader } from "@/components/home/SiteHeader";
 import { Footer } from "@/components/home/Footer";
 import { ChartProvider } from "@/lib/chart/ChartProvider";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
           <Footer />
         </ChartProvider>
+        <Analytics />
       </body>
     </html>
   );
