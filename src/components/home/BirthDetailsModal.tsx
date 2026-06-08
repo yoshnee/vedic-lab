@@ -132,14 +132,18 @@ export function BirthDetailsModal({
             />
           </label>
 
-          {/* DATE + TIME */}
+          {/* DATE + TIME — deliberately UNCONTROLLED (no `value` prop). Safari
+              reports a partly-typed date/time as "" on every keystroke; a
+              controlled input would let React restore the DOM value to "" after
+              each one, wiping the segment (typing a 4-digit year, each digit
+              replaced the last). Uncontrolled lets the browser's native segment
+              editing accumulate; onChange still captures the value for validation. */}
           <div className="bd-row2">
             <label className="bd-field">
               <span className="bd-label">Date of birth</span>
               <input
                 className={"bd-input" + (errDate ? " is-error" : "")}
                 type="date"
-                value={date}
                 onChange={(e) => setDate(e.target.value)}
                 onBlur={() => touch("date")}
                 aria-invalid={!!errDate}
@@ -155,7 +159,6 @@ export function BirthDetailsModal({
               <input
                 className={"bd-input" + (errTime ? " is-error" : "")}
                 type="time"
-                value={time}
                 onChange={(e) => setTime(e.target.value)}
                 onBlur={() => touch("time")}
                 aria-invalid={!!errTime}
