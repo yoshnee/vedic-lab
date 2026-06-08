@@ -36,9 +36,11 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 ### Study side
 - Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
   the 12 signs as Lagnas, with functional lords/benefics/malefics), **Combustion** (Asta),
-  **Conjunctions** (Yuti), and **Retrogression** (Vakri) have full content; **Nakshatras (27)**, **Aspects (4 rules)**, and **Shadbala (6)** are
-  scaffolded (canonical titles seeded, card bodies empty to fill in later); **Karakas / Dashas /
-  Yogas** are registered as "coming soon" roadmap tiles.
+  **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
+  (concept), **Gandanta** (concept), **Planetary Conditions** (Panchadha Maitri, concept),
+  **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;
+  **Shadbala (6)** is scaffolded (canonical titles seeded, card bodies empty to fill in later);
+  **Karakas / Dashas / Yogas** are registered as "coming soon" roadmap tiles.
 - **English-primary** with optional subtle Sanskrit.
 - Built on a reusable **Card / Deck** system: flip to reveal the meaning, swipe / arrow-key to advance.
 
@@ -57,37 +59,79 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 - **Fonts: `next/font/google`** (self-hosted) — Space Grotesk (`--font-display`), Outfit
   (`--font-body`), Space Mono (`--font-mono`). Self-hosting keeps the later COOP/COEP isolation safe.
 - Primary devices: **desktop and iPad**; must still present well on **mobile**.
-- The sidereal engine (later phase) runs **in the browser** via WebAssembly.
-- Engine output is **longitude-based** — every planet exposes its raw sidereal longitude so the
-  Vedic derivation layer (and future divisional charts) read from one source of truth.
+- The **sidereal engine is built** (`src/core/`, `swisseph-wasm` + Lahiri) and **validated against
+  JHora ground-truth via a Vitest suite** (`npm test` → `src/core/__tests__/`): **23 vendored JHora
+  charts** (`__fixtures__/jhora/`, spanning every sign + ascendant) recomputed and checked field-by-field
+  (positions, sign/degree, nakshatra + lord, pada, retrograde, **and the full Vimśottarī MD/AD tree** —
+  MD ≤5d, AD ≤7d, the documented linear-vs-JHora drift), **plus pure invariant tests** over the fixed
+  tables (e.g. `debilitation === exaltation + 6` — the guard that catches transcription typos like the
+  Moon-in-Scorpio one, independent of any chart). `scripts/validate-engine.ts` remains as a single-chart
+  printout (network, tsx). Output is **longitude-based** (raw sidereal longitude per planet) so divisional
+  charts can be layered later.
+- **The chart flow is LIVE in the browser.** The birth-details popup submit runs the engine on-device
+  (swisseph-wasm), holds the result in a store, and navigates to `/chart`:
+  - **Engine in the browser** — `getSwe()` (`src/core/swisseph.ts`) lazily inits swisseph-wasm.
+    swisseph-wasm@0.0.5 is **patched** (`patches/swisseph-wasm+0.0.5.patch`, applied via the
+    `postinstall` hook): the browser `locateFile` points at **`/wasm/*`** (the upstream
+    `new URL('../wasm/…', import.meta.url)` 404s under Turbopack), and the Node-only dynamic imports
+    (`module`/`url`/`path`) are marked `/* turbopackIgnore */` so the client bundle builds. The
+    `swisseph.wasm` (544 KB) + `swisseph.data` (12 MB) are copied into `public/wasm/` by
+    `scripts/copy-wasm.mjs` (`predev`/`prebuild`; gitignored). **COOP/COEP are enabled globally** in
+    `next.config.ts` (SharedArrayBuffer; compute runs on the home page too, so isolation must be global).
+  - **One seam, one store** — `generateChart(civil)` (`src/lib/chart/generateChart.ts`) =
+    `birthFromCivil` → `computeChart` (+ `computeTransit`) → wraps a **`ChartModel`**
+    (`src/lib/chart/types.ts`: `{ chart: ChartData, meta:{name,ianaTz,computedUtcISO},
+    panchanga:{tithiNumber,waxing}, transit:TransitSet|null }`). `transit` = current planets
+    (Lahiri, `core.computeTransit`, the engine re-run for "now") placed on the **natal lagna**
+    frame — Chart 2's dataset; optional (null on failure, like the Sade Sati scan). Held in
+    `ChartProvider` (`src/lib/chart/ChartProvider.tsx`, mounted in `app/layout.tsx`). Only the small
+    civil input is persisted (`sessionStorage['vedic:birthDetails']`); the model is never in the URL.
+  - **Flow** — `HomeApp.handleGenerate`: loading spinner on the modal CTA → `generateChart` → on
+    success `setModel` + `router.push('/chart')`; on failure inline error, modal stays open (no nav).
+    `/chart` → `ChartRoute` (`src/components/chart/ChartRoute.tsx`): renders the store model, else
+    recomputes from the persisted civil (loading shell), else redirects home with `?analyzer=1`
+    (which `HomeApp` reads to auto-open the modal). `ChartView` takes the `ChartModel`.
+  - The engine code is the same validated path (155/155); `sample-chart.json` remains for the Node
+    validator/dev only. **Manual browser verification** (needs a real browser): `crossOriginIsolated`
+    true, the live submit→/chart flow, geocoding under COEP.
 
 ### Code layout (actual)
 ```
 app/
-  layout.tsx              root layout: next/font vars, globals.css, site <Footer/>
-  page.tsx                "/" → renders <HomeApp/>
-  globals.css             @import tokens.css; @import app.css
+  layout.tsx              root layout: next/font vars, globals.css, global <SiteHeader/> + <Footer/>
+  page.tsx                "/" → <HomeApp/> (landing; analyzer hero opens the birth-details popup)
+  chart/page.tsx          "/chart" → <ChartRoute/> (live ChartModel from the store, or recompute)
+  about/page.tsx          "/about" → <AboutPage/> (personal essay)
+  resources/page.tsx      "/resources" → <ResourcesPage/> (books + "behind the app" engines)
+  faq/page.tsx            "/faq" → <FaqPage/> (native <details> accordion)
+  globals.css             @import tokens.css; app.css; site.css; chart.css
 src/
-  lib/
-    design/tokens.css     SINGLE SOURCE OF TRUTH — color tokens (font vars come from next/font)
-    design/app.css        all component styles (ported verbatim) + footer + coming-soon + empty-card
-    design/colors.ts      canonical 9 planet colors + ACCENT (JS mirror of celestial colors)
-    site.ts               site-wide constants (name, owner, repoUrl, liveUrl, tagline)
-  celestial/celestial.ts  SVG-art module: body / diamond / glyph / colors (returns markup strings)
+  core/                   THE ENGINE (UI-free; follows the Hora-Prakash reference)
+    swisseph.ts           swisseph-wasm wrapper (Lahiri positions, speeds, Lagna)
+    vedic.ts              sign/degree, nakshatra/pada/lord, whole-sign houses, dignity, drishti, combust
+    dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
+    avastha.ts            Baladi (degree) + Jagradadi (dignity + natural maitri) "states"; no invented strength
+    constants.ts          dignity tables, nakshatras, drishti, combustion orbs, dasha years
+    types.ts              ChartData / PlanetData (engine output contract)
+    index.ts              computeChart(birth) — the single seam; birthFromCivil()
+    sample.ts             fixed sample birth;  sample-chart.json  (precomputed output)
+    __tests__/            Vitest: fixtures.test.ts (23 JHora charts) + invariants.test.ts (table guards)
+    __fixtures__/jhora/   23 vendored JHora ground-truth charts (trimmed: birth+planets+dasha)
+  lib/design/             tokens.css (source of truth), app.css, site.css (global nav/footer + content pages), chart.css, colors.ts
+  lib/chart/              generateChart() seam · ChartModel types · ChartProvider store
+  lib/{site.ts, flashcardLink.ts, geo.ts, time.ts, birth.ts, hooks/useDebounce.ts}
+  celestial/celestial.ts  SVG art: body({state,retro}) / diamond / glyph / chart / zodiac / combust / conjunction
   components/
-    Svg.tsx               client bridge: renders art strings via dangerouslySetInnerHTML
-    flashcards/           Card (empty→"coming soon"), Deck (modal a11y), DeckGrid (coming-soon tiles)
-    home/                 AppHeader, AnalyzerHero, AnalyzerStub (stub modal), Footer, HomeApp
-  data/decks/
-    types.ts              Deck / Card / CardIcon / DeckStatus
-    registry.ts           ordered DECKS array — add a deck = file + one entry, no component change
-    {planets,houses,signs,nakshatras,aspects,shadbala,karakas,dashas,yogas}.ts
-design-reference/         read-only design-tool prototypes (visual source of truth)
+    Svg.tsx, flashcards/{Card,Deck,DeckGrid}
+    home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
+    site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
+    chart/                ChartView, NorthIndianChart (generic: frame+planets), ChartCard
+                          (title/type-selector wrapper), DashaRail (sticky/​drawer), Legend
+                          (symbol-key drawer), PlanetPanel, FlashcardPopover
+  data/decks/             registry.ts + per-deck data files
+scripts/                  validate-engine.ts, gen-sample-chart.ts (dev: tsx)
+design-reference/         read-only design handoffs (flashcards, planet-panel, birth-modal, chats)
 ```
-**Later phase:** the sidereal engine + Vedic derivation layer goes in `src/core/` (mirroring the
-reference repo), kept UI-free so it can be tested against the reference's ground-truth fixtures.
-Swiss Ephemeris data files (if needed) go in `public/`. The chart/analyzer becomes a `/chart` route
-(or inline results); the analyzer is currently a stub (`src/components/home/AnalyzerStub.tsx`).
 
 ---
 
@@ -95,23 +139,113 @@ Swiss Ephemeris data files (if needed) go in `public/`. The chart/analyzer becom
 
 **Built and shipping (in Next.js):**
 - **Repo scaffold** — Next.js 16 + React 19 + TypeScript, AGPL-3.0 `LICENSE`, `README.md`, `.gitignore`,
-  `next.config.ts` (COOP/COEP headers reserved-but-commented for the engine phase).
+  `next.config.ts` (**COOP/COEP headers enabled globally** for the live in-browser engine).
 - **Design system as code** — `src/lib/design/tokens.css` (color tokens, single source of truth),
   `app.css` (component styles ported verbatim), `colors.ts`; `src/celestial/celestial.ts` (the art
   module) rendered through `src/components/Svg.tsx`.
-- **Landing page** (`/`) — `HomeApp` composes `AppHeader` + `AnalyzerHero` (CTA opens `AnalyzerStub`,
-  the disabled birth-data modal) + `DeckGrid`; site-wide `Footer`.
+- **Global site chrome** — a sticky `SiteHeader` (brand + Home · About · Resources · FAQ, active
+  route resolved from `usePathname`; Home → `/`, lit on the landing and the live `/chart` route) and a
+  richer 3-column `Footer` (brand/tagline, Explore links, and the **GitHub repo link + "Licensed
+  AGPL-3.0."** kept visible for AGPL compliance). Both mounted once in `app/layout.tsx`, so every
+  route shares them. Styles live in `src/lib/design/site.css` (ported from the design handoff's
+  `site.css`); the old single-line footer CSS was removed. (The home page still carries `#analyzer`
+  and `#flashcards` anchors for deep-links, though the nav no longer points at them.)
+- **Landing page** (`/`) — `AppHeader` (identity block, below the global nav) + `AnalyzerHero`
+  (`id="analyzer"`; the "Generate your chart" CTA **opens the birth-details popup**) + `DeckGrid`
+  (wrapped in `#flashcards`). (`AnalyzerStub` was deleted — superseded by `BirthDetailsModal`.)
+- **Content routes** (`/about`, `/resources`, `/faq`) — ported from the design handoff
+  (`flashcards/{about,resources,faq}.jsx` + `site.css`). Static server components sharing a
+  `PageHero` (gold-diamond eyebrow + title + lede). About is a personal essay (*Jyotish* italic +
+  gold); Resources lists the study books (Amazon) + "behind the app" engines (Swiss Ephemeris,
+  Hora Prakash → `SITE.horaPrakashUrl`, JHora); FAQ is an accessible native-`<details>` accordion
+  (first item open). Copy text is the design's verbatim — owner intends to refine it later.
+- **Birth-details popup** (`src/components/home/BirthDetailsModal.tsx` + `PlaceField.tsx`) — ported
+  from `design-reference/birth-modal/`. Optional name + date + time + place; place is an Open-Meteo
+  autocomplete (debounced, abortable) with a manual lat/lon/timezone fallback and a confirmed-place
+  card echoing coords + IANA zone + DST-aware UTC offset (Luxon). Deck-grade a11y (focus trap, Esc,
+  backdrop, combobox + arrow-key suggestions). "Generate chart" persists the engine-ready civil shape
+  to `sessionStorage['vedic:birthDetails']` and closes (routing to `/chart` not wired yet). Helpers:
+  `lib/geo.ts`, `lib/time.ts`, `lib/birth.ts`, `lib/hooks/useDebounce.ts`.
 - **Flashcards** — full reusable `Card` / `Deck` / `DeckGrid` with the prototype's a11y intact
   (←/→ nav, space/enter flip, Esc close, tab-trap, swipe, `aria-live`). Empty card bodies show a
   tasteful "coming soon"; coming-soon decks render as non-interactive tiles.
-- **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` (full content); `Nakshatras`/`Aspects`/`Shadbala`
-  (titles seeded, bodies empty); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
+- **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` +
+  `Nakshatras` + `Padas` + `Gandanta` + `Maitri` + `Avasthas` + `Aspects` (full content); `Shadbala` (titles seeded,
+  bodies empty); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
+  (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
+  span + ruler + general nature; rulers/spans match the engine's validated `NAKSHATRAS` table.)
+  (The `padas` deck is concept-based — 4 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
+  · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's `pada N (purushartha)` placement link
+  opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the fixed map
+  1 Dharma · 2 Artha · 3 Kama · 4 Moksha, set in the engine; `FlashcardTarget.highlightFact` drives the
+  row emphasis, resolved by the card title in `flashcardLink.ts` (`PADA_CONCEPT_CARD`).)
+- **Engine** (`src/core/`) — `swisseph-wasm` + Lahiri; sign/degree, nakshatra/pada/lord, whole-sign
+  houses, dignity, retrograde, combustion, graha-drishti, **panchadha maitri to the dispositor**
+  (`vedic.maitriToDispositor` — occupant→dispositor, **asymmetric**; naisargika table
+  `NAISARGIKA_FRIENDS/ENEMIES` per the reference + tatkalika 2/3/4/10/11/12 friend rule; per planet:
+  `dispositor` and `maitriToDispositor` ∈ adhi_mitra/mitra/sama/shatru/adhi_shatru/own_sign/null; nodes
+  → null, the reference defines no node friendships), **functional nature for the lagna**
+  (`vedic.functionalNatureOf` — reads the single canonical `ASCENDANT_FUNCTIONAL` table in `constants.ts`
+  that **also generates the Ascendants deck's** Yogakaraka/Benefics/Neutral/Malefics facts, so badge and
+  deck can't diverge; per planet `functionalNature` ∈ benefic/malefic/neutral/yogakaraka/null, yogakaraka
+  taking precedence over benefic; nodes → null), **gandanta** (within one pada of a water→fire
+  junction 0°/120°/240° — `vedic.gandantaOf`; orb `GANDANTA_ORB = 360/108` per the reference; also a
+  `deep` flag within 1°; carried by every planet **and the Lagna**), **tithi** (Moon only —
+  `vedic.tithiOf`; absolute 1–30 from the Moon–Sun elongation, `tithiNumber`/`waxing`/`illumination` on
+  the Moon's data; `waxing` kept for paksha bala when Shadbala lands), Vimshottari dasha (MD→AD→PD), and
+  a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
+  positions/nakshatra/lord/pada/retro plus the full MD→AD dasha tree (MD ≤5d, AD ≤7d of JHora; the
+  linear-vs-JHora-hybrid drift the reference's `DASHA_CALCULATION_METHODS.md` documents) — and **invariant
+  tests** over the dignity/nakshatra/dasha/drishti tables. Aspects &
+  combustion have no fixture ground-truth (rule-based, deterministic from validated positions; the invariant
+  suite spot-checks their geometry).
+  Nodes shown non-retrograde (matches JHora); engine combustion orbs follow the reference (differ
+  from the Combustion deck).
+- **Birth-chart page** (`/chart`) — a desktop **3-up layout**: a sticky **`DashaRail`** (Vimshottari
+  MD→AD→PD current chain + the full mahadasha list, each expandable to its antardashas) on the left,
+  then **two charts** — Chart 1 natal D1, Chart 2 a `ChartCard` with a type `<select>` (**Transit**
+  live; D9/D10/D60 disabled "soon" stubs). Both render through the **generic `NorthIndianChart`**
+  (`frame {ascSign,ascDegree}` + `planets ChartBody[]`); transit uses the **same natal frame**, so
+  transiting planets read through the natal houses, captioned with the compute timestamp. Below,
+  **full-width 2-column Planet Detail Panels** (`.pp-grid`, row-major navagraha order; an open panel
+  spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
+  zodiac glyph + muted rāśi number. On mobile everything stacks and the rail becomes a **slide-in
+  drawer** (a "Daśā" trigger). A header **Legend** button opens a slide-in **symbol-key drawer**
+  (`Legend.tsx`) — planet colors, dignity (rendered via real `body()` glyphs), B/M/N/Y, friendship,
+  markers, dasha pills, chart notation — each section rendered from the **same tokens/components** as
+  the live UI (so it can't drift), most rows a flashcard link. Panels: nine Planet Detail Panels
+  (placement
+  prose, aspect/conjunct chips — conjunct/combust hidden when empty, Sade Sati phase-track timeline,
+  MD/AD/**Ascendant-Lord**/**Gandanta** pills), with a single-card flashcard popover
+  (house/nakshatra/**pada**/sign/ascendant/**gandanta**/maitri/**avastha** → real deck cards). The placement line reads
+  `…° Sign · Nakshatra · pada N (Purushartha)`, each of the last three a tappable card link. A small
+  **square B/M/N/Y badge** (functional benefic/malefic/neutral/yogakaraka for the lagna — square so it
+  reads distinct from the dignity halo on the glyph; omitted for nodes) opens the rising-sign card. A
+  **maitri** pill (Great Friend → Friend → Neutral → Enemy → Great Enemy, or Own Sign; green→grey→red,
+  gold for own; omitted for nodes) shows each planet's panchadha relation to its dispositor and opens the
+  Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned,
+  brighter when `deep`) and on the Lagna marker in the hero — tapping either opens the Gandanta deck's
+  "What Gandanta Is" card. An **Avasthas** drawer (collapsed by default, subordinate to the badges/
+  pills) groups each planet's "states" — launching with **Baladi** (five ages by degree-in-sign;
+  odd signs Bala→Mrita, even reversed) and **Jagradadi** (Awake/Dreaming/Asleep by dignity, splitting
+  the middle case on the **natural/naisargika** relation to the sign lord, with mooltrikona → Awake).
+  The Baladi state shows inline on the collapsed header, each row opens that system's Planetary States
+  card, and nodes (no avasthas) hide it. Each `avasthas[]` entry carries stable keys (`system`/`state`)
+  + English `label`/`systemLabel` (what the panel shows) + an optional Sanskrit subtitle, so the panel
+  reads English while the deck keeps the Sanskrit. Computed in `src/core/avastha.ts`; adding Lajjitadi
+  (etc.) is just another entry. **Baladi `strength` is intentionally omitted** — the Hora-Prakash
+  reference implements no avastha (verified by full-repo grep), so no numeric strength is invented.
+  The **Moon panel** also shows a tithi line (`Waxing/Waning Moon · Nth tithi`) with a crescent glyph.
+  The hero meta (centered, above the 3-up region) shows name + place + ascendant (+ Gandanta pill)
+  and the panchanga Moon line. Renders from the **live `ChartModel`** (the engine runs in-browser on
+  submit; Chart 2's transit set is computed alongside it — see the chart-flow note above).
 
-**Not yet built (later phases):** the sidereal **engine** and the real **Birth Chart Analyzer**
-(chart, planet panels, dasha timeline) — the analyzer is a stub for now. Automated yoga detection and
-divisional charts beyond D1 remain out of scope.
+**Not yet wired:** reading `sessionStorage['vedic:birthDetails']` into a client-side `computeChart`
+on `/chart` (the popup persists the data; the live in-browser compute + navigation is the remaining
+seam). Card bodies for **Shadbala** still to fill. Out of scope: automated
+yoga detection, divisional charts beyond D1.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)
 The original design-tool exports (HTML/CSS/JS) live in [`design-reference/`](design-reference/):
@@ -185,9 +319,12 @@ methods.** Its engine + derivation logic lives in `src/core/`:
 > reference, the reference (and the fixtures) win.
 
 ### External services (client-side, free, no key)
-- **Geocoding (place → lat/lon):** OpenStreetMap **Nominatim**. (Respect its usage policy — debounce,
-  set a descriptive `User-Agent`/`Referer` where possible, don't hammer it.)
-- **Timezone by coordinates:** **timeapi.io**.
+- **Geocoding + timezone (place → lat/lon + IANA zone):** **Open-Meteo Geocoding API**
+  (`geocoding-api.open-meteo.com/v1/search`). One call returns coordinates **and** the IANA
+  `timezone` — no separate timezone service. Debounced ~300ms, fired at ≥2 chars, requests aborted
+  on each keystroke (`src/lib/geo.ts`). Attribution link to open-meteo.com shown in the popup (AGPL).
+- **Timezone → UTC offset:** computed locally, DST-aware, with **Luxon** (`src/lib/time.ts`) — never
+  a hardcoded offset. (Earlier plan named Nominatim + timeapi.io; Open-Meteo replaces both.)
 
 ---
 
@@ -290,8 +427,11 @@ prototype's geometry as the starting point for the real chart component.
 
 Build in this order; everything from step 2 down reads from the engine.
 
-1. **Birth-data input modal** — replace the `BirthDataModal` stub. Wire **Nominatim** (place search)
-   + **timeapi.io** (timezone from coordinates).
+1. **Birth-data input modal** — ✅ **Done.** `BirthDetailsModal` opened from the analyzer hero;
+   place via **Open-Meteo** geocoding (returns coords + IANA zone in one call), DST offset via
+   **Luxon**, manual lat/lon/timezone fallback. Persists the engine-ready civil shape to
+   `sessionStorage['vedic:birthDetails']`. **Remaining:** on `/chart`, read that key → `birthFromCivil`
+   → client-side `computeChart` (live in-browser, shipping the WASM), and navigate there from the CTA.
 2. **Calculation engine (D1)** — the core. Wrap `swisseph-wasm` (Lahiri, Ketu = Rahu+180) and build
    the Vedic derivation layer. **Everything below reads from this.** Longitude-based; validate against
    the reference repo's JHora fixtures.

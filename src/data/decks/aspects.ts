@@ -1,12 +1,13 @@
-/* Aspects — Drishti. A concept deck. Scaffolded with the universally
-   agreed Parashari graha-drishti rules; bodies left empty.
+/* Aspects — Drishti. A concept deck. Content from
+   planetary_aspects_flashcards.md: the universal 7th aspect, the three
+   special-aspect planets (Mars 4/8, Jupiter 5/9, Saturn 3/10), the nodes,
+   how to read aspect strength, and mutual aspects / sambandha.
+   FRONT facts (label/value) → `facts`; BACK notes → `points`.
 
-   Seeded: every graha's full 7th aspect, plus the special aspects of
-   Mars (4th & 8th), Jupiter (5th & 9th), Saturn (3rd & 10th).
-   Intentionally NOT seeded (debated / separate systems): Rahu–Ketu
-   aspects, and Jaimini rashi (sign) drishti — add later if wanted.
-   Partial-aspect strengths (drishti bala) are computed values and must
-   come from the reference repo, not invented here. */
+   The Rahu–Ketu aspects are deliberately framed as DISPUTED (pick a
+   convention), and the partial-strength fractions are classical study
+   values — the engine's drishti / drishti-bala computation still follows
+   the Hora-Prakash reference, not these cards. */
 import type { Deck } from "./types";
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
 
@@ -24,6 +25,18 @@ export const aspects: Deck = {
       badge: "All · 7th",
       icon: { kind: "diamond" },
       body: "",
+      facts: [
+        { label: "Cast by", value: "Every planet" },
+        { label: "Aspect", value: "7th from itself (180°)" },
+        { label: "Strength", value: "Full (100%)" },
+        { label: "Only aspect for", value: "Sun, Moon, Mercury, Venus" },
+      ],
+      points: [
+        "Every planet fully “looks at” the sign directly opposite it",
+        "This single aspect handles the majority of chart reading",
+        "Sun, Moon, Mercury, and Venus have no special aspects — only this 7th glance",
+        "A planet's aspect projects its own nature onto the aspected house and any planet sitting there",
+      ],
     },
     {
       title: "Mars · Special",
@@ -32,6 +45,17 @@ export const aspects: Deck = {
       accentColor: PLANET_COLORS.mars,
       icon: { kind: "planet", id: "mars" },
       body: "",
+      facts: [
+        { label: "Aspects", value: "4th, 7th, 8th" },
+        { label: "Degrees", value: "90°, 180°, 210°" },
+        { label: "Strength", value: "Full (100%) on all three" },
+      ],
+      points: [
+        "Energizing but aggressive — Mars's gaze agitates, pushes, can inflame or damage",
+        "The 4th aspect can disturb home and emotional peace; the 8th touches conflict, obstacles, sudden events",
+        "Treated as a harsh aspect unless Mars is well-placed",
+        "Also casts the standard 7th aspect like every planet",
+      ],
     },
     {
       title: "Jupiter · Special",
@@ -40,6 +64,17 @@ export const aspects: Deck = {
       accentColor: PLANET_COLORS.jupiter,
       icon: { kind: "planet", id: "jupiter" },
       body: "",
+      facts: [
+        { label: "Aspects", value: "5th, 7th, 9th" },
+        { label: "Degrees", value: "120°, 180°, 240°" },
+        { label: "Strength", value: "Full (100%) on all three" },
+      ],
+      points: [
+        "The most benefic, protective aspect — blesses and expands what it touches",
+        "The 5th and 9th (both trikonas) bring wisdom, growth, fortune, and grace",
+        "A house or planet aspected by Jupiter gains protection and good judgment",
+        "Also casts the standard 7th aspect",
+      ],
     },
     {
       title: "Saturn · Special",
@@ -48,6 +83,74 @@ export const aspects: Deck = {
       accentColor: PLANET_COLORS.saturn,
       icon: { kind: "planet", id: "saturn" },
       body: "",
+      facts: [
+        { label: "Aspects", value: "3rd, 7th, 10th" },
+        { label: "Degrees", value: "60°, 180°, 270°" },
+        { label: "Strength", value: "Full (100%) on all three" },
+      ],
+      points: [
+        "Restrictive and sobering — slows, delays, disciplines, and matures what it touches",
+        "Demands effort, patience, and responsibility from the aspected house or planet",
+        "Generally challenging unless Saturn is well-placed, but builds lasting structure",
+        "Also casts the standard 7th aspect",
+      ],
+    },
+    {
+      title: "Rahu & Ketu · The Nodes",
+      sanskrit: "Chhaya Graha",
+      badge: "Disputed",
+      accentColor: PLANET_COLORS.rahu,
+      icon: { kind: "planet", id: "rahu" },
+      body: "",
+      facts: [
+        { label: "Aspecting power", value: "Disputed" },
+        { label: "Convention A", value: "No aspecting power at all" },
+        { label: "Convention B", value: "Same as Jupiter — 5th, 7th, 9th" },
+      ],
+      points: [
+        "Classical texts disagree on whether the shadow planets cast aspects",
+        "Many astrologers assign them none; others give them Jupiter's 5/7/9 pattern",
+        "If used: Rahu's gaze amplifies, obsesses, and distorts; Ketu's detaches, spiritualizes, and reduces",
+        "Pick one convention and apply it consistently across the chart",
+      ],
+    },
+    {
+      title: "Aspect Strength",
+      sanskrit: "Drishti Bala",
+      badge: "Full · partial",
+      icon: { kind: "diamond" },
+      body: "",
+      facts: [
+        { label: "Full (100%)", value: "7th + each planet's special pair" },
+        { label: "Partial · 4th/8th", value: "75% (older texts)" },
+        { label: "Partial · 5th/9th", value: "50% (older texts)" },
+        { label: "Partial · 3rd/10th", value: "25% (older texts)" },
+        { label: "Counting", value: "Whole sign; nearer the exact degree = stronger" },
+      ],
+      points: [
+        "In practice, just use the full (100%) aspects; the partials can be ignored",
+        "A planet aspects the entire sign, but the nearer it sits to the exact aspect degree, the more potent the effect",
+        "Example: Saturn at 12° Leo onto Moon at 13° Libra ≈ 61° — almost the exact 60° (3rd aspect), so very strong",
+        "A planet at the far edge of the aspected sign is still aspected, just more weakly",
+      ],
+    },
+    {
+      title: "Mutual Aspects & Sambandha",
+      sanskrit: "Sambandha",
+      badge: "Two-way",
+      icon: { kind: "diamond" },
+      body: "",
+      facts: [
+        { label: "One-way aspect", value: "Influence flows in a single direction" },
+        { label: "Mutual aspect", value: "Both planets fully aspect each other" },
+        { label: "Sambandha", value: "A shared bond between two planets" },
+      ],
+      points: [
+        "One-way example: Mars in the 10th aspects the Sun in the 1st (its 4th aspect), but the Sun (7th only) does not look back",
+        "When two planets fully aspect each other, their energies cross-fertilize — a richer, more complex blend",
+        "A mutual full aspect creates sambandha (Sanskrit: shared bond)",
+        "Sambandha also forms by sign exchange (parivartana), or when planet A aspects B while B occupies A's sign",
+      ],
     },
   ],
 };

@@ -11,10 +11,14 @@ import { planets } from "./planets";
 import { houses } from "./houses";
 import { signs } from "./signs";
 import { nakshatras } from "./nakshatras";
+import { padas } from "./padas";
+import { gandanta } from "./gandanta";
 import { aspects } from "./aspects";
 import { combustion } from "./combustion";
 import { conjunctions } from "./conjunctions";
 import { retrogression } from "./retrogression";
+import { maitri } from "./maitri";
+import { avasthas } from "./avasthas";
 import { shadbala } from "./shadbala";
 import { karakas } from "./karakas";
 import { dashas } from "./dashas";
@@ -26,10 +30,14 @@ export const DECKS: Deck[] = [
   houses,
   signs,
   nakshatras,
+  padas,
+  gandanta,
   aspects,
   combustion,
   conjunctions,
   retrogression,
+  maitri,
+  avasthas,
   shadbala,
   // coming soon
   karakas,

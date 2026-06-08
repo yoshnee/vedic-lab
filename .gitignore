@@ -8,6 +8,10 @@
 /out/
 /build
 
+# swisseph-wasm runtime assets — copied from node_modules by scripts/copy-wasm.mjs
+# (predev/prebuild); not committed. The patch in patches/ IS committed.
+/public/wasm/
+
 # misc
 .DS_Store
 *.pem

@@ -1,0 +1,4640 @@
+{
+  "birth": {
+    "dateLabel": "2 October 1869 · 08:40 (UT+5:30)",
+    "placeLabel": "Porbandar, India",
+    "lat": 21.633333,
+    "lon": 69.6,
+    "jdUT": 2403972.6319444445
+  },
+  "ayanamsa": 22.038221970909422,
+  "ascendant": {
+    "longitude": 192.8962633660426,
+    "sign": 7,
+    "signName": "Libra",
+    "degree": "12°54′",
+    "gandanta": false,
+    "gandantaDeep": false,
+    "gandantaDistance": 47.103736633957396
+  },
+  "lagnaLord": "venus",
+  "planets": [
+    {
+      "key": "sun",
+      "name": "Sun",
+      "sanskrit": "Surya",
+      "longitude": 166.9184962841921,
+      "sign": 6,
+      "signName": "Virgo",
+      "signAbbr": "Vi",
+      "degree": "16°55′",
+      "degreeValue": 16.918496284192088,
+      "house": 12,
+      "nakshatra": {
+        "name": "Hasta",
+        "pada": 3,
+        "lord": "Moon"
+      },
+      "pada": 3,
+      "purushartha": "Kama",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "mercury",
+      "maitriToDispositor": "mitra",
+      "functionalNature": "malefic",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 46.91849628419209,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "yuva",
+          "label": "Adult (prime)",
+          "sanskrit": "Yuva",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "swapna",
+          "label": "Dreaming",
+          "sanskrit": "Swapna",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [
+        11
+      ],
+      "aspectedBy": [
+        {
+          "planet": "ketu",
+          "aspect": "9th"
+        }
+      ],
+      "conjunct": [],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "moon",
+      "name": "Moon",
+      "sanskrit": "Chandra",
+      "longitude": 118.30413171164474,
+      "sign": 4,
+      "signName": "Cancer",
+      "signAbbr": "Cn",
+      "degree": "28°18′",
+      "degreeValue": 28.304131711644743,
+      "house": 10,
+      "nakshatra": {
+        "name": "Ashlesha",
+        "pada": 4,
+        "lord": "Mercury"
+      },
+      "pada": 4,
+      "purushartha": "Moksha",
+      "dignity": "own",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": null,
+      "maitriToDispositor": "own_sign",
+      "functionalNature": "neutral",
+      "gandanta": true,
+      "gandantaDeep": false,
+      "gandantaDistance": 1.695868288355257,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "bala",
+          "label": "Infant",
+          "sanskrit": "Bala",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "jagrat",
+          "label": "Awake",
+          "sanskrit": "Jagrat",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "tithiNumber": 26,
+      "waxing": false,
+      "illumination": 0.16943810755944116,
+      "dasha": [
+        "maha"
+      ],
+      "lagnaLord": false,
+      "rules": [
+        10
+      ],
+      "aspectedBy": [
+        {
+          "planet": "ketu",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [
+        "rahu"
+      ],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "mars",
+      "name": "Mars",
+      "sanskrit": "Mangala",
+      "longitude": 206.3835458946511,
+      "sign": 7,
+      "signName": "Libra",
+      "signAbbr": "Li",
+      "degree": "26°23′",
+      "degreeValue": 26.383545894651093,
+      "house": 1,
+      "nakshatra": {
+        "name": "Vishakha",
+        "pada": 2,
+        "lord": "Jupiter"
+      },
+      "pada": 2,
+      "purushartha": "Artha",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "venus",
+      "maitriToDispositor": "shatru",
+      "functionalNature": "malefic",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 33.61645410534891,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "mrita",
+          "label": "Dead",
+          "sanskrit": "Mrita",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "swapna",
+          "label": "Dreaming",
+          "sanskrit": "Swapna",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [
+        2,
+        7
+      ],
+      "aspectedBy": [
+        {
+          "planet": "jupiter",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [
+        "mercury",
+        "venus"
+      ],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "mercury",
+      "name": "Mercury",
+      "sanskrit": "Budha",
+      "longitude": 191.75121242061596,
+      "sign": 7,
+      "signName": "Libra",
+      "signAbbr": "Li",
+      "degree": "11°45′",
+      "degreeValue": 11.751212420615957,
+      "house": 1,
+      "nakshatra": {
+        "name": "Swati",
+        "pada": 2,
+        "lord": "Rahu"
+      },
+      "pada": 2,
+      "purushartha": "Artha",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "venus",
+      "maitriToDispositor": "sama",
+      "functionalNature": "benefic",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 48.24878757938404,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "kumara",
+          "label": "Child",
+          "sanskrit": "Kumara",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "swapna",
+          "label": "Dreaming",
+          "sanskrit": "Swapna",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [
+        9,
+        12
+      ],
+      "aspectedBy": [
+        {
+          "planet": "jupiter",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [
+        "mars",
+        "venus"
+      ],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "jupiter",
+      "name": "Jupiter",
+      "sanskrit": "Guru",
+      "longitude": 28.13687979948429,
+      "sign": 1,
+      "signName": "Aries",
+      "signAbbr": "Ar",
+      "degree": "28°08′",
+      "degreeValue": 28.13687979948429,
+      "house": 7,
+      "nakshatra": {
+        "name": "Krittika",
+        "pada": 1,
+        "lord": "Sun"
+      },
+      "pada": 1,
+      "purushartha": "Dharma",
+      "dignity": "neutral",
+      "retro": true,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "mars",
+      "maitriToDispositor": "sama",
+      "functionalNature": "malefic",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 28.13687979948429,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "mrita",
+          "label": "Dead",
+          "sanskrit": "Mrita",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "swapna",
+          "label": "Dreaming",
+          "sanskrit": "Swapna",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [
+        3,
+        6
+      ],
+      "aspectedBy": [
+        {
+          "planet": "mars",
+          "aspect": "7th"
+        },
+        {
+          "planet": "mercury",
+          "aspect": "7th"
+        },
+        {
+          "planet": "venus",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "venus",
+      "name": "Venus",
+      "sanskrit": "Shukra",
+      "longitude": 204.4298431700771,
+      "sign": 7,
+      "signName": "Libra",
+      "signAbbr": "Li",
+      "degree": "24°26′",
+      "degreeValue": 24.429843170077106,
+      "house": 1,
+      "nakshatra": {
+        "name": "Vishakha",
+        "pada": 2,
+        "lord": "Jupiter"
+      },
+      "pada": 2,
+      "purushartha": "Artha",
+      "dignity": "own",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": null,
+      "maitriToDispositor": "own_sign",
+      "functionalNature": "benefic",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 35.570156829922894,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "mrita",
+          "label": "Dead",
+          "sanskrit": "Mrita",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "jagrat",
+          "label": "Awake",
+          "sanskrit": "Jagrat",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": true,
+      "rules": [
+        1,
+        8
+      ],
+      "aspectedBy": [
+        {
+          "planet": "jupiter",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [
+        "mars",
+        "mercury"
+      ],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "saturn",
+      "name": "Saturn",
+      "sanskrit": "Shani",
+      "longitude": 230.32978983238092,
+      "sign": 8,
+      "signName": "Scorpio",
+      "signAbbr": "Sc",
+      "degree": "20°20′",
+      "degreeValue": 20.329789832380925,
+      "house": 2,
+      "nakshatra": {
+        "name": "Jyeshtha",
+        "pada": 2,
+        "lord": "Mercury"
+      },
+      "pada": 2,
+      "purushartha": "Artha",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "mars",
+      "maitriToDispositor": "sama",
+      "functionalNature": "yogakaraka",
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 9.670210167619075,
+      "avasthas": [
+        {
+          "system": "baladi",
+          "systemLabel": "Maturity",
+          "state": "kumara",
+          "label": "Child",
+          "sanskrit": "Kumara",
+          "flashcard": {
+            "type": "avastha",
+            "id": "baladi"
+          }
+        },
+        {
+          "system": "jagradadi",
+          "systemLabel": "Alertness",
+          "state": "sushupti",
+          "label": "Asleep",
+          "sanskrit": "Sushupti",
+          "flashcard": {
+            "type": "avastha",
+            "id": "jagradadi"
+          }
+        }
+      ],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [
+        4,
+        5
+      ],
+      "aspectedBy": [
+        {
+          "planet": "rahu",
+          "aspect": "5th"
+        }
+      ],
+      "conjunct": [],
+      "yogas": [],
+      "extraRows": [
+        {
+          "id": "sade-sati",
+          "type": "sadesati",
+          "label": "Sade Sati",
+          "sanskrit": "Saḍe Sātī",
+          "moonSign": "Cancer",
+          "moonHouse": 10,
+          "periods": [
+            {
+              "status": "past",
+              "from": "Apr 2003",
+              "to": "Sep 2009",
+              "phases": [
+                {
+                  "name": "Rising",
+                  "from": "Apr 2003",
+                  "to": "May 2005"
+                },
+                {
+                  "name": "Peak",
+                  "from": "Sep 2004",
+                  "to": "Jul 2007"
+                },
+                {
+                  "name": "Setting",
+                  "from": "Nov 2006",
+                  "to": "Sep 2009"
+                }
+              ],
+              "activePhase": null
+            },
+            {
+              "status": "upcoming",
+              "from": "Jun 2032",
+              "to": "Nov 2038",
+              "phases": [
+                {
+                  "name": "Rising",
+                  "from": "Jun 2032",
+                  "to": "Jul 2034"
+                },
+                {
+                  "name": "Peak",
+                  "from": "Jul 2034",
+                  "to": "Aug 2036"
+                },
+                {
+                  "name": "Setting",
+                  "from": "Aug 2036",
+                  "to": "Nov 2038"
+                }
+              ],
+              "activePhase": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "rahu",
+      "name": "Rahu",
+      "sanskrit": "Rahu",
+      "longitude": 102.14590355575865,
+      "sign": 4,
+      "signName": "Cancer",
+      "signAbbr": "Cn",
+      "degree": "12°09′",
+      "degreeValue": 12.14590355575865,
+      "house": 10,
+      "nakshatra": {
+        "name": "Pushya",
+        "pada": 3,
+        "lord": "Saturn"
+      },
+      "pada": 3,
+      "purushartha": "Kama",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "moon",
+      "maitriToDispositor": null,
+      "functionalNature": null,
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 17.85409644424135,
+      "avasthas": [],
+      "dasha": [
+        "antar"
+      ],
+      "lagnaLord": false,
+      "rules": [],
+      "aspectedBy": [
+        {
+          "planet": "ketu",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [
+        "moon"
+      ],
+      "yogas": [],
+      "extraRows": []
+    },
+    {
+      "key": "ketu",
+      "name": "Ketu",
+      "sanskrit": "Ketu",
+      "longitude": 282.14590355575865,
+      "sign": 10,
+      "signName": "Capricorn",
+      "signAbbr": "Cp",
+      "degree": "12°09′",
+      "degreeValue": 12.14590355575865,
+      "house": 4,
+      "nakshatra": {
+        "name": "Shravana",
+        "pada": 1,
+        "lord": "Moon"
+      },
+      "pada": 1,
+      "purushartha": "Dharma",
+      "dignity": "neutral",
+      "retro": false,
+      "combust": {
+        "on": false
+      },
+      "dispositor": "saturn",
+      "maitriToDispositor": null,
+      "functionalNature": null,
+      "gandanta": false,
+      "gandantaDeep": false,
+      "gandantaDistance": 42.14590355575865,
+      "avasthas": [],
+      "dasha": [],
+      "lagnaLord": false,
+      "rules": [],
+      "aspectedBy": [
+        {
+          "planet": "moon",
+          "aspect": "7th"
+        },
+        {
+          "planet": "mars",
+          "aspect": "4th"
+        },
+        {
+          "planet": "saturn",
+          "aspect": "3rd"
+        },
+        {
+          "planet": "rahu",
+          "aspect": "7th"
+        }
+      ],
+      "conjunct": [],
+      "yogas": [],
+      "extraRows": []
+    }
+  ],
+  "dasha": [
+    {
+      "lord": "venus",
+      "lordName": "Venus",
+      "start": "1998-12-01T15:17:34.698Z",
+      "end": "2018-12-01T15:17:34.698Z",
+      "running": false,
+      "children": [
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "1998-12-01T15:17:34.698Z",
+          "end": "2002-04-02T03:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "1998-12-01T15:17:34.698Z",
+              "end": "1999-06-22T13:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "1999-06-22T13:17:34.698Z",
+              "end": "1999-08-22T10:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "1999-08-22T10:17:34.698Z",
+              "end": "1999-12-01T21:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "1999-12-01T21:17:34.698Z",
+              "end": "2000-02-10T21:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2000-02-10T21:47:34.698Z",
+              "end": "2000-08-11T12:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2000-08-11T12:47:34.698Z",
+              "end": "2001-01-20T20:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2001-01-20T20:47:34.698Z",
+              "end": "2001-08-01T15:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2001-08-01T15:17:34.698Z",
+              "end": "2002-01-21T02:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2002-01-21T02:47:34.698Z",
+              "end": "2002-04-02T03:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2002-04-02T03:17:34.698Z",
+          "end": "2003-04-02T09:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2002-04-02T03:17:34.698Z",
+              "end": "2002-04-20T09:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2002-04-20T09:35:34.698Z",
+              "end": "2002-05-20T20:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2002-05-20T20:05:34.698Z",
+              "end": "2002-06-11T03:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2002-06-11T03:26:34.698Z",
+              "end": "2002-08-04T22:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2002-08-04T22:20:34.698Z",
+              "end": "2002-09-22T15:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2002-09-22T15:08:34.698Z",
+              "end": "2002-11-19T11:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2002-11-19T11:05:34.698Z",
+              "end": "2003-01-10T04:56:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2003-01-10T04:56:34.698Z",
+              "end": "2003-01-31T12:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2003-01-31T12:17:34.698Z",
+              "end": "2003-04-02T09:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2003-04-02T09:17:34.698Z",
+          "end": "2004-12-01T03:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2003-04-02T09:17:34.698Z",
+              "end": "2003-05-23T02:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2003-05-23T02:47:34.698Z",
+              "end": "2003-06-27T15:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2003-06-27T15:02:34.698Z",
+              "end": "2003-09-26T22:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2003-09-26T22:32:34.698Z",
+              "end": "2003-12-17T02:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2003-12-17T02:32:34.698Z",
+              "end": "2004-03-22T11:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2004-03-22T11:47:34.698Z",
+              "end": "2004-06-16T17:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2004-06-16T17:32:34.698Z",
+              "end": "2004-07-22T05:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2004-07-22T05:47:34.698Z",
+              "end": "2004-10-31T16:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2004-10-31T16:47:34.698Z",
+              "end": "2004-12-01T03:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2004-12-01T03:17:34.698Z",
+          "end": "2006-01-31T06:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2004-12-01T03:17:34.698Z",
+              "end": "2004-12-25T23:52:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2004-12-25T23:52:04.698Z",
+              "end": "2005-02-27T21:55:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2005-02-27T21:55:04.698Z",
+              "end": "2005-04-25T17:31:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2005-04-25T17:31:04.698Z",
+              "end": "2005-07-02T04:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2005-07-02T04:47:34.698Z",
+              "end": "2005-08-31T13:37:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2005-08-31T13:37:04.698Z",
+              "end": "2005-09-25T10:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2005-09-25T10:11:34.698Z",
+              "end": "2005-12-05T10:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2005-12-05T10:41:34.698Z",
+              "end": "2005-12-26T18:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2005-12-26T18:02:34.698Z",
+              "end": "2006-01-31T06:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2006-01-31T06:17:34.698Z",
+          "end": "2009-01-31T00:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2006-01-31T06:17:34.698Z",
+              "end": "2006-07-14T14:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2006-07-14T14:59:34.698Z",
+              "end": "2006-12-07T17:23:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2006-12-07T17:23:34.698Z",
+              "end": "2007-05-30T05:14:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2007-05-30T05:14:34.698Z",
+              "end": "2007-11-01T10:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2007-11-01T10:47:34.698Z",
+              "end": "2008-01-04T08:50:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2008-01-04T08:50:34.698Z",
+              "end": "2008-07-04T23:50:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2008-07-04T23:50:34.698Z",
+              "end": "2008-08-28T18:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2008-08-28T18:44:34.698Z",
+              "end": "2008-11-28T02:14:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2008-11-28T02:14:34.698Z",
+              "end": "2009-01-31T00:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2009-01-31T00:17:34.698Z",
+          "end": "2011-10-02T00:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2009-01-31T00:17:34.698Z",
+              "end": "2009-06-09T21:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2009-06-09T21:05:34.698Z",
+              "end": "2009-11-11T02:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2009-11-11T02:17:34.698Z",
+              "end": "2010-03-29T01:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2010-03-29T01:53:34.698Z",
+              "end": "2010-05-24T21:29:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2010-05-24T21:29:34.698Z",
+              "end": "2010-11-03T05:29:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2010-11-03T05:29:34.698Z",
+              "end": "2010-12-21T22:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2010-12-21T22:17:34.698Z",
+              "end": "2011-03-13T02:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2011-03-13T02:17:34.698Z",
+              "end": "2011-05-08T21:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2011-05-08T21:53:34.698Z",
+              "end": "2011-10-02T00:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2011-10-02T00:17:34.698Z",
+          "end": "2014-12-01T15:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2011-10-02T00:17:34.698Z",
+              "end": "2012-04-02T03:28:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2012-04-02T03:28:04.698Z",
+              "end": "2012-09-12T23:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2012-09-12T23:59:34.698Z",
+              "end": "2012-11-19T11:16:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2012-11-19T11:16:04.698Z",
+              "end": "2013-05-31T05:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2013-05-31T05:46:04.698Z",
+              "end": "2013-07-28T01:43:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2013-07-28T01:43:04.698Z",
+              "end": "2013-11-01T10:58:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2013-11-01T10:58:04.698Z",
+              "end": "2014-01-07T22:14:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2014-01-07T22:14:34.698Z",
+              "end": "2014-06-30T10:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2014-06-30T10:05:34.698Z",
+              "end": "2014-12-01T15:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2014-12-01T15:17:34.698Z",
+          "end": "2017-10-01T12:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2014-12-01T15:17:34.698Z",
+              "end": "2015-04-27T05:52:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2015-04-27T05:52:04.698Z",
+              "end": "2015-06-26T14:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2015-06-26T14:41:34.698Z",
+              "end": "2015-12-16T02:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2015-12-16T02:11:34.698Z",
+              "end": "2016-02-05T20:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2016-02-05T20:02:34.698Z",
+              "end": "2016-05-02T01:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2016-05-02T01:47:34.698Z",
+              "end": "2016-07-01T10:37:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2016-07-01T10:37:04.698Z",
+              "end": "2016-12-03T16:10:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2016-12-03T16:10:04.698Z",
+              "end": "2017-04-20T15:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2017-04-20T15:46:04.698Z",
+              "end": "2017-10-01T12:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2017-10-01T12:17:34.698Z",
+          "end": "2018-12-01T15:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2017-10-01T12:17:34.698Z",
+              "end": "2017-10-26T08:52:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2017-10-26T08:52:04.698Z",
+              "end": "2018-01-05T09:22:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2018-01-05T09:22:04.698Z",
+              "end": "2018-01-26T16:43:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2018-01-26T16:43:04.698Z",
+              "end": "2018-03-03T04:58:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2018-03-03T04:58:04.698Z",
+              "end": "2018-03-28T01:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2018-03-28T01:32:34.698Z",
+              "end": "2018-05-30T23:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2018-05-30T23:35:34.698Z",
+              "end": "2018-07-26T19:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2018-07-26T19:11:34.698Z",
+              "end": "2018-10-02T06:28:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2018-10-02T06:28:04.698Z",
+              "end": "2018-12-01T15:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lord": "sun",
+      "lordName": "Sun",
+      "start": "2018-12-01T15:17:34.698Z",
+      "end": "2024-12-01T03:17:34.698Z",
+      "running": false,
+      "children": [
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2018-12-01T15:17:34.698Z",
+          "end": "2019-03-21T05:05:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2018-12-01T15:17:34.698Z",
+              "end": "2018-12-07T02:46:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2018-12-07T02:46:58.698Z",
+              "end": "2018-12-16T05:55:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2018-12-16T05:55:58.698Z",
+              "end": "2018-12-22T15:20:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2018-12-22T15:20:16.698Z",
+              "end": "2019-01-08T01:48:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2019-01-08T01:48:28.698Z",
+              "end": "2019-01-22T16:26:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2019-01-22T16:26:52.698Z",
+              "end": "2019-02-09T00:49:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2019-02-09T00:49:58.698Z",
+              "end": "2019-02-24T13:23:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2019-02-24T13:23:16.698Z",
+              "end": "2019-03-02T22:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2019-03-02T22:47:34.698Z",
+              "end": "2019-03-21T05:05:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2019-03-21T05:05:34.698Z",
+          "end": "2019-09-19T20:05:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2019-03-21T05:05:34.698Z",
+              "end": "2019-04-05T10:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2019-04-05T10:20:34.698Z",
+              "end": "2019-04-16T02:01:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2019-04-16T02:01:04.698Z",
+              "end": "2019-05-13T11:28:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2019-05-13T11:28:04.698Z",
+              "end": "2019-06-06T19:52:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2019-06-06T19:52:04.698Z",
+              "end": "2019-07-05T17:50:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2019-07-05T17:50:34.698Z",
+              "end": "2019-07-31T14:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2019-07-31T14:46:04.698Z",
+              "end": "2019-08-11T06:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2019-08-11T06:26:34.698Z",
+              "end": "2019-09-10T16:56:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2019-09-10T16:56:34.698Z",
+              "end": "2019-09-19T20:05:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2019-09-19T20:05:34.698Z",
+          "end": "2020-01-25T16:11:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2019-09-19T20:05:34.698Z",
+              "end": "2019-09-27T07:03:55.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2019-09-27T07:03:55.698Z",
+              "end": "2019-10-16T11:16:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2019-10-16T11:16:49.698Z",
+              "end": "2019-11-02T12:21:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2019-11-02T12:21:37.698Z",
+              "end": "2019-11-22T18:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2019-11-22T18:08:34.698Z",
+              "end": "2019-12-10T20:47:25.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2019-12-10T20:47:25.698Z",
+              "end": "2019-12-18T07:45:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2019-12-18T07:45:46.698Z",
+              "end": "2020-01-08T15:06:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2020-01-08T15:06:46.698Z",
+              "end": "2020-01-15T00:31:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2020-01-15T00:31:04.698Z",
+              "end": "2020-01-25T16:11:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2020-01-25T16:11:34.698Z",
+          "end": "2020-12-19T09:35:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2020-01-25T16:11:34.698Z",
+              "end": "2020-03-14T23:36:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2020-03-14T23:36:10.698Z",
+              "end": "2020-04-27T19:31:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2020-04-27T19:31:22.698Z",
+              "end": "2020-06-18T20:40:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2020-06-18T20:40:40.698Z",
+              "end": "2020-08-04T10:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2020-08-04T10:20:34.698Z",
+              "end": "2020-08-23T14:33:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2020-08-23T14:33:28.698Z",
+              "end": "2020-10-17T09:27:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2020-10-17T09:27:28.698Z",
+              "end": "2020-11-02T19:55:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2020-11-02T19:55:40.698Z",
+              "end": "2020-11-30T05:22:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2020-11-30T05:22:40.698Z",
+              "end": "2020-12-19T09:35:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2020-12-19T09:35:34.698Z",
+          "end": "2021-10-07T14:23:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2020-12-19T09:35:34.698Z",
+              "end": "2021-01-27T08:37:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2021-01-27T08:37:58.698Z",
+              "end": "2021-03-14T14:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2021-03-14T14:59:34.698Z",
+              "end": "2021-04-25T00:28:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2021-04-25T00:28:22.698Z",
+              "end": "2021-05-12T01:33:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2021-05-12T01:33:10.698Z",
+              "end": "2021-06-29T18:21:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2021-06-29T18:21:10.698Z",
+              "end": "2021-07-14T08:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2021-07-14T08:59:34.698Z",
+              "end": "2021-08-07T17:23:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2021-08-07T17:23:34.698Z",
+              "end": "2021-08-24T18:28:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2021-08-24T18:28:22.698Z",
+              "end": "2021-10-07T14:23:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2021-10-07T14:23:34.698Z",
+          "end": "2022-09-19T14:05:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2021-10-07T14:23:34.698Z",
+              "end": "2021-12-01T12:56:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2021-12-01T12:56:43.698Z",
+              "end": "2022-01-19T16:42:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2022-01-19T16:42:10.698Z",
+              "end": "2022-02-08T22:29:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2022-02-08T22:29:07.698Z",
+              "end": "2022-04-07T18:26:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2022-04-07T18:26:07.698Z",
+              "end": "2022-04-25T02:49:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2022-04-25T02:49:13.698Z",
+              "end": "2022-05-24T00:47:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2022-05-24T00:47:43.698Z",
+              "end": "2022-06-13T06:34:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2022-06-13T06:34:40.698Z",
+              "end": "2022-08-04T07:43:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2022-08-04T07:43:58.698Z",
+              "end": "2022-09-19T14:05:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2022-09-19T14:05:34.698Z",
+          "end": "2023-07-27T01:11:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2022-09-19T14:05:34.698Z",
+              "end": "2022-11-02T13:39:55.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2022-11-02T13:39:55.698Z",
+              "end": "2022-11-20T16:18:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2022-11-20T16:18:46.698Z",
+              "end": "2023-01-11T10:09:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2023-01-11T10:09:46.698Z",
+              "end": "2023-01-26T22:43:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2023-01-26T22:43:04.698Z",
+              "end": "2023-02-21T19:38:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2023-02-21T19:38:34.698Z",
+              "end": "2023-03-11T22:17:25.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2023-03-11T22:17:25.698Z",
+              "end": "2023-04-27T11:57:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2023-04-27T11:57:19.698Z",
+              "end": "2023-06-07T21:26:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2023-06-07T21:26:07.698Z",
+              "end": "2023-07-27T01:11:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2023-07-27T01:11:34.698Z",
+          "end": "2023-12-01T21:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2023-07-27T01:11:34.698Z",
+              "end": "2023-08-03T12:09:55.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2023-08-03T12:09:55.698Z",
+              "end": "2023-08-24T19:30:55.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2023-08-24T19:30:55.698Z",
+              "end": "2023-08-31T04:55:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2023-08-31T04:55:13.698Z",
+              "end": "2023-09-10T20:35:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2023-09-10T20:35:43.698Z",
+              "end": "2023-09-18T07:34:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2023-09-18T07:34:04.698Z",
+              "end": "2023-10-07T11:46:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2023-10-07T11:46:58.698Z",
+              "end": "2023-10-24T12:51:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2023-10-24T12:51:46.698Z",
+              "end": "2023-11-13T18:38:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2023-11-13T18:38:43.698Z",
+              "end": "2023-12-01T21:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "2023-12-01T21:17:34.698Z",
+          "end": "2024-12-01T03:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2023-12-01T21:17:34.698Z",
+              "end": "2024-01-31T18:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2024-01-31T18:17:34.698Z",
+              "end": "2024-02-19T00:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2024-02-19T00:35:34.698Z",
+              "end": "2024-03-20T11:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2024-03-20T11:05:34.698Z",
+              "end": "2024-04-10T18:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2024-04-10T18:26:34.698Z",
+              "end": "2024-06-04T13:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2024-06-04T13:20:34.698Z",
+              "end": "2024-07-23T06:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2024-07-23T06:08:34.698Z",
+              "end": "2024-09-19T02:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2024-09-19T02:05:34.698Z",
+              "end": "2024-11-09T19:56:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2024-11-09T19:56:34.698Z",
+              "end": "2024-12-01T03:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lord": "moon",
+      "lordName": "Moon",
+      "start": "2024-12-01T03:17:34.698Z",
+      "end": "2034-12-01T15:17:34.698Z",
+      "running": true,
+      "children": [
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2024-12-01T03:17:34.698Z",
+          "end": "2025-10-01T12:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2024-12-01T03:17:34.698Z",
+              "end": "2024-12-26T12:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2024-12-26T12:02:34.698Z",
+              "end": "2025-01-13T06:10:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2025-01-13T06:10:04.698Z",
+              "end": "2025-02-27T21:55:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2025-02-27T21:55:04.698Z",
+              "end": "2025-04-09T11:55:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2025-04-09T11:55:04.698Z",
+              "end": "2025-05-27T16:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2025-05-27T16:32:34.698Z",
+              "end": "2025-07-09T19:25:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2025-07-09T19:25:04.698Z",
+              "end": "2025-07-27T13:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2025-07-27T13:32:34.698Z",
+              "end": "2025-09-16T07:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2025-09-16T07:02:34.698Z",
+              "end": "2025-10-01T12:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2025-10-01T12:17:34.698Z",
+          "end": "2026-05-02T13:47:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2025-10-01T12:17:34.698Z",
+              "end": "2025-10-13T22:34:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2025-10-13T22:34:49.698Z",
+              "end": "2025-11-14T21:36:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2025-11-14T21:36:19.698Z",
+              "end": "2025-12-13T07:24:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2025-12-13T07:24:19.698Z",
+              "end": "2026-01-16T01:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2026-01-16T01:02:34.698Z",
+              "end": "2026-02-15T05:27:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2026-02-15T05:27:19.698Z",
+              "end": "2026-02-27T15:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2026-02-27T15:44:34.698Z",
+              "end": "2026-04-04T03:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2026-04-04T03:59:34.698Z",
+              "end": "2026-04-14T19:40:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2026-04-14T19:40:04.698Z",
+              "end": "2026-05-02T13:47:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2026-05-02T13:47:34.698Z",
+          "end": "2027-11-01T10:47:34.698Z",
+          "running": true,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2026-05-02T13:47:34.698Z",
+              "end": "2026-07-23T18:08:34.698Z",
+              "running": true
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2026-07-23T18:08:34.698Z",
+              "end": "2026-10-04T19:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2026-10-04T19:20:34.698Z",
+              "end": "2026-12-30T13:16:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2026-12-30T13:16:04.698Z",
+              "end": "2027-03-18T04:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2027-03-18T04:02:34.698Z",
+              "end": "2027-04-19T03:04:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2027-04-19T03:04:04.698Z",
+              "end": "2027-07-19T10:34:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2027-07-19T10:34:04.698Z",
+              "end": "2027-08-15T20:01:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2027-08-15T20:01:04.698Z",
+              "end": "2027-09-30T11:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2027-09-30T11:46:04.698Z",
+              "end": "2027-11-01T10:47:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2027-11-01T10:47:34.698Z",
+          "end": "2029-03-02T10:47:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2027-11-01T10:47:34.698Z",
+              "end": "2028-01-05T09:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2028-01-05T09:11:34.698Z",
+              "end": "2028-03-22T11:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2028-03-22T11:47:34.698Z",
+              "end": "2028-05-30T11:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2028-05-30T11:35:34.698Z",
+              "end": "2028-06-27T21:23:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2028-06-27T21:23:34.698Z",
+              "end": "2028-09-17T01:23:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2028-09-17T01:23:34.698Z",
+              "end": "2028-10-11T09:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2028-10-11T09:47:34.698Z",
+              "end": "2028-11-20T23:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2028-11-20T23:47:34.698Z",
+              "end": "2028-12-19T09:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2028-12-19T09:35:34.698Z",
+              "end": "2029-03-02T10:47:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2029-03-02T10:47:34.698Z",
+          "end": "2030-10-01T18:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2029-03-02T10:47:34.698Z",
+              "end": "2029-06-02T00:22:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2029-06-02T00:22:49.698Z",
+              "end": "2029-08-22T22:38:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2029-08-22T22:38:34.698Z",
+              "end": "2029-09-25T16:16:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2029-09-25T16:16:49.698Z",
+              "end": "2029-12-31T01:31:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2029-12-31T01:31:49.698Z",
+              "end": "2030-01-28T23:30:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2030-01-28T23:30:19.698Z",
+              "end": "2030-03-18T04:07:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2030-03-18T04:07:49.698Z",
+              "end": "2030-04-20T21:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2030-04-20T21:46:04.698Z",
+              "end": "2030-07-16T15:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2030-07-16T15:41:34.698Z",
+              "end": "2030-10-01T18:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2030-10-01T18:17:34.698Z",
+          "end": "2032-03-02T04:47:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2030-10-01T18:17:34.698Z",
+              "end": "2030-12-14T01:34:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2030-12-14T01:34:49.698Z",
+              "end": "2031-01-13T05:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2031-01-13T05:59:34.698Z",
+              "end": "2031-04-09T11:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2031-04-09T11:44:34.698Z",
+              "end": "2031-05-05T08:40:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2031-05-05T08:40:04.698Z",
+              "end": "2031-06-17T11:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2031-06-17T11:32:34.698Z",
+              "end": "2031-07-17T15:57:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2031-07-17T15:57:19.698Z",
+              "end": "2031-10-03T06:43:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2031-10-03T06:43:49.698Z",
+              "end": "2031-12-11T06:31:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2031-12-11T06:31:49.698Z",
+              "end": "2032-03-02T04:47:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2032-03-02T04:47:34.698Z",
+          "end": "2032-10-01T06:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2032-03-02T04:47:34.698Z",
+              "end": "2032-03-14T15:04:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2032-03-14T15:04:49.698Z",
+              "end": "2032-04-19T03:19:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2032-04-19T03:19:49.698Z",
+              "end": "2032-04-29T19:00:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2032-04-29T19:00:19.698Z",
+              "end": "2032-05-17T13:07:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2032-05-17T13:07:49.698Z",
+              "end": "2032-05-29T23:25:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2032-05-29T23:25:04.698Z",
+              "end": "2032-06-30T22:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2032-06-30T22:26:34.698Z",
+              "end": "2032-07-29T08:14:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2032-07-29T08:14:34.698Z",
+              "end": "2032-09-01T01:52:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2032-09-01T01:52:49.698Z",
+              "end": "2032-10-01T06:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "2032-10-01T06:17:34.698Z",
+          "end": "2034-06-02T00:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2032-10-01T06:17:34.698Z",
+              "end": "2033-01-10T17:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2033-01-10T17:17:34.698Z",
+              "end": "2033-02-10T03:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2033-02-10T03:47:34.698Z",
+              "end": "2033-04-01T21:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2033-04-01T21:17:34.698Z",
+              "end": "2033-05-07T09:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2033-05-07T09:32:34.698Z",
+              "end": "2033-08-06T17:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2033-08-06T17:02:34.698Z",
+              "end": "2033-10-26T21:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2033-10-26T21:02:34.698Z",
+              "end": "2034-01-31T06:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2034-01-31T06:17:34.698Z",
+              "end": "2034-04-27T12:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2034-04-27T12:02:34.698Z",
+              "end": "2034-06-02T00:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2034-06-02T00:17:34.698Z",
+          "end": "2034-12-01T15:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2034-06-02T00:17:34.698Z",
+              "end": "2034-06-11T03:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2034-06-11T03:26:34.698Z",
+              "end": "2034-06-26T08:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2034-06-26T08:41:34.698Z",
+              "end": "2034-07-07T00:22:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2034-07-07T00:22:04.698Z",
+              "end": "2034-08-03T09:49:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2034-08-03T09:49:04.698Z",
+              "end": "2034-08-27T18:13:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2034-08-27T18:13:04.698Z",
+              "end": "2034-09-25T16:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2034-09-25T16:11:34.698Z",
+              "end": "2034-10-21T13:07:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2034-10-21T13:07:04.698Z",
+              "end": "2034-11-01T04:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2034-11-01T04:47:34.698Z",
+              "end": "2034-12-01T15:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lord": "mars",
+      "lordName": "Mars",
+      "start": "2034-12-01T15:17:34.698Z",
+      "end": "2041-12-01T09:17:34.698Z",
+      "running": false,
+      "children": [
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2034-12-01T15:17:34.698Z",
+          "end": "2035-04-29T18:44:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2034-12-01T15:17:34.698Z",
+              "end": "2034-12-10T08:05:39.198Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2034-12-10T08:05:39.198Z",
+              "end": "2035-01-01T17:00:42.198Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2035-01-01T17:00:42.198Z",
+              "end": "2035-01-21T14:16:18.198Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2035-01-21T14:16:18.198Z",
+              "end": "2035-02-14T05:01:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2035-02-14T05:01:04.698Z",
+              "end": "2035-03-07T08:06:24.198Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2035-03-07T08:06:24.198Z",
+              "end": "2035-03-16T00:54:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2035-03-16T00:54:28.698Z",
+              "end": "2035-04-09T21:28:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2035-04-09T21:28:58.698Z",
+              "end": "2035-04-17T08:27:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2035-04-17T08:27:19.698Z",
+              "end": "2035-04-29T18:44:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2035-04-29T18:44:34.698Z",
+          "end": "2036-05-17T07:02:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2035-04-29T18:44:34.698Z",
+              "end": "2035-06-26T07:23:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2035-06-26T07:23:16.698Z",
+              "end": "2035-08-16T10:37:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2035-08-16T10:37:40.698Z",
+              "end": "2035-10-16T03:58:31.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2035-10-16T03:58:31.698Z",
+              "end": "2035-12-09T11:55:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2035-12-09T11:55:04.698Z",
+              "end": "2035-12-31T20:50:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2035-12-31T20:50:07.698Z",
+              "end": "2036-03-04T18:53:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2036-03-04T18:53:07.698Z",
+              "end": "2036-03-23T23:06:01.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2036-03-23T23:06:01.698Z",
+              "end": "2036-04-24T22:07:31.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2036-04-24T22:07:31.698Z",
+              "end": "2036-05-17T07:02:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2036-05-17T07:02:34.698Z",
+          "end": "2037-04-23T04:38:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2036-05-17T07:02:34.698Z",
+              "end": "2036-07-01T17:55:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2036-07-01T17:55:22.698Z",
+              "end": "2036-08-24T17:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2036-08-24T17:20:34.698Z",
+              "end": "2036-10-12T00:24:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2036-10-12T00:24:10.698Z",
+              "end": "2036-10-31T21:39:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2036-10-31T21:39:46.698Z",
+              "end": "2036-12-27T17:15:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2036-12-27T17:15:46.698Z",
+              "end": "2037-01-13T18:20:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2037-01-13T18:20:34.698Z",
+              "end": "2037-02-11T04:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2037-02-11T04:08:34.698Z",
+              "end": "2037-03-03T01:24:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2037-03-03T01:24:10.698Z",
+              "end": "2037-04-23T04:38:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2037-04-23T04:38:34.698Z",
+          "end": "2038-06-02T00:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2037-04-23T04:38:34.698Z",
+              "end": "2037-06-26T06:57:15.198Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2037-06-26T06:57:15.198Z",
+              "end": "2037-08-22T15:20:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2037-08-22T15:20:16.698Z",
+              "end": "2037-09-15T06:05:03.198Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2037-09-15T06:05:03.198Z",
+              "end": "2037-11-21T17:21:33.198Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2037-11-21T17:21:33.198Z",
+              "end": "2037-12-11T23:08:30.198Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2037-12-11T23:08:30.198Z",
+              "end": "2038-01-14T16:46:45.198Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2038-01-14T16:46:45.198Z",
+              "end": "2038-02-07T07:31:31.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2038-02-07T07:31:31.698Z",
+              "end": "2038-04-09T00:52:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2038-04-09T00:52:22.698Z",
+              "end": "2038-06-02T00:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2038-06-02T00:17:34.698Z",
+          "end": "2039-05-30T05:14:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2038-06-02T00:17:34.698Z",
+              "end": "2038-07-23T07:47:39.198Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2038-07-23T07:47:39.198Z",
+              "end": "2038-08-13T10:52:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2038-08-13T10:52:58.698Z",
+              "end": "2038-10-12T19:42:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2038-10-12T19:42:28.698Z",
+              "end": "2038-10-30T22:21:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2038-10-30T22:21:19.698Z",
+              "end": "2038-11-30T02:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2038-11-30T02:46:04.698Z",
+              "end": "2038-12-21T05:51:24.198Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2038-12-21T05:51:24.198Z",
+              "end": "2039-02-13T13:47:57.198Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2039-02-13T13:47:57.198Z",
+              "end": "2039-04-02T20:51:33.198Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2039-04-02T20:51:33.198Z",
+              "end": "2039-05-30T05:14:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2039-05-30T05:14:34.698Z",
+          "end": "2039-10-26T08:41:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2039-05-30T05:14:34.698Z",
+              "end": "2039-06-07T22:02:39.198Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2039-06-07T22:02:39.198Z",
+              "end": "2039-07-02T18:37:09.198Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2039-07-02T18:37:09.198Z",
+              "end": "2039-07-10T05:35:30.198Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2039-07-10T05:35:30.198Z",
+              "end": "2039-07-22T15:52:45.198Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2039-07-22T15:52:45.198Z",
+              "end": "2039-07-31T08:40:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2039-07-31T08:40:49.698Z",
+              "end": "2039-08-22T17:35:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2039-08-22T17:35:52.698Z",
+              "end": "2039-09-11T14:51:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2039-09-11T14:51:28.698Z",
+              "end": "2039-10-05T05:36:15.198Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2039-10-05T05:36:15.198Z",
+              "end": "2039-10-26T08:41:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "2039-10-26T08:41:34.698Z",
+          "end": "2040-12-25T11:41:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2039-10-26T08:41:34.698Z",
+              "end": "2040-01-05T09:11:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2040-01-05T09:11:34.698Z",
+              "end": "2040-01-26T16:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2040-01-26T16:32:34.698Z",
+              "end": "2040-03-02T04:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2040-03-02T04:47:34.698Z",
+              "end": "2040-03-27T01:22:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2040-03-27T01:22:04.698Z",
+              "end": "2040-05-29T23:25:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2040-05-29T23:25:04.698Z",
+              "end": "2040-07-25T19:01:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2040-07-25T19:01:04.698Z",
+              "end": "2040-10-01T06:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2040-10-01T06:17:34.698Z",
+              "end": "2040-11-30T15:07:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2040-11-30T15:07:04.698Z",
+              "end": "2040-12-25T11:41:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2040-12-25T11:41:34.698Z",
+          "end": "2041-05-02T07:47:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2040-12-25T11:41:34.698Z",
+              "end": "2040-12-31T21:05:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2040-12-31T21:05:52.698Z",
+              "end": "2041-01-11T12:46:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2041-01-11T12:46:22.698Z",
+              "end": "2041-01-18T23:44:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2041-01-18T23:44:43.698Z",
+              "end": "2041-02-07T03:57:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2041-02-07T03:57:37.698Z",
+              "end": "2041-02-24T05:02:25.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2041-02-24T05:02:25.698Z",
+              "end": "2041-03-16T10:49:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2041-03-16T10:49:22.698Z",
+              "end": "2041-04-03T13:28:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2041-04-03T13:28:13.698Z",
+              "end": "2041-04-11T00:26:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2041-04-11T00:26:34.698Z",
+              "end": "2041-05-02T07:47:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2041-05-02T07:47:34.698Z",
+          "end": "2041-12-01T09:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2041-05-02T07:47:34.698Z",
+              "end": "2041-05-20T01:55:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2041-05-20T01:55:04.698Z",
+              "end": "2041-06-01T12:12:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2041-06-01T12:12:19.698Z",
+              "end": "2041-07-03T11:13:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2041-07-03T11:13:49.698Z",
+              "end": "2041-07-31T21:01:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2041-07-31T21:01:49.698Z",
+              "end": "2041-09-03T14:40:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2041-09-03T14:40:04.698Z",
+              "end": "2041-10-03T19:04:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2041-10-03T19:04:49.698Z",
+              "end": "2041-10-16T05:22:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2041-10-16T05:22:04.698Z",
+              "end": "2041-11-20T17:37:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2041-11-20T17:37:04.698Z",
+              "end": "2041-12-01T09:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lord": "rahu",
+      "lordName": "Rahu",
+      "start": "2041-12-01T09:17:34.698Z",
+      "end": "2059-12-01T21:17:34.698Z",
+      "running": false,
+      "children": [
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2041-12-01T09:17:34.698Z",
+          "end": "2044-08-13T13:29:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2041-12-01T09:17:34.698Z",
+              "end": "2042-04-28T07:31:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2042-04-28T07:31:22.698Z",
+              "end": "2042-09-06T19:16:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2042-09-06T19:16:58.698Z",
+              "end": "2043-02-09T22:44:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2043-02-09T22:44:52.698Z",
+              "end": "2043-06-29T15:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2043-06-29T15:44:34.698Z",
+              "end": "2043-08-26T04:23:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2043-08-26T04:23:16.698Z",
+              "end": "2044-02-06T13:05:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2044-02-06T13:05:16.698Z",
+              "end": "2044-03-26T20:29:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2044-03-26T20:29:52.698Z",
+              "end": "2044-06-17T00:50:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2044-06-17T00:50:52.698Z",
+              "end": "2044-08-13T13:29:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2044-08-13T13:29:34.698Z",
+          "end": "2047-01-07T03:53:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2044-08-13T13:29:34.698Z",
+              "end": "2044-12-08T10:36:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2044-12-08T10:36:46.698Z",
+              "end": "2045-04-26T05:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2045-04-26T05:41:34.698Z",
+              "end": "2045-08-28T10:07:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2045-08-28T10:07:58.698Z",
+              "end": "2045-10-18T13:22:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2045-10-18T13:22:22.698Z",
+              "end": "2046-03-13T15:46:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2046-03-13T15:46:22.698Z",
+              "end": "2046-04-26T11:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2046-04-26T11:41:34.698Z",
+              "end": "2046-07-08T12:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2046-07-08T12:53:34.698Z",
+              "end": "2046-08-28T16:07:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2046-08-28T16:07:58.698Z",
+              "end": "2047-01-07T03:53:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2047-01-07T03:53:34.698Z",
+          "end": "2049-11-13T02:59:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2047-01-07T03:53:34.698Z",
+              "end": "2047-06-20T23:33:01.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2047-06-20T23:33:01.698Z",
+              "end": "2047-11-15T10:49:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2047-11-15T10:49:22.698Z",
+              "end": "2048-01-15T04:10:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2048-01-15T04:10:13.698Z",
+              "end": "2048-07-06T16:01:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2048-07-06T16:01:13.698Z",
+              "end": "2048-08-27T17:10:31.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2048-08-27T17:10:31.698Z",
+              "end": "2048-11-22T11:06:01.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2048-11-22T11:06:01.698Z",
+              "end": "2049-01-22T04:26:52.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2049-01-22T04:26:52.698Z",
+              "end": "2049-06-27T07:54:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2049-06-27T07:54:46.698Z",
+              "end": "2049-11-13T02:59:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2049-11-13T02:59:34.698Z",
+          "end": "2052-06-01T12:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2049-11-13T02:59:34.698Z",
+              "end": "2050-03-25T01:42:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2050-03-25T01:42:37.698Z",
+              "end": "2050-05-18T09:39:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2050-05-18T09:39:10.698Z",
+              "end": "2050-10-20T15:12:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2050-10-20T15:12:10.698Z",
+              "end": "2050-12-06T04:52:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2050-12-06T04:52:04.698Z",
+              "end": "2051-02-21T19:38:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2051-02-21T19:38:34.698Z",
+              "end": "2051-04-17T03:35:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2051-04-17T03:35:07.698Z",
+              "end": "2051-09-03T20:34:49.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2051-09-03T20:34:49.698Z",
+              "end": "2052-01-06T01:01:13.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2052-01-06T01:01:13.698Z",
+              "end": "2052-06-01T12:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2052-06-01T12:17:34.698Z",
+          "end": "2053-06-20T00:35:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2052-06-01T12:17:34.698Z",
+              "end": "2052-06-23T21:12:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2052-06-23T21:12:37.698Z",
+              "end": "2052-08-26T19:15:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2052-08-26T19:15:37.698Z",
+              "end": "2052-09-14T23:28:31.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2052-09-14T23:28:31.698Z",
+              "end": "2052-10-16T22:30:01.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2052-10-16T22:30:01.698Z",
+              "end": "2052-11-08T07:25:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2052-11-08T07:25:04.698Z",
+              "end": "2053-01-04T20:03:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2053-01-04T20:03:46.698Z",
+              "end": "2053-02-24T23:18:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2053-02-24T23:18:10.698Z",
+              "end": "2053-04-26T16:39:01.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2053-04-26T16:39:01.698Z",
+              "end": "2053-06-20T00:35:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "2053-06-20T00:35:34.698Z",
+          "end": "2056-06-19T18:35:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2053-06-20T00:35:34.698Z",
+              "end": "2053-12-19T15:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2053-12-19T15:35:34.698Z",
+              "end": "2054-02-12T10:29:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2054-02-12T10:29:34.698Z",
+              "end": "2054-05-14T17:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2054-05-14T17:59:34.698Z",
+              "end": "2054-07-17T16:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2054-07-17T16:02:34.698Z",
+              "end": "2054-12-29T00:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2054-12-29T00:44:34.698Z",
+              "end": "2055-05-24T03:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2055-05-24T03:08:34.698Z",
+              "end": "2055-11-13T14:59:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2055-11-13T14:59:34.698Z",
+              "end": "2056-04-16T20:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2056-04-16T20:32:34.698Z",
+              "end": "2056-06-19T18:35:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2056-06-19T18:35:34.698Z",
+          "end": "2057-05-14T11:59:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2056-06-19T18:35:34.698Z",
+              "end": "2056-07-06T05:03:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2056-07-06T05:03:46.698Z",
+              "end": "2056-08-02T14:30:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2056-08-02T14:30:46.698Z",
+              "end": "2056-08-21T18:43:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2056-08-21T18:43:40.698Z",
+              "end": "2056-10-10T02:08:16.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2056-10-10T02:08:16.698Z",
+              "end": "2056-11-22T22:03:28.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2056-11-22T22:03:28.698Z",
+              "end": "2057-01-13T23:12:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2057-01-13T23:12:46.698Z",
+              "end": "2057-03-01T12:52:40.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2057-03-01T12:52:40.698Z",
+              "end": "2057-03-20T17:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2057-03-20T17:05:34.698Z",
+              "end": "2057-05-14T11:59:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2057-05-14T11:59:34.698Z",
+          "end": "2058-11-13T08:59:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2057-05-14T11:59:34.698Z",
+              "end": "2057-06-29T03:44:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2057-06-29T03:44:34.698Z",
+              "end": "2057-07-31T02:46:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2057-07-31T02:46:04.698Z",
+              "end": "2057-10-21T07:07:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2057-10-21T07:07:04.698Z",
+              "end": "2058-01-02T08:19:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2058-01-02T08:19:04.698Z",
+              "end": "2058-03-30T02:14:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2058-03-30T02:14:34.698Z",
+              "end": "2058-06-15T17:01:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2058-06-15T17:01:04.698Z",
+              "end": "2058-07-17T16:02:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2058-07-17T16:02:34.698Z",
+              "end": "2058-10-16T23:32:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2058-10-16T23:32:34.698Z",
+              "end": "2058-11-13T08:59:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2058-11-13T08:59:34.698Z",
+          "end": "2059-12-01T21:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2058-11-13T08:59:34.698Z",
+              "end": "2058-12-05T17:54:37.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2058-12-05T17:54:37.698Z",
+              "end": "2059-02-01T06:33:19.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2059-02-01T06:33:19.698Z",
+              "end": "2059-03-24T09:47:43.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2059-03-24T09:47:43.698Z",
+              "end": "2059-05-24T03:08:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2059-05-24T03:08:34.698Z",
+              "end": "2059-07-17T11:05:07.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2059-07-17T11:05:07.698Z",
+              "end": "2059-08-08T20:00:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2059-08-08T20:00:10.698Z",
+              "end": "2059-10-11T18:03:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2059-10-11T18:03:10.698Z",
+              "end": "2059-10-30T22:16:04.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2059-10-30T22:16:04.698Z",
+              "end": "2059-12-01T21:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lord": "jupiter",
+      "lordName": "Jupiter",
+      "start": "2059-12-01T21:17:34.698Z",
+      "end": "2075-12-01T21:17:34.698Z",
+      "running": false,
+      "children": [
+        {
+          "lord": "jupiter",
+          "lordName": "Jupiter",
+          "start": "2059-12-01T21:17:34.698Z",
+          "end": "2062-01-19T02:05:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2059-12-01T21:17:34.698Z",
+              "end": "2060-03-14T18:43:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2060-03-14T18:43:58.698Z",
+              "end": "2060-07-16T03:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2060-07-16T03:41:34.698Z",
+              "end": "2060-11-03T12:58:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2060-11-03T12:58:22.698Z",
+              "end": "2060-12-18T23:51:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2060-12-18T23:51:10.698Z",
+              "end": "2061-04-27T20:39:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2061-04-27T20:39:10.698Z",
+              "end": "2061-06-05T19:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2061-06-05T19:41:34.698Z",
+              "end": "2061-08-09T18:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2061-08-09T18:05:34.698Z",
+              "end": "2061-09-24T04:58:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2061-09-24T04:58:22.698Z",
+              "end": "2062-01-19T02:05:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "saturn",
+          "lordName": "Saturn",
+          "start": "2062-01-19T02:05:34.698Z",
+          "end": "2064-08-01T09:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2062-01-19T02:05:34.698Z",
+              "end": "2062-06-14T14:13:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2062-06-14T14:13:58.698Z",
+              "end": "2062-10-23T16:15:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2062-10-23T16:15:10.698Z",
+              "end": "2062-12-16T15:40:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2062-12-16T15:40:22.698Z",
+              "end": "2063-05-19T20:52:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2063-05-19T20:52:22.698Z",
+              "end": "2063-07-05T03:13:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2063-07-05T03:13:58.698Z",
+              "end": "2063-09-20T05:49:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2063-09-20T05:49:58.698Z",
+              "end": "2063-11-13T05:15:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2063-11-13T05:15:10.698Z",
+              "end": "2064-03-31T00:19:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2064-03-31T00:19:58.698Z",
+              "end": "2064-08-01T09:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mercury",
+          "lordName": "Mercury",
+          "start": "2064-08-01T09:17:34.698Z",
+          "end": "2066-11-07T06:53:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2064-08-01T09:17:34.698Z",
+              "end": "2064-11-26T16:09:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2064-11-26T16:09:10.698Z",
+              "end": "2065-01-13T23:12:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2065-01-13T23:12:46.698Z",
+              "end": "2065-05-31T22:48:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2065-05-31T22:48:46.698Z",
+              "end": "2065-07-12T08:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2065-07-12T08:17:34.698Z",
+              "end": "2065-09-19T08:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2065-09-19T08:05:34.698Z",
+              "end": "2065-11-06T15:09:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2065-11-06T15:09:10.698Z",
+              "end": "2066-03-10T19:35:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2066-03-10T19:35:34.698Z",
+              "end": "2066-06-29T04:52:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2066-06-29T04:52:22.698Z",
+              "end": "2066-11-07T06:53:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "ketu",
+          "lordName": "Ketu",
+          "start": "2066-11-07T06:53:34.698Z",
+          "end": "2067-10-14T04:29:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2066-11-07T06:53:34.698Z",
+              "end": "2066-11-27T04:09:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2066-11-27T04:09:10.698Z",
+              "end": "2067-01-22T23:45:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2067-01-22T23:45:10.698Z",
+              "end": "2067-02-09T00:49:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2067-02-09T00:49:58.698Z",
+              "end": "2067-03-09T10:37:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2067-03-09T10:37:58.698Z",
+              "end": "2067-03-29T07:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2067-03-29T07:53:34.698Z",
+              "end": "2067-05-19T11:07:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2067-05-19T11:07:58.698Z",
+              "end": "2067-07-03T22:00:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2067-07-03T22:00:46.698Z",
+              "end": "2067-08-26T21:25:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2067-08-26T21:25:58.698Z",
+              "end": "2067-10-14T04:29:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "venus",
+          "lordName": "Venus",
+          "start": "2067-10-14T04:29:34.698Z",
+          "end": "2070-06-14T04:29:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2067-10-14T04:29:34.698Z",
+              "end": "2068-03-24T12:29:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2068-03-24T12:29:34.698Z",
+              "end": "2068-05-12T05:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2068-05-12T05:17:34.698Z",
+              "end": "2068-08-01T09:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2068-08-01T09:17:34.698Z",
+              "end": "2068-09-27T04:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2068-09-27T04:53:34.698Z",
+              "end": "2069-02-20T07:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2069-02-20T07:17:34.698Z",
+              "end": "2069-06-30T04:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2069-06-30T04:05:34.698Z",
+              "end": "2069-12-01T09:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2069-12-01T09:17:34.698Z",
+              "end": "2070-04-18T08:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2070-04-18T08:53:34.698Z",
+              "end": "2070-06-14T04:29:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "sun",
+          "lordName": "Sun",
+          "start": "2070-06-14T04:29:34.698Z",
+          "end": "2071-04-02T09:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2070-06-14T04:29:34.698Z",
+              "end": "2070-06-28T19:07:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2070-06-28T19:07:58.698Z",
+              "end": "2070-07-23T03:31:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2070-07-23T03:31:58.698Z",
+              "end": "2070-08-09T04:36:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2070-08-09T04:36:46.698Z",
+              "end": "2070-09-22T00:31:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2070-09-22T00:31:58.698Z",
+              "end": "2070-10-30T23:34:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2070-10-30T23:34:22.698Z",
+              "end": "2070-12-16T05:55:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2070-12-16T05:55:58.698Z",
+              "end": "2071-01-26T15:24:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2071-01-26T15:24:46.698Z",
+              "end": "2071-02-12T16:29:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2071-02-12T16:29:34.698Z",
+              "end": "2071-04-02T09:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "moon",
+          "lordName": "Moon",
+          "start": "2071-04-02T09:17:34.698Z",
+          "end": "2072-08-01T09:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2071-04-02T09:17:34.698Z",
+              "end": "2071-05-12T23:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2071-05-12T23:17:34.698Z",
+              "end": "2071-06-10T09:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2071-06-10T09:05:34.698Z",
+              "end": "2071-08-22T10:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2071-08-22T10:17:34.698Z",
+              "end": "2071-10-26T08:41:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2071-10-26T08:41:34.698Z",
+              "end": "2072-01-11T11:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2072-01-11T11:17:34.698Z",
+              "end": "2072-03-20T11:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2072-03-20T11:05:34.698Z",
+              "end": "2072-04-17T20:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2072-04-17T20:53:34.698Z",
+              "end": "2072-07-08T00:53:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2072-07-08T00:53:34.698Z",
+              "end": "2072-08-01T09:17:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "mars",
+          "lordName": "Mars",
+          "start": "2072-08-01T09:17:34.698Z",
+          "end": "2073-07-08T06:53:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2072-08-01T09:17:34.698Z",
+              "end": "2072-08-21T06:33:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2072-08-21T06:33:10.698Z",
+              "end": "2072-10-11T09:47:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2072-10-11T09:47:34.698Z",
+              "end": "2072-11-25T20:40:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2072-11-25T20:40:22.698Z",
+              "end": "2073-01-18T20:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2073-01-18T20:05:34.698Z",
+              "end": "2073-03-08T03:09:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2073-03-08T03:09:10.698Z",
+              "end": "2073-03-28T00:24:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2073-03-28T00:24:46.698Z",
+              "end": "2073-05-23T20:00:46.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2073-05-23T20:00:46.698Z",
+              "end": "2073-06-09T21:05:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2073-06-09T21:05:34.698Z",
+              "end": "2073-07-08T06:53:34.698Z",
+              "running": false
+            }
+          ]
+        },
+        {
+          "lord": "rahu",
+          "lordName": "Rahu",
+          "start": "2073-07-08T06:53:34.698Z",
+          "end": "2075-12-01T21:17:34.698Z",
+          "running": false,
+          "children": [
+            {
+              "lord": "rahu",
+              "lordName": "Rahu",
+              "start": "2073-07-08T06:53:34.698Z",
+              "end": "2073-11-16T18:39:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "jupiter",
+              "lordName": "Jupiter",
+              "start": "2073-11-16T18:39:10.698Z",
+              "end": "2074-03-13T15:46:22.698Z",
+              "running": false
+            },
+            {
+              "lord": "saturn",
+              "lordName": "Saturn",
+              "start": "2074-03-13T15:46:22.698Z",
+              "end": "2074-07-30T10:51:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "mercury",
+              "lordName": "Mercury",
+              "start": "2074-07-30T10:51:10.698Z",
+              "end": "2074-12-01T15:17:34.698Z",
+              "running": false
+            },
+            {
+              "lord": "ketu",
+              "lordName": "Ketu",
+              "start": "2074-12-01T15:17:34.698Z",
+              "end": "2075-01-21T18:31:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "venus",
+              "lordName": "Venus",
+              "start": "2075-01-21T18:31:58.698Z",
+              "end": "2075-06-16T20:55:58.698Z",
+              "running": false
+            },
+            {
+              "lord": "sun",
+              "lordName": "Sun",
+              "start": "2075-06-16T20:55:58.698Z",
+              "end": "2075-07-30T16:51:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "moon",
+              "lordName": "Moon",
+              "start": "2075-07-30T16:51:10.698Z",
+              "end": "2075-10-11T18:03:10.698Z",
+              "running": false
+            },
+            {
+              "lord": "mars",
+              "lordName": "Mars",
+              "start": "2075-10-11T18:03:10.698Z",
+              "end": "2075-12-01T21:17:34.698Z",
+              "running": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "currentDasha": {
+    "maha": "moon",
+    "antar": "rahu",
+    "pratyantar": "rahu",
+    "chain": [
+      "moon",
+      "rahu",
+      "rahu"
+    ]
+  }
+}

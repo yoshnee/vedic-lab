@@ -27,7 +27,7 @@ function CardIcon({
   if (!icon) return null;
   let html = "";
   let cls = "fc-icon";
-  if (icon.kind === "planet") html = body(icon.id, size, icon.retro);
+  if (icon.kind === "planet") html = body(icon.id, size, { retro: icon.retro });
   else if (icon.kind === "house") html = glyph(String(icon.n), accent, size);
   else if (icon.kind === "diamond") html = diamond(size, { glow: true });
   else if (icon.kind === "chart") {
@@ -44,16 +44,22 @@ export function Card({
   card,
   deckAccent,
   flipped,
+  highlightFact,
 }: {
   card: CardData;
   deckAccent: string;
   flipped: boolean;
+  /** Emphasize the front fact-row with this exact label (e.g. the tapped "Pada 2"). */
+  highlightFact?: string;
 }) {
   const accent = card.accentColor || deckAccent;
   const hasFacts = !!card.facts?.length;
   const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
   const hasBackContent = hasPoints || hasBody;
+  // Zodiac sign cards carry their Sanskrit name on the BACK only — the front
+  // leads with the English sign + glyph; the Sanskrit name appears once you flip.
+  const frontSanskrit = card.sanskrit && card.icon?.kind !== "zodiac";
 
   return (
     <div className="fc-card">
@@ -66,19 +72,24 @@ export function Card({
           <span className="fc-glow" />
           <CardIcon icon={card.icon} accent={accent} size={92} />
           <span className="fc-term">{card.title}</span>
-          {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
-          {hasFacts ? (
+          {frontSanskrit && <span className="fc-sk">{card.sanskrit}</span>}
+          {hasFacts && (
             <dl className="fc-facts">
               {card.facts!.map((f) => (
-                <div className="fc-fact" key={f.label}>
+                <div
+                  className="fc-fact"
+                  key={f.label}
+                  data-active={highlightFact === f.label || undefined}
+                >
                   <dt className="fc-fact-label">{f.label}</dt>
                   <dd className="fc-fact-value">{f.value}</dd>
                 </div>
               ))}
             </dl>
-          ) : (
-            <span className="fc-hint">Flip ↻</span>
           )}
+          {/* always shown — the card's own self-explanatory flip cue. On data
+              cards it's pinned to the corner (CSS) so it clears the facts. */}
+          <span className="fc-hint" aria-hidden="true">Flip ↻</span>
         </div>
         <div className="fc-face fc-back">
           <div className="fc-back-head">

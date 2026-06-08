@@ -1,0 +1,296 @@
+{
+ "meta": {
+  "name": "Swami Sivananda",
+  "slug": "Swami_Sivananda",
+  "extracted": "2026-05-24",
+  "source": "JHora 8.0+ via scripts/jhora_extract.sh"
+ },
+ "birth": {
+  "dob": "1887-09-08",
+  "tob": "04:16:00",
+  "timezone": "+05:11",
+  "lat": 8.8,
+  "lon": 77.666667
+ },
+ "_jhora_ayanamsa": "22-17-18.77",
+ "planets": {
+  "Lagna": {
+   "longitude": 118.248097,
+   "sign": "Cancer",
+   "sign_degree": "28°14'",
+   "nakshatra": "Ashlesha",
+   "nakshatra_lord": "Mercury",
+   "pada": 4,
+   "navamsa_sign": "Pisces",
+   "retrograde": false
+  },
+  "Sun": {
+   "longitude": 142.68355,
+   "sign": "Leo",
+   "sign_degree": "22°41'",
+   "nakshatra": "Purva Phalguni",
+   "nakshatra_lord": "Venus",
+   "pada": 3,
+   "navamsa_sign": "Libra",
+   "retrograde": false
+  },
+  "Moon": {
+   "longitude": 22.733242,
+   "sign": "Aries",
+   "sign_degree": "22°43'",
+   "nakshatra": "Bharani",
+   "nakshatra_lord": "Venus",
+   "pada": 3,
+   "navamsa_sign": "Libra",
+   "retrograde": false
+  },
+  "Mars": {
+   "longitude": 105.230642,
+   "sign": "Cancer",
+   "sign_degree": "15°13'",
+   "nakshatra": "Pushyami",
+   "nakshatra_lord": "Saturn",
+   "pada": 4,
+   "navamsa_sign": "Scorpio",
+   "retrograde": false
+  },
+  "Mercury": {
+   "longitude": 140.096369,
+   "sign": "Leo",
+   "sign_degree": "20°05'",
+   "nakshatra": "Purva Phalguni",
+   "nakshatra_lord": "Venus",
+   "pada": 3,
+   "navamsa_sign": "Libra",
+   "retrograde": false
+  },
+  "Jupiter": {
+   "longitude": 191.3251,
+   "sign": "Libra",
+   "sign_degree": "11°19'",
+   "nakshatra": "Swati",
+   "nakshatra_lord": "Rahu",
+   "pada": 2,
+   "navamsa_sign": "Capricorn",
+   "retrograde": false
+  },
+  "Venus": {
+   "longitude": 162.866003,
+   "sign": "Virgo",
+   "sign_degree": "12°51'",
+   "nakshatra": "Hasta",
+   "nakshatra_lord": "Moon",
+   "pada": 1,
+   "navamsa_sign": "Aries",
+   "retrograde": true
+  },
+  "Saturn": {
+   "longitude": 100.031072,
+   "sign": "Cancer",
+   "sign_degree": "10°01'",
+   "nakshatra": "Pushyami",
+   "nakshatra_lord": "Saturn",
+   "pada": 3,
+   "navamsa_sign": "Libra",
+   "retrograde": false
+  },
+  "Rahu": {
+   "longitude": 115.056525,
+   "sign": "Cancer",
+   "sign_degree": "25°03'",
+   "nakshatra": "Ashlesha",
+   "nakshatra_lord": "Mercury",
+   "pada": 3,
+   "navamsa_sign": "Aquarius",
+   "retrograde": false
+  },
+  "Ketu": {
+   "longitude": 295.056525,
+   "sign": "Capricorn",
+   "sign_degree": "25°03'",
+   "nakshatra": "Dhanishtha",
+   "nakshatra_lord": "Mars",
+   "pada": 1,
+   "navamsa_sign": "Leo",
+   "retrograde": false
+  },
+  "Maandi": {
+   "longitude": 109.811933,
+   "sign": "Cancer",
+   "sign_degree": "19°48'",
+   "nakshatra": "Ashlesha",
+   "nakshatra_lord": "Mercury",
+   "pada": 1,
+   "navamsa_sign": "Sagittarius",
+   "retrograde": false
+  },
+  "Gulika": {
+   "longitude": 99.323483,
+   "sign": "Cancer",
+   "sign_degree": "9°19'",
+   "nakshatra": "Pushyami",
+   "nakshatra_lord": "Saturn",
+   "pada": 2,
+   "navamsa_sign": "Virgo",
+   "retrograde": false
+  },
+  "Bhava Lagna": {
+   "longitude": 117.130211,
+   "sign": "Cancer",
+   "sign_degree": "27°07'",
+   "nakshatra": "Ashlesha",
+   "nakshatra_lord": "Mercury",
+   "pada": 4,
+   "navamsa_sign": "Pisces",
+   "retrograde": false
+  },
+  "Hora Lagna": {
+   "longitude": 92.481525,
+   "sign": "Cancer",
+   "sign_degree": "2°28'",
+   "nakshatra": "Punarvasu",
+   "nakshatra_lord": "Jupiter",
+   "pada": 4,
+   "navamsa_sign": "Cancer",
+   "retrograde": false
+  },
+  "Ghati Lagna": {
+   "longitude": 18.535469,
+   "sign": "Aries",
+   "sign_degree": "18°32'",
+   "nakshatra": "Bharani",
+   "nakshatra_lord": "Venus",
+   "pada": 2,
+   "navamsa_sign": "Virgo",
+   "retrograde": false
+  }
+ },
+ "dasha": {
+  "Venus": {
+   "start": "1873-08-01",
+   "antardashas": {
+    "Venus": "1873-08-01",
+    "Sun": "1876-11-30",
+    "Moon": "1877-12-01",
+    "Mars": "1879-08-01",
+    "Rahu": "1880-10-01",
+    "Jupiter": "1883-10-02",
+    "Saturn": "1886-05-30",
+    "Mercury": "1889-08-01",
+    "Ketu": "1892-05-30"
+   }
+  },
+  "Sun": {
+   "start": "1893-08-01",
+   "antardashas": {
+    "Sun": "1893-08-01",
+    "Moon": "1893-11-19",
+    "Mars": "1894-05-18",
+    "Rahu": "1894-09-26",
+    "Jupiter": "1895-08-20",
+    "Saturn": "1896-06-05",
+    "Mercury": "1897-05-18",
+    "Ketu": "1898-03-23",
+    "Venus": "1898-08-01"
+   }
+  },
+  "Moon": {
+   "start": "1899-08-01",
+   "antardashas": {
+    "Moon": "1899-08-01",
+    "Mars": "1900-05-31",
+    "Rahu": "1900-12-31",
+    "Jupiter": "1902-07-02",
+    "Saturn": "1903-11-03",
+    "Mercury": "1905-05-31",
+    "Ketu": "1906-11-02",
+    "Venus": "1907-06-01",
+    "Sun": "1909-01-30"
+   }
+  },
+  "Mars": {
+   "start": "1909-08-02",
+   "antardashas": {
+    "Mars": "1909-08-02",
+    "Rahu": "1909-12-28",
+    "Jupiter": "1911-01-15",
+    "Saturn": "1911-12-23",
+    "Mercury": "1913-01-30",
+    "Ketu": "1914-01-27",
+    "Venus": "1914-06-26",
+    "Sun": "1915-08-28",
+    "Moon": "1916-01-01"
+   }
+  },
+  "Rahu": {
+   "start": "1916-08-02",
+   "antardashas": {
+    "Rahu": "1916-08-02",
+    "Jupiter": "1919-04-12",
+    "Saturn": "1921-09-08",
+    "Mercury": "1924-07-14",
+    "Ketu": "1927-01-30",
+    "Venus": "1928-02-17",
+    "Sun": "1931-02-17",
+    "Moon": "1932-01-13",
+    "Mars": "1933-07-14"
+   }
+  },
+  "Jupiter": {
+   "start": "1934-08-02",
+   "antardashas": {
+    "Jupiter": "1934-08-02",
+    "Saturn": "1936-09-21",
+    "Mercury": "1939-03-31",
+    "Ketu": "1941-07-08",
+    "Venus": "1942-06-13",
+    "Sun": "1945-02-11",
+    "Moon": "1945-12-02",
+    "Mars": "1947-03-31",
+    "Rahu": "1948-03-06"
+   }
+  },
+  "Saturn": {
+   "start": "1950-08-03",
+   "antardashas": {
+    "Saturn": "1950-08-03",
+    "Mercury": "1953-08-05",
+    "Ketu": "1956-04-12",
+    "Venus": "1957-05-22",
+    "Sun": "1960-07-24",
+    "Moon": "1961-07-05",
+    "Mars": "1963-02-02",
+    "Rahu": "1964-03-12",
+    "Jupiter": "1967-01-19"
+   }
+  },
+  "Mercury": {
+   "start": "1969-08-02",
+   "antardashas": {
+    "Mercury": "1969-08-02",
+    "Ketu": "1971-12-29",
+    "Venus": "1972-12-26",
+    "Sun": "1975-10-28",
+    "Moon": "1976-09-02",
+    "Mars": "1978-01-30",
+    "Rahu": "1979-01-28",
+    "Jupiter": "1981-08-18",
+    "Saturn": "1983-11-24"
+   }
+  },
+  "Ketu": {
+   "start": "1986-08-03",
+   "antardashas": {
+    "Ketu": "1986-08-03",
+    "Venus": "1986-12-29",
+    "Sun": "1988-02-27",
+    "Moon": "1988-07-05",
+    "Mars": "1989-02-02",
+    "Rahu": "1989-07-02",
+    "Jupiter": "1990-07-21",
+    "Saturn": "1991-06-26",
+    "Mercury": "1992-08-05"
+   }
+  }
+ }
+}

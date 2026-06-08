@@ -66,6 +66,7 @@ export function DeckGrid({
           );
         })}
       </div>
+      <p className="fc-landing-foot">More concepts will be added soon.</p>
     </div>
   );
 }

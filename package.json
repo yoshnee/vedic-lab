@@ -5,22 +5,33 @@
   "description": "Client-side Vedic astrology study tool and birth-chart analyzer.",
   "license": "AGPL-3.0-or-later",
   "scripts": {
+    "postinstall": "patch-package",
+    "copy-wasm": "node scripts/copy-wasm.mjs",
+    "predev": "node scripts/copy-wasm.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-wasm.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "luxon": "^3.7.2",
     "next": "^16.2.7",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "swisseph-wasm": "^0.0.5"
   },
   "devDependencies": {
+    "@types/luxon": "^3.7.1",
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.7",
-    "typescript": "^6.0.3"
+    "patch-package": "^8.0.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }

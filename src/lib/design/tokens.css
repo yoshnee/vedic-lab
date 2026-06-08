@@ -28,4 +28,34 @@
   --text: #ecf3ec;
   --text-2: #a6bbab;
   --text-3: #67806f;
+
+  /* Navagraha planet colors (mirror src/lib/design/colors.ts) */
+  --p-sun: #f2c230;
+  --p-moon: #c2d2e0;
+  --p-mars: #e2503c;
+  --p-mercury: #36b97a;
+  --p-jupiter: #b26a24;
+  --p-venus: #b97fd6;
+  --p-saturn: #3e78e0;
+  --p-rahu: #969cb0;
+  --p-ketu: #ac9b79;
+
+  /* form fields (birth-details modal) */
+  --field: #0b1a12;
+  --border-field: #2e5740;
+
+  /* text/fill on solid accent */
+  --accent-text: var(--accent);
+  --on-accent: #15110a;
+
+  /* status — good reuses Mercury green, bad reuses Mars red */
+  --good: var(--p-mercury);
+  --good-soft: rgba(54, 185, 122, 0.14);
+  --bad: var(--p-mars);
+  --bad-soft: rgba(226, 80, 60, 0.13);
+
+  /* modal chrome */
+  --scrim: rgba(4, 10, 7, 0.8);
+  --modal-grad: linear-gradient(180deg, var(--surface), var(--bg-2));
+  --shadow: 0 40px 90px -36px rgba(0, 0, 0, 0.86), 0 0 0 1px rgba(228, 194, 87, 0.05);
 }

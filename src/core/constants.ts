@@ -1,0 +1,194 @@
+/* ============================================================
+   constants.ts — fixed Jyotish tables. Every value here follows the
+   Hora-Prakash reference (github.com/PriyankGahtori/hora-prakash, src/core/)
+   — see CLAUDE.md working rule #1. Do not edit without checking the reference.
+   ============================================================ */
+import type { PlanetKey } from "./types";
+
+/** Navagraha order used everywhere (Sun … Ketu). */
+export const PLANET_ORDER: PlanetKey[] = [
+  "sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu",
+];
+
+export const PLANET_NAMES: Record<PlanetKey, string> = {
+  sun: "Sun", moon: "Moon", mars: "Mars", mercury: "Mercury", jupiter: "Jupiter",
+  venus: "Venus", saturn: "Saturn", rahu: "Rahu", ketu: "Ketu",
+};
+
+/** Swiss Ephemeris body id per graha. Rahu = mean node (10); Ketu derived = Rahu+180. */
+export const SE_BODY: Record<Exclude<PlanetKey, "ketu">, number> = {
+  sun: 0, moon: 1, mercury: 2, venus: 3, mars: 4, jupiter: 5, saturn: 6, rahu: 10,
+};
+
+export const SIGN_NAMES = [
+  "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces",
+];
+
+export const SIGN_ABBR = [
+  "Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi",
+];
+
+export const PLANET_SANSKRIT: Record<PlanetKey, string> = {
+  sun: "Surya", moon: "Chandra", mars: "Mangala", mercury: "Budha", jupiter: "Guru",
+  venus: "Shukra", saturn: "Shani", rahu: "Rahu", ketu: "Ketu",
+};
+
+/** Ruler of each sign 1–12 (used for house lordship; nodes rule nothing). */
+export const SIGN_RULER: PlanetKey[] = [
+  "mars", "venus", "mercury", "moon", "sun", "mercury",
+  "venus", "mars", "jupiter", "saturn", "saturn", "jupiter",
+];
+
+/** 27 nakshatras with their Vimshottari lord (9-lord cycle ×3). */
+export const NAKSHATRAS: { name: string; lord: PlanetKey }[] = [
+  { name: "Ashwini", lord: "ketu" }, { name: "Bharani", lord: "venus" }, { name: "Krittika", lord: "sun" },
+  { name: "Rohini", lord: "moon" }, { name: "Mrigashira", lord: "mars" }, { name: "Ardra", lord: "rahu" },
+  { name: "Punarvasu", lord: "jupiter" }, { name: "Pushya", lord: "saturn" }, { name: "Ashlesha", lord: "mercury" },
+  { name: "Magha", lord: "ketu" }, { name: "Purva Phalguni", lord: "venus" }, { name: "Uttara Phalguni", lord: "sun" },
+  { name: "Hasta", lord: "moon" }, { name: "Chitra", lord: "mars" }, { name: "Swati", lord: "rahu" },
+  { name: "Vishakha", lord: "jupiter" }, { name: "Anuradha", lord: "saturn" }, { name: "Jyeshtha", lord: "mercury" },
+  { name: "Mula", lord: "ketu" }, { name: "Purva Ashadha", lord: "venus" }, { name: "Uttara Ashadha", lord: "sun" },
+  { name: "Shravana", lord: "moon" }, { name: "Dhanishta", lord: "mars" }, { name: "Shatabhisha", lord: "rahu" },
+  { name: "Purva Bhadrapada", lord: "jupiter" }, { name: "Uttara Bhadrapada", lord: "saturn" }, { name: "Revati", lord: "mercury" },
+];
+
+/* Dignity by sign number (1–12). Nodes have no dignity (always neutral). */
+export const EXALTATION: Partial<Record<PlanetKey, number>> = {
+  sun: 1, moon: 2, mars: 10, mercury: 6, jupiter: 4, venus: 12, saturn: 7,
+};
+export const DEBILITATION: Partial<Record<PlanetKey, number>> = {
+  // Each debilitation sits exactly opposite the planet's exaltation (+6 signs).
+  // Moon: exalted Taurus (2) → debilitated Scorpio (8). NB: the Hora-Prakash
+  // reference's _DEBI_SIGN has a typo here (Mo:9, Sagittarius); JHora ground-truth
+  // and canonical BPHS both place Moon neecha at Scorpio 3°, so we use 8.
+  sun: 7, moon: 8, mars: 4, mercury: 12, jupiter: 10, venus: 6, saturn: 1,
+};
+export const OWN_SIGNS: Partial<Record<PlanetKey, number[]>> = {
+  sun: [5], moon: [4], mars: [1, 8], mercury: [3, 6], jupiter: [9, 12], venus: [2, 7], saturn: [10, 11],
+};
+/* Mooltrikona sign per planet (canonical BPHS; sign-level, no degree sub-range).
+   Coincides with an own sign for all except the Moon (Taurus, not its own Cancer).
+   Used by Jagradadi avastha, where mooltrikona reads as own → Awake. */
+export const MOOLTRIKONA: Partial<Record<PlanetKey, number>> = {
+  sun: 5, moon: 2, mars: 1, mercury: 6, jupiter: 9, venus: 7, saturn: 11,
+};
+
+/* Naisargika (natural) maitri — each planet's standing friends / enemies; anyone not
+   listed (and not itself) is neutral. Direction matters (asymmetric). Matches the
+   Planets deck facts and the Hora-Prakash reference (shadbala.js PERM_FRIENDS/PERM_ENEMIES).
+   Rahu/Ketu are intentionally absent — the reference defines no node friendships, so the
+   maitri-to-dispositor badge is omitted for the nodes (never guessed). */
+export const NAISARGIKA_FRIENDS: Partial<Record<PlanetKey, PlanetKey[]>> = {
+  sun: ["moon", "mars", "jupiter"],
+  moon: ["sun", "mercury"],
+  mars: ["sun", "moon", "jupiter"],
+  mercury: ["sun", "venus"],
+  jupiter: ["sun", "moon", "mars"],
+  venus: ["mercury", "saturn"],
+  saturn: ["mercury", "venus"],
+};
+export const NAISARGIKA_ENEMIES: Partial<Record<PlanetKey, PlanetKey[]>> = {
+  sun: ["venus", "saturn"],
+  moon: [],
+  mars: ["mercury"],
+  mercury: ["moon"],
+  jupiter: ["mercury", "venus"],
+  venus: ["sun", "moon"],
+  saturn: ["sun", "moon", "mars"],
+};
+
+/* ============================================================
+   Functional nature per ascendant — THE single canonical table.
+   Keyed by lagna sign (1=Aries … 12=Pisces); planet lists are in natural order.
+   This is the one source of truth for both the panel's functional-nature badge
+   (engine: `vedic.functionalNatureOf`) AND the Zodiac Ascendants deck, which
+   generates its Yogakaraka/Benefics/Neutral/Malefics facts from it — so the two
+   can never disagree. Yogakaraka = the planet ruling both a kendra and a trikona
+   (it is also listed among the benefics; the badge gives it precedence). The
+   `*Note` fields carry the deck's editorial parentheticals. Nodes are unclassified.
+   ============================================================ */
+export interface AscendantFunctional {
+  benefics: PlanetKey[];
+  neutrals: PlanetKey[];
+  malefics: PlanetKey[];
+  yogakaraka: PlanetKey | null;
+  yogakarakaNote?: string; // parenthetical on the Yogakaraka fact (e.g. "5+10", "Sun strongest")
+  beneficNote?: string; // emphasis appended to the Benefics list
+  maleficNote?: string; // emphasis appended to the Malefics list
+}
+
+export const ASCENDANT_FUNCTIONAL: AscendantFunctional[] = [
+  // 1 Aries
+  { benefics: ["sun", "moon", "mars", "jupiter"], neutrals: [], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: null, yogakarakaNote: "Sun strongest" },
+  // 2 Taurus
+  { benefics: ["mercury", "venus", "saturn"], neutrals: [], malefics: ["sun", "moon", "mars", "jupiter"],
+    yogakaraka: "saturn", yogakarakaNote: "9+10", beneficNote: "Saturn especially auspicious" },
+  // 3 Gemini
+  { benefics: ["mercury", "venus", "saturn"], neutrals: ["moon"], malefics: ["sun", "mars", "jupiter"],
+    yogakaraka: null, maleficNote: "Mars especially difficult" },
+  // 4 Cancer
+  { benefics: ["moon", "mars", "jupiter"], neutrals: ["sun"], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: "mars", yogakarakaNote: "5+10", beneficNote: "Mars especially auspicious", maleficNote: "Saturn especially difficult" },
+  // 5 Leo
+  { benefics: ["sun", "mars", "jupiter"], neutrals: ["moon"], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: "mars", yogakarakaNote: "4+9", beneficNote: "Mars especially auspicious", maleficNote: "Saturn especially difficult" },
+  // 6 Virgo
+  { benefics: ["mercury", "venus"], neutrals: ["sun", "saturn"], malefics: ["moon", "mars", "jupiter"],
+    yogakaraka: null, maleficNote: "Mars especially difficult" },
+  // 7 Libra
+  { benefics: ["mercury", "venus", "saturn"], neutrals: ["moon"], malefics: ["sun", "mars", "jupiter"],
+    yogakaraka: "saturn", yogakarakaNote: "4+5", beneficNote: "Saturn especially auspicious" },
+  // 8 Scorpio
+  { benefics: ["sun", "moon", "mars", "jupiter"], neutrals: [], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: null, yogakarakaNote: "Sun+Moon raja yoga", beneficNote: "Moon especially auspicious" },
+  // 9 Sagittarius
+  { benefics: ["sun", "mars", "jupiter"], neutrals: ["moon"], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: null },
+  // 10 Capricorn
+  { benefics: ["mercury", "venus", "saturn"], neutrals: ["moon"], malefics: ["sun", "mars", "jupiter"],
+    yogakaraka: "venus", yogakarakaNote: "5+10", beneficNote: "Venus especially auspicious" },
+  // 11 Aquarius
+  { benefics: ["mercury", "venus", "saturn"], neutrals: [], malefics: ["sun", "moon", "mars", "jupiter"],
+    yogakaraka: "venus", yogakarakaNote: "4+9", beneficNote: "Venus especially auspicious" },
+  // 12 Pisces
+  { benefics: ["moon", "mars", "jupiter"], neutrals: ["sun"], malefics: ["mercury", "venus", "saturn"],
+    yogakaraka: null, beneficNote: "Moon especially auspicious" },
+];
+
+/* Graha drishti — houses a planet aspects, counted from itself (1 = its own sign).
+   Sun/Moon/Mercury/Venus: 7th only. Mars 4/7/8. Jupiter 5/7/9. Saturn 3/7/10.
+   Rahu/Ketu treated as Jupiter (5/7/9). */
+export const DRISHTI: Record<PlanetKey, number[]> = {
+  sun: [7], moon: [7], mercury: [7], venus: [7],
+  mars: [4, 7, 8], jupiter: [5, 7, 9], saturn: [3, 7, 10],
+  rahu: [5, 7, 9], ketu: [5, 7, 9],
+};
+
+/* Combustion orbs (degrees) — reference values. Sun/Rahu/Ketu never combust.
+   NOTE: these intentionally differ from the Combustion study deck's orbs;
+   the engine follows the reference. */
+export const COMBUSTION_ORB: Partial<Record<PlanetKey, number>> = {
+  moon: 12, mercury: 14, venus: 10, mars: 17, jupiter: 11, saturn: 15,
+};
+
+/* Vimshottari dasha: lord order + years (sums to 120). */
+export const DASHA_SEQUENCE: { lord: PlanetKey; years: number }[] = [
+  { lord: "ketu", years: 7 }, { lord: "venus", years: 20 }, { lord: "sun", years: 6 },
+  { lord: "moon", years: 10 }, { lord: "mars", years: 7 }, { lord: "rahu", years: 18 },
+  { lord: "jupiter", years: 16 }, { lord: "saturn", years: 19 }, { lord: "mercury", years: 17 },
+];
+export const DASHA_TOTAL_YEARS = 120;
+
+export const NAKSHATRA_ARC = 360 / 27; // 13°20′
+export const PADA_ARC = 360 / 108; // 3°20′
+
+/* Gandanta — the three water→fire sign junctions: Pisces→Aries (0°/360°),
+   Cancer→Leo (120°), Scorpio→Sagittarius (240°). A point is in gandanta within
+   GANDANTA_ORB of a junction (the last pada of the water sign / first pada of the
+   fire sign). Orb = one pada (360/108 = 3°20′), matching the Hora-Prakash reference
+   (calculations.js `_GANDANTA_DEG = 360/108`, water signs {4,8,12}, fire {1,5,9}). */
+export const GANDANTA_BOUNDARIES = [0, 120, 240];
+export const GANDANTA_ORB = 360 / 108; // 3°20′ ≈ 3.3333° — one pada, per the reference
+export const GANDANTA_DEEP_ORB = 1; // within 1° of the exact junction → "deep" gandanta (UI emphasis)

@@ -6,12 +6,32 @@
      benefics/neutral/malefics (element-triplicity method), BACK = traits.
    Concept cards use the chart / chart-diamond mark; each sign card uses its
    zodiac glyph colored by its ruling planet. */
-import type { Deck } from "./types";
+import type { Deck, CardFact } from "./types";
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
+import { PLANET_NAMES, ASCENDANT_FUNCTIONAL } from "@/core/constants";
+import type { PlanetKey } from "@/core/types";
+
+/** The four functional-nature facts for a lagna, generated from the single canonical
+    ASCENDANT_FUNCTIONAL table (src/core/constants.ts) — the SAME table the panel's
+    functional-nature badge reads. Generating them here (rather than hardcoding) is what
+    keeps the deck and the badge from ever disagreeing. */
+function fnFacts(lagnaSign: number): CardFact[] {
+  const t = ASCENDANT_FUNCTIONAL[lagnaSign - 1];
+  const list = (arr: PlanetKey[], note?: string) =>
+    (arr.length ? arr.map((k) => PLANET_NAMES[k]).join(", ") : "None") + (note ? ` (${note})` : "");
+  const yk =
+    (t.yogakaraka ? PLANET_NAMES[t.yogakaraka] : "None") + (t.yogakarakaNote ? ` (${t.yogakarakaNote})` : "");
+  return [
+    { label: "Yogakaraka", value: yk },
+    { label: "Benefics", value: list(t.benefics, t.beneficNote) },
+    { label: "Neutral", value: list(t.neutrals) },
+    { label: "Malefics", value: list(t.malefics, t.maleficNote) },
+  ];
+}
 
 export const signs: Deck = {
   id: "signs",
-  title: "Ascendants",
+  title: "Ascendants & Zodiacs",
   subtitle: "Lagna",
   motif: "diamond",
   accent: ACCENT,
@@ -88,10 +108,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "None (Sun strongest)" },
-        { label: "Benefics", value: "Sun, Moon, Mars, Jupiter" },
-        { label: "Neutral", value: "None" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn" },
+        ...fnFacts(1),
       ],
       points: [
         "Action, courage, initiation — the spark of beginnings",
@@ -115,10 +132,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "Saturn (9+10)" },
-        { label: "Benefics", value: "Mercury, Venus, Saturn (Saturn especially auspicious)" },
-        { label: "Neutral", value: "None" },
-        { label: "Malefics", value: "Sun, Moon, Mars, Jupiter" },
+        ...fnFacts(2),
       ],
       points: [
         "Steady builder — stability, material comfort, security",
@@ -142,10 +156,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "None" },
-        { label: "Benefics", value: "Mercury, Venus, Saturn" },
-        { label: "Neutral", value: "Moon" },
-        { label: "Malefics", value: "Sun, Mars, Jupiter (Mars especially difficult)" },
+        ...fnFacts(3),
       ],
       points: [
         "Curious, witty, adaptable communicator; the Twins, duality",
@@ -169,10 +180,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "Mars (5+10)" },
-        { label: "Benefics", value: "Moon, Mars, Jupiter (Mars especially auspicious)" },
-        { label: "Neutral", value: "Sun" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn (Saturn especially difficult)" },
+        ...fnFacts(4),
       ],
       points: [
         "Emotional depth and intuition; feels everything",
@@ -196,10 +204,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "Mars (4+9)" },
-        { label: "Benefics", value: "Sun, Mars, Jupiter (Mars especially auspicious)" },
-        { label: "Neutral", value: "Moon" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn (Saturn especially difficult)" },
+        ...fnFacts(5),
       ],
       points: [
         "Built for self-expression, creativity, and recognition",
@@ -223,10 +228,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "None" },
-        { label: "Benefics", value: "Mercury, Venus" },
-        { label: "Neutral", value: "Sun, Saturn" },
-        { label: "Malefics", value: "Moon, Mars, Jupiter (Mars especially difficult)" },
+        ...fnFacts(6),
       ],
       points: [
         "Quiet powerhouse; perfection-seeking, analytical, precise",
@@ -250,10 +252,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "Saturn (4+5)" },
-        { label: "Benefics", value: "Mercury, Venus, Saturn (Saturn especially auspicious)" },
-        { label: "Neutral", value: "Moon" },
-        { label: "Malefics", value: "Sun, Mars, Jupiter" },
+        ...fnFacts(7),
       ],
       points: [
         "Diplomat of the zodiac; graceful, fair-minded",
@@ -277,10 +276,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "None (Sun+Moon raja yoga)" },
-        { label: "Benefics", value: "Sun, Moon, Mars, Jupiter (Moon especially auspicious)" },
-        { label: "Neutral", value: "None" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn" },
+        ...fnFacts(8),
       ],
       points: [
         "Intensity, depth, transformation — the deep diver",
@@ -304,10 +300,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "None" },
-        { label: "Benefics", value: "Sun, Mars, Jupiter" },
-        { label: "Neutral", value: "Moon" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn" },
+        ...fnFacts(9),
       ],
       points: [
         "Adventurer of the zodiac; optimistic and expansive",
@@ -331,10 +324,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "Venus (5+10)" },
-        { label: "Benefics", value: "Mercury, Venus, Saturn (Venus especially auspicious)" },
-        { label: "Neutral", value: "Moon" },
-        { label: "Malefics", value: "Sun, Mars, Jupiter" },
+        ...fnFacts(10),
       ],
       points: [
         "Architect of the zodiac; ambition, discipline, work ethic",
@@ -358,10 +348,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Odd (male)" },
-        { label: "Yogakaraka", value: "Venus (4+9)" },
-        { label: "Benefics", value: "Mercury, Venus, Saturn (Venus especially auspicious)" },
-        { label: "Neutral", value: "None" },
-        { label: "Malefics", value: "Sun, Moon, Mars, Jupiter" },
+        ...fnFacts(11),
       ],
       points: [
         "Breaks the mold; wired for innovation and originality",
@@ -385,10 +372,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Even (female)" },
-        { label: "Yogakaraka", value: "None" },
-        { label: "Benefics", value: "Moon, Mars, Jupiter (Moon especially auspicious)" },
-        { label: "Neutral", value: "Sun" },
-        { label: "Malefics", value: "Mercury, Venus, Saturn" },
+        ...fnFacts(12),
       ],
       points: [
         "Dreamer of the zodiac; sensitive, compassionate, soulful",

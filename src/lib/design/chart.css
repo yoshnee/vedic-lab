@@ -1,0 +1,400 @@
+/* ============================================================
+   chart.css — the /chart birth-chart page: header, hero + North Indian chart,
+   Vimshottari dasha drill, and the Planet Detail Panels. Panel / dasha / chip /
+   Sade Sati / popover styles ported from the Claude Design handoff
+   (planet-panel/panel.css); tokens come from tokens.css.
+   ============================================================ */
+
+/* ---------- page shell + header ---------- */
+/* the chart route is wider than the rest of the site: it holds a daśā rail +
+   two charts side by side on top, and 2-column panels below. */
+.chart-header { max-width: 1160px; margin: 0 auto; padding: clamp(18px, 4vw, 28px) clamp(16px, 5vw, 32px) 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.chart-back { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-2);
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14px; transition: color .2s; }
+.chart-back:hover { color: var(--text); }
+.chart-back .chart-mark { display: inline-flex; flex: none; filter: drop-shadow(0 3px 14px rgba(228, 194, 87, .3)); }
+.chart-legend-btn { flex: none; display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-2); background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 15px; transition: color .2s, border-color .2s, background .2s; }
+.chart-legend-btn span { color: var(--accent); font-weight: 700; }
+.chart-legend-btn:hover { color: var(--text); border-color: var(--accent); }
+.chart-legend-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.chart-page { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 34px) clamp(16px, 5vw, 32px) 100px; }
+
+/* ---------- hero meta (full-width, centered above the 3-up region) ---------- */
+.chart-hero-meta { text-align: center; max-width: 720px; margin: 0 auto clamp(24px, 4vw, 36px); }
+.chart-eyebrow { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); display: block; }
+.chart-title { font-size: clamp(24px, 4vw, 32px); letter-spacing: -.02em; margin: 8px 0 10px; }
+.chart-birth { color: var(--text-2); font-size: 14px; margin: 0; }
+.chart-asc { color: var(--text); font-family: var(--font-mono), monospace; font-size: 13px; margin: 5px 0 0; }
+.chart-asc b { color: var(--accent); font-weight: 600; }
+.chart-moon { margin: 6px 0 0; display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono), monospace; font-size: 12px; color: var(--text-2); }
+.chart-moon-glyph { flex: none; color: var(--p-moon); }
+
+/* ---------- /chart status shells (loading / error / redirect) ---------- */
+.chart-status { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
+.chart-status-box { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; max-width: 420px; }
+.chart-status-mark { display: flex; filter: drop-shadow(0 3px 16px rgba(228, 194, 87, .3)); animation: chart-pulse 1.8s ease-in-out infinite; }
+@keyframes chart-pulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .chart-status-mark { animation: none; } }
+.chart-status-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 18px; color: var(--text); margin: 0; }
+.chart-status-sub { font-size: 13px; color: var(--text-2); margin: 0; line-height: 1.5; }
+.chart-status .bd-cta { width: auto; padding: 12px 22px; margin-top: 6px; }
+
+/* ---------- 3-up layout: sticky daśā rail | main (dual charts → 2-col panels) ---------- */
+.chart-layout { display: grid; grid-template-columns: minmax(190px, 220px) minmax(0, 1fr);
+  gap: clamp(18px, 2.4vw, 30px); align-items: start; }
+.chart-main { min-width: 0; }
+.chart-top { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); margin-bottom: clamp(26px, 4vw, 40px); }
+
+/* chart card (title / type selector + caption, then the chart) */
+.chart-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+/* column head (selector row + caption row) so Chart 1 & Chart 2 line up exactly */
+.chart-card-head { display: flex; flex-direction: column; gap: 6px; }
+.chart-card-title { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.chart-card-select { display: inline-flex; align-items: center; gap: 8px; }
+.cc-sel-label { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); }
+.chart-card-select select { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .04em; color: var(--accent);
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border)); border-radius: 8px;
+  padding: 5px 9px; cursor: pointer; }
+.chart-card-select select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* min-height reserves the line on BOTH cards so the two chart grids start level */
+.chart-card-cap { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .03em; color: var(--text-3);
+  min-height: 1.2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* ---------- daśā rail (sticky on desktop; a drawer on mobile) ---------- */
+.dasha-rail { position: sticky; top: 78px; align-self: start; max-height: calc(100vh - 96px); overflow-y: auto;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border)); border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 70%, transparent), var(--bg-2));
+  padding: 14px 12px; scrollbar-width: thin; }
+.dasha-rail-in { display: flex; flex-direction: column; gap: 12px; }
+.dr-head { display: flex; flex-direction: column; gap: 9px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); }
+.dr-eyebrow { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+.dr-now { display: flex; flex-direction: column; gap: 6px; }
+.dr-now-step { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dr-now-lvl { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+.dr-now-planet { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
+.dr-now-planet svg { flex: none; }
+.dr-list .dlvl-label { margin-top: 0; }
+/* compact dasha rows for the narrow rail/drawer: icon + dates only (the colored
+   body identifies the planet; the name is the row's title/aria-label) */
+.dasha-rail .drow, .dasha-drawer .drow { gap: 9px; padding: 7px 9px; }
+.dasha-rail .drow .ddate, .dasha-drawer .drow .ddate { font-size: 11px; margin-left: 0; margin-right: auto; white-space: nowrap; }
+/* shallower indent for nested AD/PD levels so the compact dates never clip */
+.dasha-rail .dchild .dlvl, .dasha-drawer .dchild .dlvl { padding-left: 13px; }
+.dasha-rail .drow .dexp, .dasha-drawer .drow .dexp { margin-left: auto; }
+
+/* mobile daśā trigger (hidden on desktop — the rail is shown instead) */
+.dasha-trigger { display: none; width: 100%; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 60%, transparent); padding: 12px 16px; margin-bottom: 20px; }
+.dasha-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dt-lbl { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.dt-now { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.dt-step { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 12.5px; color: var(--text); }
+.dt-step svg { flex: none; }
+.dt-arr { color: var(--text-3); }
+
+/* daśā drawer (mobile) — slide-in from the left */
+.dasha-drawer-overlay { position: fixed; inset: 0; z-index: 120; background: var(--scrim, rgba(4, 10, 7, .6));
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; }
+.dasha-drawer { width: min(360px, 88vw); max-width: 88vw; height: 100%; overflow-y: auto;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2)); border-right: 1px solid var(--border);
+  padding: 16px 14px 28px; animation: drawer-in-left .26s cubic-bezier(.2, .7, .2, 1); }
+.dasha-drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 16px; color: var(--text); }
+@keyframes drawer-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+/* ---------- North Indian chart ---------- */
+.nic { position: relative; width: 100%; max-width: 430px; margin: 0 auto; aspect-ratio: 1 / 1; }
+.nic-grid { position: absolute; inset: 0; display: block; }
+.nic-grid svg { width: 100%; height: 100%; display: block; }
+.nic-house { position: absolute; transform: translate(-50%, -50%); width: 30%;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 5px; }
+/* zodiac glyph (ruler-colored, set inline) + muted rashi number, on its own line above any planets */
+.nic-sign { width: 100%; display: inline-flex; align-items: baseline; justify-content: center; gap: 4px; line-height: 1; }
+.nic-sign-gl { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", var(--font-mono), monospace;
+  font-size: 15px; line-height: 1; }
+.nic-sign-no { font-family: var(--font-mono), monospace; font-size: 9px; color: var(--text-3); letter-spacing: .04em; }
+.nic-asc { width: 100%; text-align: center; font-family: var(--font-mono), monospace; font-size: 8px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1px; }
+.nic-planet { display: inline-flex; flex-direction: column; align-items: center; gap: 0; padding: 0;
+  border: 0; background: none; cursor: pointer; }
+.nic-planet svg { width: 26px; height: 26px; display: block; }
+.nic-deg { font-family: var(--font-mono), monospace; font-size: 8.5px; color: var(--text-2); margin-top: -1px; }
+.nic-planet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+/* ============================================================
+   DAŚĀ TREE (shared by the rail + the mobile drawer; see the rail block above)
+   ============================================================ */
+.dlvl-label { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); margin: 14px 0 6px 2px; }
+.dlvl { display: flex; flex-direction: column; gap: 3px; }
+.dnode { position: relative; }
+.dnode > .drow { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left;
+  padding: 9px 12px; border-radius: 10px; border: 1px solid transparent; background: transparent;
+  color: var(--text-2); cursor: pointer; transition: background .18s, border-color .18s; }
+.dnode > .drow:hover { background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.dnode > .drow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.dnode > .drow[data-static="true"] { cursor: default; }
+.dnode > .drow[data-static="true"]:hover { background: transparent; }
+.drow .dico { flex: none; display: flex; }
+.drow .dname { flex: none; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14px; color: var(--text); }
+.drow .dsk { flex: none; font-family: var(--font-mono), monospace; font-size: 10.5px; color: var(--text-3); letter-spacing: .04em; }
+.drow .ddate { margin-left: auto; font-family: var(--font-mono), monospace; font-size: 11px; color: var(--text-3); letter-spacing: .02em; white-space: nowrap; }
+.drow .dexp { flex: none; color: var(--text-3); transition: transform .26s; margin-left: 2px; }
+.dnode[data-open="true"] > .drow .dexp { transform: rotate(90deg); }
+.drow[data-running="true"] { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.drow[data-running="true"] .ddate { color: var(--accent); }
+.dnow { flex: none; font-family: var(--font-mono), monospace; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: #15110a; background: var(--accent); padding: 2px 7px; border-radius: 999px; margin-left: 10px; }
+.dchild { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.3, .8, .3, 1); }
+.dnode[data-open="true"] > .dchild { grid-template-rows: 1fr; }
+.dchild-in { overflow: hidden; }
+.dchild .dlvl { margin: 3px 0 6px; padding-left: 20px; position: relative; }
+.dchild .dlvl::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 1px; background: var(--border-soft); }
+
+/* ============================================================
+   PLANET DETAIL PANEL
+   ============================================================ */
+
+/* 2-column grid, row-major (navagraha reads left→right, top→bottom). An expanded
+   panel spans the full width so its detail body has room. */
+.pp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.pp-panel { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2)); box-shadow: 0 16px 38px -28px #000; transition: border-color .22s; }
+.pp-panel[data-open="true"] { border-color: color-mix(in srgb, var(--accent) 26%, var(--border)); grid-column: 1 / -1; }
+
+/* uniform collapsed height: every panel header is sized for the worst case (name
+   + two pill rows) so ALL cards are the same height — the 2-column grid rows line
+   up with no staggered gaps, even for planets with few/no pills (those just carry
+   extra space, by design). The body still expands below on open. */
+.pp-header { position: relative; width: 100%; min-height: 100px; display: flex; align-items: center; gap: 14px; padding: 14px 16px; color: var(--text); cursor: pointer; text-align: left; }
+/* full-bleed toggle sits behind the content; the content lets clicks fall
+   through to it (pointer-events: none) except the real controls (pills) */
+.pp-header-toggle { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; }
+.pp-header-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 16px; }
+.pp-header > .pp-ico, .pp-header > .pp-id, .pp-header > .pp-chev { position: relative; z-index: 1; pointer-events: none; }
+.pp-header .pp-pills { pointer-events: auto; }
+.pp-ico { flex: none; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
+/* name on top, pills wrapping below — predictable height so every header matches */
+.pp-id { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.pp-name .nm { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.1; }
+.pp-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pp-pill { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px; white-space: nowrap; cursor: pointer; transition: filter .18s;
+  color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); background: color-mix(in srgb, var(--accent) 11%, transparent); }
+.pp-pill:hover { filter: brightness(1.12); }
+.pp-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pp-pill[data-kind="antar"] { color: #CFE0D2; border-color: color-mix(in srgb, #CFE0D2 30%, transparent); background: color-mix(in srgb, #CFE0D2 8%, transparent); }
+.pp-pill[data-kind="lagna"] { color: #8FD6C4; border-color: color-mix(in srgb, #8FD6C4 38%, transparent); background: color-mix(in srgb, #8FD6C4 11%, transparent); }
+/* gandanta — ember tone for the water→fire knot; "deep" (within ~1°) is brighter + ringed */
+.pp-pill[data-kind="gandanta"] { color: #E08A5A; border-color: color-mix(in srgb, #E08A5A 40%, transparent); background: color-mix(in srgb, #E08A5A 12%, transparent); }
+.pp-pill[data-kind="gandanta"][data-deep] { color: #F0A06E; border-color: color-mix(in srgb, #E08A5A 72%, transparent); background: color-mix(in srgb, #E08A5A 20%, transparent); font-weight: 700;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #E08A5A 28%, transparent), 0 0 9px color-mix(in srgb, #E08A5A 26%, transparent); }
+.chart-asc .pp-pill { margin-left: 8px; vertical-align: middle; }
+/* maitri toward the dispositor — green (friend) → grey (neutral) → red (enemy); gold for own sign */
+.pp-pill[data-kind="maitri"][data-maitri="adhi_mitra"] { color: #4FC98E; border-color: color-mix(in srgb, #36B97A 46%, transparent); background: color-mix(in srgb, #36B97A 14%, transparent); }
+.pp-pill[data-kind="maitri"][data-maitri="mitra"] { color: #82CBAB; border-color: color-mix(in srgb, #36B97A 32%, transparent); background: color-mix(in srgb, #36B97A 9%, transparent); }
+.pp-pill[data-kind="maitri"][data-maitri="sama"] { color: var(--text-2); border-color: color-mix(in srgb, var(--text-2) 30%, transparent); background: color-mix(in srgb, var(--text-2) 8%, transparent); }
+.pp-pill[data-kind="maitri"][data-maitri="shatru"] { color: #E58A78; border-color: color-mix(in srgb, #E2503C 34%, transparent); background: color-mix(in srgb, #E2503C 9%, transparent); }
+.pp-pill[data-kind="maitri"][data-maitri="adhi_shatru"] { color: #E2503C; border-color: color-mix(in srgb, #E2503C 50%, transparent); background: color-mix(in srgb, #E2503C 15%, transparent); }
+.pp-pill[data-kind="maitri"][data-maitri="own_sign"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 42%, transparent); background: color-mix(in srgb, var(--accent) 11%, transparent); }
+/* functional-nature badge — a SQUARE letter chip (deliberately not a round pill, and off the
+   glyph) so "good for this chart" reads distinct from the dignity halo/ring on the body */
+.pp-fn { flex: none; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono), monospace; font-size: 10px; font-weight: 700; line-height: 1;
+  border-radius: 5px; border: 1px solid; cursor: pointer; transition: filter .18s; }
+.pp-fn:hover { filter: brightness(1.14); }
+.pp-fn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pp-fn[data-fn="benefic"] { color: #4FC98E; border-color: color-mix(in srgb, #36B97A 50%, transparent); background: color-mix(in srgb, #36B97A 14%, transparent); }
+.pp-fn[data-fn="malefic"] { color: #E2503C; border-color: color-mix(in srgb, #E2503C 50%, transparent); background: color-mix(in srgb, #E2503C 14%, transparent); }
+.pp-fn[data-fn="neutral"] { color: var(--text-2); border-color: color-mix(in srgb, var(--text-2) 34%, transparent); background: color-mix(in srgb, var(--text-2) 9%, transparent); }
+.pp-fn[data-fn="yogakaraka"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 58%, transparent); background: color-mix(in srgb, var(--accent) 16%, transparent); font-weight: 800;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent), 0 0 8px color-mix(in srgb, var(--accent) 22%, transparent); }
+.pp-chev { flex: none; color: var(--text-3); transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.pp-panel[data-open="true"] .pp-chev { transform: rotate(180deg); color: var(--accent); }
+
+.pp-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .36s cubic-bezier(.3, .8, .3, 1); }
+.pp-panel[data-open="true"] .pp-body { grid-template-rows: 1fr; }
+.pp-body-in { overflow: hidden; }
+.pp-body-pad { padding: 4px 16px 16px; }
+
+.pp-summary { padding: 14px 0 4px; border-top: 1px solid var(--border-soft); margin-top: 2px; }
+.pp-place { font-size: 14.5px; color: var(--text-2); line-height: 1.6; text-wrap: pretty; }
+.pp-place .dot { color: var(--text-3); }
+.pp-coords { margin-top: 7px; font-family: var(--font-mono), monospace; font-size: 12.5px; color: var(--text);
+  letter-spacing: .02em; display: flex; flex-wrap: wrap; gap: 4px 9px; align-items: baseline; }
+.pp-coords .deg { color: var(--accent); }
+.pp-coords .dot { color: var(--text-3); }
+.pp-coords .mutedp { color: var(--text-3); }
+/* Moon-only tithi line (waxing/waning + lunar day) */
+.pp-tithi { margin-top: 8px; display: flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono), monospace; font-size: 12px; color: var(--text-2); }
+.pp-tithi .tithi-glyph { flex: none; color: var(--p-moon); }
+.pp-tithi .dot { color: var(--text-3); }
+
+.fc-link { color: var(--accent); font-weight: 600; cursor: pointer; background: none; border: 0; padding: 0 1px; font: inherit;
+  text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 2.5px; text-decoration-thickness: 1.5px; border-radius: 3px; transition: .16s; }
+.fc-link:hover { text-decoration-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.fc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pp-coords .fc-link { font-family: var(--font-mono), monospace; font-weight: 400; }
+
+.pp-rows { display: flex; flex-direction: column; }
+.pp-row { display: grid; grid-template-columns: 118px 1fr; gap: 14px; align-items: start; padding: 12px 0; border-top: 1px solid var(--border-soft); }
+.pp-row-label { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); padding-top: 4px; }
+.pp-row-val { font-size: 14px; color: var(--text-2); line-height: 1.5; min-width: 0; }
+.pp-row-val .none { color: var(--text-3); font-family: var(--font-mono), monospace; font-size: 12px; }
+
+/* ---- Avasthas drawer: a subordinate, collapsible "states" group ---- */
+.pp-ava { border-top: 1px solid var(--border-soft); padding-top: 12px; }
+/* a compact, clickable pill (matches .pp-pill) with a chevron that rotates
+   from "›" to "⌄" to reveal the states downward */
+.pp-ava-head { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; transition: filter .18s;
+  color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); background: color-mix(in srgb, var(--accent) 11%, transparent); }
+.pp-ava-head:hover { filter: brightness(1.12); }
+.pp-ava-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pp-ava-head .lbl { flex: none; }
+.pp-ava-chev { flex: none; color: var(--accent); transition: transform .3s, color .3s; }
+.pp-ava[data-open="true"] .pp-ava-chev { transform: rotate(90deg); }
+.pp-ava-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s cubic-bezier(.3, .8, .3, 1); }
+.pp-ava[data-open="true"] .pp-ava-body { grid-template-rows: 1fr; }
+.pp-ava-in { overflow: hidden; }
+.pp-ava-list { list-style: none; margin: 0; padding: 2px 0 10px; display: flex; flex-direction: column; gap: 4px; }
+.pp-ava-row { display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 7px 10px; border-radius: 8px;
+  text-decoration: none; border-left: 2px solid color-mix(in srgb, var(--pc) 55%, transparent); }
+.pp-ava-row .sys { flex: none; min-width: 64px; font-weight: 600; color: var(--accent); }
+.pp-ava-row .state { flex: none; color: var(--text); font-weight: 400; }
+.pp-ava-row .sk { flex: none; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .03em; color: var(--text-3); }
+.pp-ava-row .str { flex: none; margin-left: auto; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .04em;
+  color: color-mix(in srgb, var(--pc) 70%, var(--text-3)); }
+
+.pchips { display: flex; flex-wrap: wrap; gap: 7px; }
+.pchip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 6px; border-radius: 999px;
+  background: color-mix(in srgb, var(--pc) 15%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pc) 38%, transparent);
+  font-size: 12.5px; font-weight: 600; color: var(--text); }
+.pchip svg { flex: none; }
+.pchip em { font-style: normal; font-family: var(--font-mono), monospace; color: var(--pc); font-size: 10px; letter-spacing: .03em; }
+
+.state { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .06em; padding: 5px 11px; border-radius: 999px; }
+.state i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.state[data-on="true"] { color: #F0C0A2; border: 1px solid color-mix(in srgb, #E2503C 42%, transparent); background: color-mix(in srgb, #E2503C 12%, transparent); }
+.state[data-on="true"] i { background: #E2503C; }
+.state-note { margin-top: 6px; font-size: 12px; color: var(--text-3); line-height: 1.45; text-wrap: pretty; }
+
+.pp-placeholder { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono), monospace; font-size: 11px; color: var(--text-3); letter-spacing: .04em; padding: 4px 0; }
+.pp-placeholder i { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex: none; }
+
+/* ---------- Sade Sati timeline (Saturn) ---------- */
+.sade { grid-template-columns: 1fr; gap: 0; padding: 14px 0 12px; }
+.sade-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; flex-wrap: wrap; }
+.sade-head .lbl { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14.5px; color: var(--text); }
+.sade-head .sk { font-family: var(--font-mono), monospace; font-size: 10px; color: var(--text-3); letter-spacing: .04em; }
+.sade-card { border: 1px solid color-mix(in srgb, var(--p-saturn) 34%, var(--border)); border-radius: 13px;
+  padding: 12px 14px; background: color-mix(in srgb, var(--p-saturn) 9%, var(--surface)); margin-bottom: 9px; }
+.sade-card:last-child { margin-bottom: 0; }
+.sade-card[data-status="past"] { opacity: .72; border-color: var(--border); background: color-mix(in srgb, var(--p-saturn) 5%, var(--surface)); }
+.sade-card[data-status="upcoming"] { border-style: dashed; }
+.sade-top { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+.sade-top .lbl { font-family: var(--font-mono), monospace; font-size: 11.5px; color: var(--text-2); letter-spacing: .03em; }
+.sade-top .phase { margin-left: auto; font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .06em;
+  color: #BDD6FA; border: 1px solid color-mix(in srgb, var(--p-saturn) 45%, transparent); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.sade-card[data-status="past"] .phase { color: var(--text-3); border-color: var(--border); }
+.sade-track { display: flex; gap: 6px; margin-bottom: 10px; }
+.sade-seg { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.sade-seg .bar { height: 5px; border-radius: 3px; background: var(--border-soft); }
+.sade-seg[data-state="done"] .bar { background: color-mix(in srgb, var(--p-saturn) 55%, transparent); }
+.sade-seg[data-state="active"] .bar { background: #6FA0EE; }
+.sade-seg .cap { font-family: var(--font-mono), monospace; font-size: 8.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.sade-seg .cap.sub { letter-spacing: .02em; text-transform: none; opacity: .8; }
+.sade-seg[data-state="active"] .cap { color: #BDD6FA; }
+.sade-note { font-size: 12.5px; color: var(--text-2); line-height: 1.5; text-wrap: pretty; }
+
+@media (max-width: 520px) {
+  .pp-row { grid-template-columns: 1fr; gap: 5px; }
+  .pp-row-label { padding-top: 0; }
+  .sade { grid-template-columns: 1fr; }
+  .drow .dsk { display: none; }
+}
+
+/* ============================================================
+   FLASHCARD POPOVER (single card; reuses the fc-* card faces from app.css)
+   ============================================================ */
+.fcpop-overlay { position: fixed; inset: 0; z-index: 120; background: rgba(4, 10, 7, .78);
+  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+  display: flex; align-items: center; justify-content: center; padding: 20px; animation: fcpop-fade .22s ease; }
+@keyframes fcpop-fade { from { opacity: 0; } to { opacity: 1; } }
+.fcpop-dialog { width: min(380px, 100%); display: flex; flex-direction: column; gap: 13px; }
+.fcpop-bar { display: flex; align-items: center; gap: 12px; color: var(--text); }
+.fcpop-title { display: flex; align-items: center; gap: 9px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13.5px; }
+.fcpop-title span { display: flex; flex: none; }
+.fcpop-kind { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-left: auto; }
+.fcpop-close { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 14px; cursor: pointer; transition: .2s; line-height: 1; }
+.fcpop-close:hover { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
+.fcpop-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fcpop-stack { position: relative; width: 100%; height: min(60vh, 420px); padding: 0; border: 0; background: transparent; cursor: pointer; display: block; animation: fcpop-rise .26s cubic-bezier(.2, .8, .2, 1); }
+@keyframes fcpop-rise { from { transform: translateY(10px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+.fcpop-stack:focus-visible { outline: none; }
+.fcpop-stack:focus-visible .fc-face { outline: 2.5px solid var(--accent); outline-offset: 3px; }
+.fcpop-hint { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .08em; color: var(--text-3); text-align: center; margin: 0; }
+
+/* ============================================================
+   LEGEND DRAWER (global symbol key — slide-in from the right)
+   ============================================================ */
+.legend-overlay { position: fixed; inset: 0; z-index: 130; background: rgba(4, 10, 7, .62);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; justify-content: flex-end;
+  animation: fcpop-fade .2s ease; }
+.legend { width: min(420px, 92vw); height: 100%; overflow-y: auto; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2)); border-left: 1px solid var(--border);
+  box-shadow: -30px 0 60px -30px #000; animation: drawer-in-right .26s cubic-bezier(.2, .7, .2, 1); }
+@keyframes drawer-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.legend-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border-soft);
+  background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.legend-head h2 { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 18px; }
+.legend-close { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); font-size: 14px; line-height: 1; cursor: pointer; transition: .2s; }
+.legend-close:hover { color: var(--text); border-color: var(--accent); }
+.legend-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legend-body { padding: 12px 20px 40px; display: flex; flex-direction: column; gap: 22px; }
+.lg-sec h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px;
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.lg-sec-sub { font-size: 9.5px; letter-spacing: .06em; text-transform: none; color: var(--text-3); }
+.lg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lg-item { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 10px; border: 1px solid transparent;
+  text-align: left; min-width: 0; }
+.lg-swatch { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 36px; }
+.lg-swatch svg { display: block; }
+.lg-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.lg-label { font-size: 12.5px; color: var(--text); line-height: 1.25; }
+.lg-hint { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .02em; color: var(--text-3); }
+.lg-note { margin: 10px 0 0; font-size: 12px; color: var(--text-3); line-height: 1.5; text-wrap: pretty; }
+.lg-asc { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.lg-mono { font-family: var(--font-mono), monospace; font-size: 14px; color: var(--text); }
+
+/* ============================================================
+   /chart RESPONSIVE — desktop is 3-up; below 960px everything stacks
+   ============================================================ */
+@media (min-width: 960px) {
+  /* the mobile daśā drawer can never show on desktop (the rail is visible) */
+  .dasha-drawer-overlay { display: none; }
+}
+@media (max-width: 959px) {
+  .chart-layout { grid-template-columns: 1fr; }
+  .dasha-rail { display: none; }       /* the rail collapses to the drawer */
+  .dasha-trigger { display: flex; }
+  .chart-top { grid-template-columns: 1fr; }
+  .pp-grid { grid-template-columns: 1fr; }
+  .pp-panel[data-open="true"] { grid-column: auto; }
+}
+@media (max-width: 560px) {
+  .legend { width: 100vw; border-left: 0; }   /* full-screen drawer on phones */
+  .lg-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .legend, .dasha-drawer { animation: none; }
+}

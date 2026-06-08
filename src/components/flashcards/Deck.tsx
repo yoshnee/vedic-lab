@@ -11,9 +11,17 @@ import { Svg } from "@/components/Svg";
 import { Card } from "./Card";
 import type { Deck as DeckData } from "@/data/decks/types";
 
-export function Deck({ deck, onClose }: { deck: DeckData; onClose: () => void }) {
+export function Deck({
+  deck,
+  onClose,
+  initialCard = 0,
+}: {
+  deck: DeckData;
+  onClose: () => void;
+  initialCard?: number;
+}) {
   const n = deck.cards.length;
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(() => Math.max(0, Math.min(n - 1, initialCard)));
   const [flipped, setFlipped] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -196,26 +204,6 @@ export function Deck({ deck, onClose }: { deck: DeckData; onClose: () => void })
             ›
           </button>
         </div>
-
-        <footer className="fc-foot">
-          <button
-            className="fc-mininav"
-            onClick={() => go(-1)}
-            disabled={i === 0}
-            aria-label="Previous card"
-          >
-            ‹ Prev
-          </button>
-          <span className="fc-foot-hint">Tap to flip · ← → to move</span>
-          <button
-            className="fc-mininav"
-            onClick={() => go(1)}
-            disabled={i === n - 1}
-            aria-label="Next card"
-          >
-            Next ›
-          </button>
-        </footer>
 
         <div className="fc-sr" aria-live="polite" ref={liveRef} />
       </div>

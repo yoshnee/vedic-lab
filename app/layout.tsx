@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Space_Grotesk, Outfit, Space_Mono } from "next/font/google";
+import { SiteHeader } from "@/components/home/SiteHeader";
 import { Footer } from "@/components/home/Footer";
+import { ChartProvider } from "@/lib/chart/ChartProvider";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -49,8 +51,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={`${display.variable} ${bodyFont.variable} ${mono.variable}`}>
-        {children}
-        <Footer />
+        <ChartProvider>
+          <SiteHeader />
+          {children}
+          <Footer />
+        </ChartProvider>
       </body>
     </html>
   );

@@ -1,9 +1,11 @@
 /* Houses — the twelve Bhavas. Content from twelve_bhavas_flashcards_with_themes.md:
-   FRONT = theme + natural sign + karaka + classification (facts), BACK =
+   FRONT = theme + natural sign + karaka + type + purushartha (facts), BACK =
    significations (points). Each card's front icon is the North Indian chart
    with that house highlighted, so flipping through walks the highlight 1 → 12.
-   Classification: Kendra (1,4,7,10) · Trikona (1,5,9) · Dusthana (6,8,12) ·
-   Maraka (2,7) · Upachaya (3,6,10,11). */
+   Type: Kendra (1,4,7,10) · Trikona (1,5,9) · Dusthana (6,8,12) ·
+   Maraka (2,7) · Upachaya (3,6,10,11).
+   Purushartha (life-aim) cycles across the four house-triads:
+   Dharma (1,5,9) · Artha (2,6,10) · Kama (3,7,11) · Moksha (4,8,12). */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
 
@@ -25,6 +27,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Aries" },
         { label: "Karaka", value: "Sun" },
         { label: "Type", value: "Kendra & Trikona" },
+        { label: "Purushartha", value: "Dharma (purpose)" },
       ],
       points: [
         "The self — body, ego, self-awareness, identity",
@@ -48,6 +51,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Taurus" },
         { label: "Karaka", value: "Jupiter" },
         { label: "Type", value: "Maraka" },
+        { label: "Purushartha", value: "Artha (wealth / material)" },
       ],
       points: [
         "Wealth, money, possessions, finances, resources",
@@ -70,6 +74,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Gemini" },
         { label: "Karaka", value: "Mars" },
         { label: "Type", value: "Upachaya" },
+        { label: "Purushartha", value: "Kama (desire / pleasure)" },
       ],
       points: [
         "Courage, bravery, drive, desires",
@@ -92,6 +97,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Cancer" },
         { label: "Karaka", value: "Moon (Mars: land)" },
         { label: "Type", value: "Kendra" },
+        { label: "Purushartha", value: "Moksha (liberation)" },
       ],
       points: [
         "Mother and primary caregiver; nurturing",
@@ -114,6 +120,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Leo" },
         { label: "Karaka", value: "Jupiter" },
         { label: "Type", value: "Trikona" },
+        { label: "Purushartha", value: "Dharma (purpose)" },
       ],
       points: [
         "Children and creativity (“creation”)",
@@ -136,6 +143,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Virgo" },
         { label: "Karaka", value: "Mars & Saturn" },
         { label: "Type", value: "Dusthana · Upachaya" },
+        { label: "Purushartha", value: "Artha (wealth / material)" },
       ],
       points: [
         "Health, illness, disease; healing, medicine, diet",
@@ -157,6 +165,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Libra" },
         { label: "Karaka", value: "Venus" },
         { label: "Type", value: "Kendra (Maraka lord)" },
+        { label: "Purushartha", value: "Kama (desire / pleasure)" },
       ],
       points: [
         "Marriage, spouse, long-term unions",
@@ -179,6 +188,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Scorpio" },
         { label: "Karaka", value: "Saturn" },
         { label: "Type", value: "Dusthana" },
+        { label: "Purushartha", value: "Moksha (liberation)" },
       ],
       points: [
         "Longevity, death, and the experience of death; rebirth",
@@ -200,6 +210,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Sagittarius" },
         { label: "Karaka", value: "Jupiter & Sun" },
         { label: "Type", value: "Trikona" },
+        { label: "Purushartha", value: "Dharma (purpose)" },
       ],
       points: [
         "Higher knowledge, wisdom, philosophy, religion, ethics",
@@ -222,6 +233,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Capricorn" },
         { label: "Karaka", value: "Mercury, Sun, Jupiter, Saturn" },
         { label: "Type", value: "Kendra · Upachaya" },
+        { label: "Purushartha", value: "Artha (wealth / material)" },
       ],
       points: [
         "Career, profession, and degree of success in it",
@@ -243,6 +255,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Aquarius" },
         { label: "Karaka", value: "Jupiter" },
         { label: "Type", value: "Upachaya" },
+        { label: "Purushartha", value: "Kama (desire / pleasure)" },
       ],
       points: [
         "Gains, profits, income (often from multiple sources)",
@@ -265,6 +278,7 @@ export const houses: Deck = {
         { label: "Sign", value: "Pisces" },
         { label: "Karaka", value: "Saturn" },
         { label: "Type", value: "Dusthana" },
+        { label: "Purushartha", value: "Moksha (liberation)" },
       ],
       points: [
         "Loss, expenditure, expenses, debts",

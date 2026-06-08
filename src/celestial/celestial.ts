@@ -11,9 +11,9 @@
    the CSS variables --font-mono / --font-display, so those are referenced
    through inline `style` (presentation attributes can't use var()).
 
-   LATER PHASE: the dignity-state variant — body(key, size, state, retro)
-   with exalted/debilitated/own halos & rings — lives only in the
-   Identity.html prototype and must be ported here when the chart is built.
+   body(key, size, { state, retro }) renders the dignity variant
+   (exalted/debilitated/own) and/or the retrograde "R" — ported from the
+   Identity.html prototype; used by both the chart and the planet panels.
    ============================================================ */
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
 
@@ -132,16 +132,55 @@ function bodyInner(key: string, u: number): string {
   );
 }
 
-/** Planet body SVG (neutral). `retro` adds a gold "R" superscript. */
-export function body(key: string, size: number, retro?: boolean): string {
+export type Dignity = "exalted" | "debilitated" | "own" | "neutral";
+
+const RETRO_MARKER =
+  '<g><circle cx="39.5" cy="9" r="7.6" fill="#0E1B12" fill-opacity="0.5"/><text x="39.5" y="9" dy="0.34em" text-anchor="middle" style="font-family:var(--font-mono),monospace" font-weight="700" font-size="11.5" fill="#E7C977">R</text></g>';
+
+/** Planet body SVG. `state` renders the dignity variant (exalted halo+star /
+    debilitated desaturate+dashed ring / own-color rings+ticks); `retro` adds a
+    gold "R" and stacks on any state. Shadow nodes (rahu/ketu) stay neutral.
+    Ported from the design prototype (Identity.html). */
+export function body(
+  key: string,
+  size: number,
+  opts?: { state?: Dignity; retro?: boolean },
+): string {
   _u++;
-  const marker = retro
-    ? '<g><circle cx="39.5" cy="9" r="7.6" fill="#0E1B12" fill-opacity="0.5"/><text x="39.5" y="9" dy="0.34em" text-anchor="middle" style="font-family:var(--font-mono),monospace" font-weight="700" font-size="11.5" fill="#E7C977">R</text></g>'
-    : "";
+  const u = _u;
+  const c = COLORS[key] || ACCENT;
+  let state: Dignity = opts?.state || "neutral";
+  if (key === "rahu" || key === "ketu") state = "neutral"; // nodal dignity debated
+
+  let out: string;
+  if (state === "debilitated") {
+    out =
+      '<defs><filter id="deb' + u + '" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0.38"/><feComponentTransfer><feFuncR type="linear" slope="0.8"/><feFuncG type="linear" slope="0.8"/><feFuncB type="linear" slope="0.8"/></feComponentTransfer></filter></defs>' +
+      '<g filter="url(#deb' + u + ')" opacity="0.82">' + bodyInner(key, u) + "</g>" +
+      '<circle cx="24" cy="24" r="15.6" fill="#2A2F38" fill-opacity="0.16"/>' +
+      '<circle cx="24" cy="24" r="20" fill="none" stroke="#9097A3" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="2 4.5"/>';
+  } else if (state === "exalted") {
+    out =
+      '<defs><radialGradient id="exg' + u + '" cx="50%" cy="50%" r="50%"><stop offset="40%" stop-color="#FFE6A0" stop-opacity="0"/><stop offset="74%" stop-color="#FFD66B" stop-opacity="0.5"/><stop offset="100%" stop-color="#FFD66B" stop-opacity="0"/></radialGradient><filter id="exb' + u + '" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.3"/></filter></defs>' +
+      '<circle cx="24" cy="24" r="23.5" fill="url(#exg' + u + ')"/>' +
+      bodyInner(key, u) +
+      '<circle cx="20" cy="19" r="8" fill="#fff" fill-opacity="0.12"/>' +
+      '<circle cx="24" cy="24" r="20.5" fill="none" stroke="#FFE8AE" stroke-width="1.5" stroke-opacity="0.9" filter="url(#exb' + u + ')"/>' +
+      '<path d="M24 1.8 L25.1 5.3 L28.6 6.4 L25.1 7.5 L24 11 L22.9 7.5 L19.4 6.4 L22.9 5.3 Z" fill="#FFF0C6"/>';
+  } else if (state === "own") {
+    out =
+      bodyInner(key, u) +
+      '<circle cx="24" cy="24" r="20.5" fill="none" stroke="' + c + '" stroke-width="1.6" stroke-opacity="0.92"/>' +
+      '<circle cx="24" cy="24" r="18" fill="none" stroke="' + c + '" stroke-width="1" stroke-opacity="0.32"/>' +
+      '<g stroke="' + c + '" stroke-width="1.7" stroke-opacity="0.92" stroke-linecap="round"><line x1="24" y1="1.6" x2="24" y2="4.3"/><line x1="24" y1="43.7" x2="24" y2="46.4"/><line x1="1.6" y1="24" x2="4.3" y2="24"/><line x1="43.7" y1="24" x2="46.4" y2="24"/></g>';
+  } else {
+    out = bodyInner(key, u);
+  }
+
+  if (opts?.retro) out += RETRO_MARKER;
   return (
     '<svg viewBox="0 0 48 48" width="' + size + '" height="' + size + '" style="display:block">' +
-    bodyInner(key, _u) +
-    marker +
+    out +
     "</svg>"
   );
 }
