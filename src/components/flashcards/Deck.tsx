@@ -26,7 +26,8 @@ export function Deck({
   const dialogRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const liveRef = useRef<HTMLDivElement>(null);
-  const touch = useRef({ x: 0, y: 0, moved: false });
+  const touch = useRef({ x: 0, y: 0 });
+  const swiped = useRef(false); // set on a swipe so the trailing click doesn't also flip
 
   const go = useCallback(
     (d: number) => {
@@ -105,24 +106,22 @@ export function Deck({
 
   function onTouchStart(e: React.TouchEvent) {
     const t = e.touches[0];
-    touch.current = { x: t.clientX, y: t.clientY, moved: false };
+    touch.current = { x: t.clientX, y: t.clientY };
+    swiped.current = false;
   }
-  function onTouchMove(e: React.TouchEvent) {
-    const t = e.touches[0];
-    // any drag (horizontal swipe OR vertical scroll) counts as movement, so a
-    // scroll on a long card never registers as a tap-to-flip
-    if (
-      Math.abs(t.clientX - touch.current.x) > 10 ||
-      Math.abs(t.clientY - touch.current.y) > 10
-    )
-      touch.current.moved = true;
-  }
+  // Touch only NAVIGATES (horizontal swipe). The flip happens on the click the
+  // browser synthesizes from a tap — see the card's onClick. (Previously a tap
+  // flipped here AND on that synthesized click, double-flipping so the card
+  // looked like it never flipped on mobile.) A vertical scroll on a long card
+  // moves the touch, so the browser fires no click and nothing flips.
   function onTouchEnd(e: React.TouchEvent) {
     const t = e.changedTouches[0];
     const dx = t.clientX - touch.current.x;
     const dy = t.clientY - touch.current.y;
-    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
-    else if (!touch.current.moved) flip();
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
+      swiped.current = true; // tell the trailing click to skip the flip
+      go(dx < 0 ? 1 : -1);
+    }
   }
 
   const card = deck.cards[i];
@@ -171,7 +170,6 @@ export function Deck({
           <div
             className="fc-stack"
             onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
             <span className="fc-ghost fc-ghost--2" aria-hidden="true" />
@@ -189,7 +187,11 @@ export function Deck({
                 (flipped ? "Showing meaning." : "Showing term.") +
                 " Activate to flip."
               }
-              onClick={flip}
+              onClick={() => {
+                // a swipe just navigated; don't let its trailing click also flip
+                if (swiped.current) { swiped.current = false; return; }
+                flip();
+              }}
             >
               <Card card={card} deckAccent={deck.accent} flipped={flipped} />
             </div>
