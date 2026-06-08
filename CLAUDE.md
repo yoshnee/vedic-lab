@@ -411,15 +411,28 @@ prototype's geometry as the starting point for the real chart component.
 
 ## Deployment
 
-- Deploys to **Vercel** → **studyvedicastrology.kerjasama.dev**.
-- **Critical:** the Swiss Ephemeris WASM needs **Cross-Origin Isolation** (`SharedArrayBuffer`).
-  **Set COOP/COEP response headers** on Vercel or the engine will not load:
+**LIVE in production** at **studyvedicastrology.kerjasama.dev** (valid SSL). Source is public at
+**github.com/yoshnee/vedic-lab** (AGPL-3.0).
+
+- **Vercel project:** `yoshnee-rs-projects/vedic-lab`. Linked via the CLI (`.vercel/` is gitignored),
+  so the project is **not git-connected yet** — deploys are run from the CLI:
+  - Preview: `vercel deploy --scope yoshnee-rs-projects`
+  - Production: `vercel deploy --prod --scope yoshnee-rs-projects` (updates the custom domain).
+  - (Production deploys are guarded by the harness — they need explicit user authorization.)
+- **`vercel.json` pins `buildCommand` to `npm test && npm run build`** — two jobs in one:
+  1. **Test gate** — the Vitest suite runs first; any failure aborts the build, so a broken engine
+     never deploys (covers CLI deploys now and git-based deploys later).
+  2. **WASM copy** — running the npm `build` script (not a bare `next build`) guarantees the
+     `prebuild` hook (`scripts/copy-wasm.mjs`) runs, so `public/wasm/*` (gitignored, 12.5 MB) is
+     always populated. A bare `next build` would skip it and ship an engine that 404s at runtime.
+- **Critical:** the Swiss Ephemeris WASM needs **Cross-Origin Isolation** (`SharedArrayBuffer`), so
+  **COOP/COEP response headers** are set globally in `next.config.ts` (verified live on the domain):
   ```
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
   ```
-  (Configure via Next.js headers / `vercel.json` / `vercel.ts`.) Cross-origin sub-resources must then
-  be CORP/CORS-compatible — keep that in mind for fonts and any external assets.
+  Cross-origin sub-resources must then be CORP/CORS-compatible — keep that in mind for fonts and any
+  external assets (fonts are self-hosted via `next/font`, so they're fine).
 
 ---
 
