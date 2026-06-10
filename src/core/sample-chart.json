@@ -107,7 +107,7 @@
       "dispositor": null,
       "maitriToDispositor": "own_sign",
       "functionalNature": "neutral",
-      "gandanta": true,
+      "gandanta": false,
       "gandantaDeep": false,
       "gandantaDistance": 1.695868288355257,
       "avasthas": [

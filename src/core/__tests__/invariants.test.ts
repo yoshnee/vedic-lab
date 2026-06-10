@@ -210,14 +210,23 @@ describe("combustion", () => {
 });
 
 describe("gandanta", () => {
-  it("flags the three water→fire junctions, with a deep band within 1°", () => {
+  it("flags ±1°40′ around the three water→fire junctions (28°20′ → 1°40′ zone)", () => {
+    // Owner-chosen zone (the reference uses a full pada each side) — see the
+    // GANDANTA_ORB note in constants.ts before "fixing" this.
     for (const junction of [0, 120, 240]) {
       expect(gandantaOf(junction)).toMatchObject({ on: true, deep: true });
     }
-    expect(gandantaOf(241).deep).toBe(true); // 1° into Sagittarius
-    expect(gandantaOf(242)).toMatchObject({ on: true, deep: false }); // 2° → on but not deep
+    expect(gandantaOf(241.5).on).toBe(true); // 1°30′ into Sagittarius ≤ 1°40′
+    expect(gandantaOf(238.5).on).toBe(true); // 28°30′ Scorpio — 1°30′ before the junction
+    expect(gandantaOf(242).on).toBe(false); // 2° → outside the 1°40′ zone
+    expect(gandantaOf(238).on).toBe(false); // 28° Scorpio — 2° before → outside
     expect(gandantaOf(60).on).toBe(false); // mid-Taurus, far from any junction
-    expect(gandantaOf(115).on).toBe(false); // 5° before a junction → outside the pada orb
+  });
+
+  it("deep band is ±48′ (the nakshatra-gandanta band)", () => {
+    expect(gandantaOf(240.5).deep).toBe(true); // 30′ ≤ 48′
+    expect(gandantaOf(239.3).deep).toBe(true); // 42′ before the junction
+    expect(gandantaOf(241)).toMatchObject({ on: true, deep: false }); // 1° → on, not deep
   });
 });
 

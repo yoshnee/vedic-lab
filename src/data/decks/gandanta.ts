@@ -46,8 +46,9 @@ export const gandanta: Deck = {
         "Pisces → Aries: last pada of Revati (water) into the first pada of Ashwini (fire)",
         "Cancer → Leo: last pada of Ashlesha (water) into the first pada of Magha (fire)",
         "Scorpio → Sagittarius: last pada of Jyeshtha (water) into the first pada of Mula (fire)",
-        "Each spans roughly the last pada of the water sign and the first pada of the fire sign (~3°20′ either side); the knot is tightest right at the exact boundary",
-        "Exact width varies by source — some narrow the “true” gandanta to ~3.5° straddling the junction",
+        "The zone runs 28°20′ of the water sign to 1°40′ of the fire sign — 1°40′ either side of the boundary, 3°20′ in all",
+        "The knot is tightest right at the exact boundary — within ±48′ it reads as deep gandanta",
+        "Exact width varies by school — some flag the full junction padas (3°20′ either side)",
       ],
     },
     {

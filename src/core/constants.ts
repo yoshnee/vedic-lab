@@ -269,9 +269,12 @@ export const PADA_ARC = 360 / 108; // 3°20′
 
 /* Gandanta — the three water→fire sign junctions: Pisces→Aries (0°/360°),
    Cancer→Leo (120°), Scorpio→Sagittarius (240°). A point is in gandanta within
-   GANDANTA_ORB of a junction (the last pada of the water sign / first pada of the
-   fire sign). Orb = one pada (360/108 = 3°20′), matching the Hora-Prakash reference
-   (calculations.js `_GANDANTA_DEG = 360/108`, water signs {4,8,12}, fire {1,5,9}). */
+   GANDANTA_ORB of a junction — the zone 28°20′ of the water sign → 1°40′ of the
+   fire sign, i.e. 1°40′ each side (3°20′ total), per the owner's source. The
+   "deep" emphasis tier is ±48′, the source's nakshatra-gandanta (Moon) band.
+   NB the Hora-Prakash reference uses a FULL pada each side (calculations.js
+   `_GANDANTA_DEG = 360/108` = 3°20′ per side) — the owner chose the tighter
+   zone; don't re-align to the reference. */
 export const GANDANTA_BOUNDARIES = [0, 120, 240];
-export const GANDANTA_ORB = 360 / 108; // 3°20′ ≈ 3.3333° — one pada, per the reference
-export const GANDANTA_DEEP_ORB = 1; // within 1° of the exact junction → "deep" gandanta (UI emphasis)
+export const GANDANTA_ORB = 100 / 60; // 1°40′ each side of the junction
+export const GANDANTA_DEEP_ORB = 48 / 60; // within ±48′ → "deep" gandanta (UI emphasis)

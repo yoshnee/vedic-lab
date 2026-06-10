@@ -175,9 +175,10 @@ export function conjunctIn(
 }
 
 /** Gandanta — proximity to a water→fire sign junction (0°/120°/240°). `distance`
-    is the circular degrees to the nearest junction; `on` within one pada (the
-    reference orb), `deep` within GANDANTA_DEEP_ORB of the exact junction. Applies
-    to any point — planet or Lagna — since it derives straight from the longitude. */
+    is the circular degrees to the nearest junction; `on` within GANDANTA_ORB
+    (1°40′ each side — the 28°20′→1°40′ zone), `deep` within GANDANTA_DEEP_ORB
+    (±48′). Applies to any point — planet or Lagna — since it derives straight
+    from the longitude. */
 export function gandantaOf(lon: number): { on: boolean; deep: boolean; distance: number } {
   const L = norm360(lon);
   const distance = Math.min(
