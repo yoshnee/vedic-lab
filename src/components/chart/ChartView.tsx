@@ -111,10 +111,10 @@ export function ChartView({ model }: { model: ChartModel }) {
                 className="pp-pill"
                 data-kind="gandanta"
                 data-deep={chart.ascendant.gandantaDeep || undefined}
-                title={`Lagna ${chart.ascendant.gandantaDistance.toFixed(2)}° from the water→fire junction${chart.ascendant.gandantaDeep ? " — deep gandanta" : ""}`}
+                title={`Lagna ${chart.ascendant.gandantaDistance.toFixed(2)}° from the water→fire junction${chart.ascendant.gandantaDeep ? " — inside the 28°20′→1°40′ true gandanta zone" : ""}`}
                 onClick={() => openCard("gandanta")}
               >
-                {chart.ascendant.gandantaDeep ? "Gandanta · deep" : "Gandanta"}
+                {chart.ascendant.gandantaDeep ? "True Gandanta" : "Gandanta"}
               </button>
             )}
           </p>

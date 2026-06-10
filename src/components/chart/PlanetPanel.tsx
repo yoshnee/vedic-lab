@@ -224,9 +224,9 @@ export function PlanetPanel({
               {p.gandanta && (
                 <button type="button" className="pp-pill" data-kind="gandanta"
                   data-deep={p.gandantaDeep || undefined}
-                  title={`${p.gandantaDistance.toFixed(2)}° from the water→fire junction${p.gandantaDeep ? " — deep gandanta" : ""}`}
+                  title={`${p.gandantaDistance.toFixed(2)}° from the water→fire junction${p.gandantaDeep ? " — inside the 28°20′→1°40′ true gandanta zone" : ""}`}
                   onClick={(e) => { e.stopPropagation(); onOpenCard("gandanta"); }}>
-                  {p.gandantaDeep ? "Gandanta · deep" : "Gandanta"}
+                  {p.gandantaDeep ? "True Gandanta" : "Gandanta"}
                 </button>
               )}
               {p.maitriToDispositor && (

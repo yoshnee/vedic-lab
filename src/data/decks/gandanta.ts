@@ -53,7 +53,7 @@ export const gandanta: Deck = {
         "Cancer → Leo: last pada of Ashlesha (water) into the first pada of Magha (fire)",
         "Scorpio → Sagittarius: last pada of Jyeshtha (water) into the first pada of Mula (fire)",
         "Widest reading: the full junction padas — the water sign's last pada + the fire sign's first, 3°20′ either side (the chart's gandanta flag)",
-        "Narrower reading: 28°20′ → 1°40′, just 1°40′ either side — the chart marks this “true gandanta” zone as deep",
+        "Narrower reading: 28°20′ → 1°40′, just 1°40′ either side — the chart labels this zone “True Gandanta”",
         "Schools differ on the width; all agree the knot tightens toward the exact boundary",
       ],
     },
@@ -119,7 +119,7 @@ export const gandanta: Deck = {
       points: [
         "The affected significations face turbulence, instability, or accelerated soul-growth — e.g. Venus in gandanta puts relationships and finances at the knot",
         "The Moon and the Lagna in gandanta are the most emphasized placements, with their own named (tighter) definitions",
-        "The closer to the exact boundary, the more acute the effect — the chart's deep band (±1°40′)",
+        "The closer to the exact boundary, the more acute the effect — within ±1°40′ the chart shows “True Gandanta”",
         "Best read as an area calling for conscious work and remedy, not simply as “bad”",
       ],
     },

@@ -134,7 +134,7 @@ export function Legend({ onClose }: { onClose: () => void }) {
           <section className="lg-sec">
             <h3>Markers</h3>
             <div className="lg-grid">
-              <Item label="Gandanta" hint="water→fire knot; brighter when deep"
+              <Item label="Gandanta" hint="water→fire knot; “True Gandanta” within ±1°40′"
                 swatch={<span className="pp-pill" data-kind="gandanta">Gandanta</span>} />
               <Item label="Combust (Asta)" hint="within the Sun's glare"
                 swatch={<Svg html={combust(34)} />} />

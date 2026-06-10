@@ -245,9 +245,9 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   reads distinct from the dignity halo on the glyph; omitted for nodes) opens the rising-sign card. A
   **maitri** pill (Great Friend → Friend → Neutral → Enemy → Great Enemy, or Own Sign; green→grey→red,
   gold for own; omitted for nodes) shows each planet's panchadha relation to its dispositor and opens the
-  Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned,
-  brighter when `deep`) and on the Lagna marker in the hero — tapping either opens the Gandanta deck's
-  "What Gandanta Is" card. An **Avasthas** drawer (collapsed by default, subordinate to the badges/
+  Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned;
+  inside the ±1°40′ zone it brightens and reads **"True Gandanta"**) and on the Lagna marker in the
+  hero — tapping either opens the Gandanta deck's "What Gandanta Is" card. An **Avasthas** drawer (collapsed by default, subordinate to the badges/
   pills) groups each planet's "states" — launching with **Baladi** (five ages by degree-in-sign;
   odd signs Bala→Mrita, even reversed) and **Jagradadi** (Awake/Dreaming/Asleep by dignity, splitting
   the middle case on the **natural/naisargika** relation to the sign lord, with mooltrikona → Awake).
