@@ -72,15 +72,17 @@ export function ChartRuler({
       counted from {ascSign}.
     </>,
     <>
-      Its nakshatra is{" "}
+      {ruler.name} occupies the nakshatra{" "}
       <FcLink onClick={() => onOpenCard("nakshatra", ruler.nakshatra.name)}>
         {ruler.nakshatra.name}
-      </FcLink>
-      ,{" "}
+      </FcLink>{" "}
+      (whose lord is{" "}
+      <FcLink onClick={() => onOpenCard("planet", ruler.nakshatra.lord)}>{ruler.nakshatra.lord}</FcLink>
+      ),{" "}
       <FcLink onClick={() => onOpenCard("pada", ruler.pada)}>
         pada {ruler.pada} ({ruler.purushartha})
-      </FcLink>{" "}
-      — the ruler&rsquo;s own nakshatra, distinct from the Moon&rsquo;s (which seeds the daśā).
+      </FcLink>
+      . Note we read the chart ruler&rsquo;s nakshatra here — not the Moon&rsquo;s, which seeds the daśā.
     </>,
   ];
   if (conjuncts.length > 0) {
