@@ -144,13 +144,13 @@ function chestaBala(p: ShadbalaBody): number {
   return spd >= (CHESTA_MEAN_SPEED[p.key] ?? 1) ? 45 : 15;
 }
 
-/* Exact multiples of 60/7, strongest to weakest (Sun 7× … Saturn 1×). The
-   reference hardcodes rounded values with a typo at Jupiter (34.28; 4 × 60/7 =
-   34.2857 → 34.29) — computing the multiples keeps engine and deck agreeing. */
-const SEVENTH = 60 / 7;
+/* The reference's literal table (owner-directed: every constant identical to
+   the upstream, parity-gated). Conceptually these are the 60/7 multiples,
+   strongest to weakest (Sun 7× … Saturn 1×) — the deck teaches that pattern;
+   the upstream's rounding (Jupiter 34.28 where 4 × 60/7 = 34.2857) is kept
+   verbatim so totals match the vendored shadbala.js exactly. */
 const NAISARGIKA: Record<string, number> = {
-  sun: 7 * SEVENTH, moon: 6 * SEVENTH, venus: 5 * SEVENTH, jupiter: 4 * SEVENTH,
-  mercury: 3 * SEVENTH, mars: 2 * SEVENTH, saturn: 1 * SEVENTH,
+  sun: 60, moon: 51.43, venus: 42.86, jupiter: 34.28, mercury: 25.71, mars: 17.14, saturn: 8.57,
 };
 
 const DRIK_OFFSETS: Record<string, number[]> = {
