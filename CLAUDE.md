@@ -212,14 +212,21 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (`GANDANTA_ORB = 360/108`, matching the reference), and `deep` is the narrower 28°20′→1°40′
   "true gandanta" zone, ±1°40′ (Sutton); carried by every planet **and the Lagna**), **tithi** (Moon only —
   `vedic.tithiOf`; absolute 1–30 from the Moon–Sun elongation, `tithiNumber`/`waxing`/`illumination` on
-  the Moon's data), **shadbala** (`src/core/shadbala.ts` — the reference's simplified six-fold scheme,
-  per planet on `PlanetData.shadbala`: Sthana = Ucha + Saptavargaja over D1/D2/D3/D7/D9/D12/D16 (the
-  reference's varga set; those mappings live in `divisional.ts`) + Ojayugma + Kendradi + Drekkana,
-  Dig, Kala = Nathonnatha + Paksha + Ayana, Chesta (retro/speed brackets; Sun & Moon take Ayana),
-  Naisargika, Drik (±15 × strength ÷ 2, can go negative); totals + BPHS required + ratio; nodes null;
-  NB it is NOT JHora-exact — JHora's full Kala/Chesta have more sub-balas; one documented divergence:
-  day/night birth uses the ecliptic-horizon test (Sun above the asc/desc axis) since we compute no
-  sunrise — the reference reads panchang sunrise and silently defaults to "day" without it),
+  the Moon's data), **shadbala** (`src/core/shadbala.ts` — the canonical Hora-Prakash six-fold scheme,
+  **PARITY-GATED**: `__tests__/shadbala-parity.test.ts` runs all 23 fixture charts through our engine
+  AND the byte-identical vendored upstream `shadbala.js` (`__tests__/__upstream__/`, AGPL, test-only,
+  never bundled) asserting every component + total ≤0.1 virupa — constants must stay literally the
+  upstream's (e.g. Naisargika Jupiter 34.28, NOT the exact 60/7 multiple; the gate catches drift).
+  Per planet on `PlanetData.shadbala`: Sthana = Uchcha + Saptavargaja over D1/D2/D3/D7/D9/D12/D16 +
+  Ojayugma + Kendradi + Drekkana, Dig, Kala = Nathonnatha + Paksha + Ayana, Chesta (retro/speed
+  brackets; Sun & Moon take Ayana), Naisargika, Drik (±15 × strength ÷ 2, can go negative); totals +
+  classical BPHS required minimums + ratio; **Ishta/Kashta Phala** = √(uchcha×chesta) /
+  √((60−uchcha)(60−chesta)) (BPHS-derived — the upstream is silent, the one addition outside the
+  gate); `parts` carries the Sthana/Kala sub-components for future progressive disclosure; `tierOf`
+  grades total vs required (≥+20% strong · ≥min adequate · −10% borderline · weak); nodes null.
+  NB NOT JHora/desktop-exact by design (JHora's fuller Kala/Chesta diverge ~58 virupas mean — measured,
+  accepted); day/night birth uses the ecliptic-horizon test (documented; the upstream silently
+  defaults to "day" without panchang — the parity test brackets panchang to agree),
   Vimshottari dasha (MD→AD→PD), and a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
   positions/nakshatra/lord/pada/retro plus the full MD→AD dasha tree (MD ≤5d, AD ≤7d of JHora; the
   linear-vs-JHora-hybrid drift the reference's `DASHA_CALCULATION_METHODS.md` documents) — and **invariant
@@ -284,9 +291,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned;
   inside the ±1°40′ zone it brightens and reads **"True Gandanta"**) and on the Lagna marker in the
   hero — tapping either opens the Gandanta deck's "What Gandanta Is" card. A **Shadbala** drawer (same collapsible pattern as Avasthas, rendered above it;
-  collapsed header shows the verdict — rupas + strong/weak; expanded, six bala rows + total +
-  required/ratio, every row opening its Shadbala deck card via the `shadbala` flashcard type;
-  hidden for nodes). An **Avasthas** drawer (collapsed by default, subordinate to the badges/
+  collapsed header shows the verdict — rupas + the **tier word** (Strong/Adequate/Borderline/Weak,
+  tinted gold/neutral/ember/red via `data-tier`); expanded, six bala rows + **Ishta/Kashta Phala**
+  rows + total + required/ratio with the classical binary (Bal-Yukta/Balaheena), every row opening
+  its Shadbala deck card via the `shadbala` flashcard type; hidden for nodes). An **Avasthas** drawer (collapsed by default, subordinate to the badges/
   pills) groups each planet's "states" — launching with **Baladi** (five ages by degree-in-sign;
   odd signs Bala→Mrita, even reversed) and **Jagradadi** (Awake/Dreaming/Asleep by dignity, splitting
   the middle case on the **natural/naisargika** relation to the sign lord, with mooltrikona → Awake).

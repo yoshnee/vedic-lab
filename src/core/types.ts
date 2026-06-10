@@ -79,6 +79,19 @@ export interface Avastha {
   flashcard: { type: "avastha"; id: string }; // tap target → onOpenCard("avastha", id)
 }
 
+/** Sub-components of Sthana and Kala Bala (virupas) — plumbed for the drawer's
+    future progressive disclosure; not yet rendered. */
+export interface ShadbalaParts {
+  uchcha: number;
+  saptavargaja: number;
+  ojayugma: number;
+  kendradi: number;
+  drekkana: number;
+  nathonnatha: number;
+  paksha: number;
+  ayana: number; // the Kala contribution (0 for Sun/Moon — theirs lives in Chesta)
+}
+
 /** Six-fold strength, all in virupas (60 = 1 rupa). See core/shadbala.ts. */
 export interface ShadbalaScore {
   sthana: number;
@@ -90,6 +103,9 @@ export interface ShadbalaScore {
   total: number;
   required: number; // BPHS minimum for this planet
   ratio: number; // total / required — ≥1 reads strong (Bal-Yukta)
+  ishta: number; // Ishta Phala 0–60 — √(uchcha × chesta); BPHS-derived (the reference is silent)
+  kashta: number; // Kashta Phala 0–60 — √((60−uchcha) × (60−chesta))
+  parts: ShadbalaParts;
 }
 
 export interface PlanetData {

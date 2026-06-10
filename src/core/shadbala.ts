@@ -195,25 +195,48 @@ export function computeShadbala(
   const out: Partial<Record<PlanetKey, ShadbalaScore>> = {};
   for (const p of grahas) {
     const d9Sign = navamsa(p.lon).sign;
-    const sthana =
-      uchaBala(p.key, p.lon) +
-      saptaVargajaBala(p.key, p.lon) +
-      ojayugmaBala(p.key, p.sign, d9Sign) +
-      kendradiBala(p.house) +
-      drekkanaBala(p.key, p.degreeValue);
+    const uchcha = uchaBala(p.key, p.lon);
+    const saptavargaja = saptaVargajaBala(p.key, p.lon);
+    const ojayugma = ojayugmaBala(p.key, p.sign, d9Sign);
+    const kendradi = kendradiBala(p.house);
+    const drekkana = drekkanaBala(p.key, p.degreeValue);
+    const sthana = uchcha + saptavargaja + ojayugma + kendradi + drekkana;
     const dig = digBala(p.key, p.house);
-    const ayanaContrib = p.key === "sun" || p.key === "moon" ? 0 : ayanaBala(p.key, p.lon);
-    const kala = nathonnathaBala(p.key, isDayBirth) + pakshaBala(p.key, moon.lon, sun.lon) + ayanaContrib;
+    const nathonnatha = nathonnathaBala(p.key, isDayBirth);
+    const paksha = pakshaBala(p.key, moon.lon, sun.lon);
+    const ayana = p.key === "sun" || p.key === "moon" ? 0 : ayanaBala(p.key, p.lon);
+    const kala = nathonnatha + paksha + ayana;
     const chesta = chestaBala(p);
     const naisargika = NAISARGIKA[p.key];
     const drik = drikBala(p, grahas);
     const total = sthana + dig + kala + chesta + naisargika + drik;
     const required = SHADBALA_REQUIRED[p.key];
+    // Ishta/Kashta Phala — BPHS geometric means over Uchcha & Chesta (the
+    // reference implements no phala; BPHS governs where it is silent).
+    const ishta = Math.sqrt(uchcha * chesta);
+    const kashta = Math.sqrt((60 - uchcha) * (60 - chesta));
     out[p.key] = {
       sthana: r1(sthana), dig: r1(dig), kala: r1(kala), chesta: r1(chesta),
       naisargika: r1(naisargika), drik: r1(drik),
       total: r1(total), required, ratio: Math.round((total / required) * 100) / 100,
+      ishta: r1(ishta), kashta: r1(kashta),
+      parts: {
+        uchcha: r1(uchcha), saptavargaja: r1(saptavargaja), ojayugma: r1(ojayugma),
+        kendradi: r1(kendradi), drekkana: r1(drekkana),
+        nathonnatha: r1(nathonnatha), paksha: r1(paksha), ayana: r1(ayana),
+      },
     };
   }
   return out;
+}
+
+/** Tier reading of the total vs the planet's own bar (owner-endorsed):
+    ≥ +20% strong · ≥ minimum adequate · within 10% below borderline · else weak.
+    The classical binary (Bal-Yukta/Balaheena) is simply ratio ≥ 1. */
+export type ShadbalaTier = "strong" | "adequate" | "borderline" | "weak";
+export function tierOf(s: Pick<ShadbalaScore, "total" | "required">): ShadbalaTier {
+  if (s.total >= s.required * 1.2) return "strong";
+  if (s.total >= s.required) return "adequate";
+  if (s.total >= s.required * 0.9) return "borderline";
+  return "weak";
 }

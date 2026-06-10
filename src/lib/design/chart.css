@@ -301,9 +301,13 @@
 
 /* ---- Avasthas drawer: a subordinate, collapsible "states" group ---- */
 .pp-ava { border-top: 1px solid var(--border-soft); padding-top: 12px; }
-/* Shadbala drawer header verdict + total rows (shares the .pp-ava pattern) */
+/* Shadbala drawer header verdict + total rows (shares the .pp-ava pattern).
+   Tier tints reuse the maitri/gandanta recipe: gold / neutral / ember / red. */
 .pp-sb-sum { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .04em; color: var(--text-3); }
-.pp-sb-sum[data-strong] { color: var(--accent); }
+.pp-sb-sum[data-tier="strong"] { color: var(--accent); }
+.pp-sb-sum[data-tier="adequate"] { color: var(--text-2); }
+.pp-sb-sum[data-tier="borderline"] { color: #E08A5A; }
+.pp-sb-sum[data-tier="weak"] { color: #E58A78; }
 .pp-sb-total { border-top: 1px solid var(--border-soft); }
 .pp-sb-total .str[data-strong] { color: var(--accent); }
 /* a compact, clickable pill (matches .pp-pill) with a chevron that rotates

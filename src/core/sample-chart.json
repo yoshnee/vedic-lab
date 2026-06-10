@@ -80,7 +80,19 @@
         "drik": 0,
         "total": 311,
         "required": 390,
-        "ratio": 0.8
+        "ratio": 0.8,
+        "ishta": 13.7,
+        "kashta": 43.1,
+        "parts": {
+          "uchcha": 7.7,
+          "saptavargaja": 52.5,
+          "ojayugma": 7.5,
+          "kendradi": 15,
+          "drekkana": 0,
+          "nathonnatha": 60,
+          "paksha": 43.8,
+          "ayana": 0
+        }
       },
       "dasha": [],
       "lagnaLord": false,
@@ -154,7 +166,19 @@
         "drik": 0,
         "total": 328.7,
         "required": 360,
-        "ratio": 0.91
+        "ratio": 0.91,
+        "ishta": 19.4,
+        "kashta": 37,
+        "parts": {
+          "uchcha": 31.6,
+          "saptavargaja": 127.5,
+          "ojayugma": 15,
+          "kendradi": 60,
+          "drekkana": 15,
+          "nathonnatha": 0,
+          "paksha": 16.2,
+          "ayana": 0
+        }
       },
       "tithiNumber": 26,
       "waxing": false,
@@ -233,7 +257,19 @@
         "drik": 7.5,
         "total": 337.6,
         "required": 300,
-        "ratio": 1.13
+        "ratio": 1.13,
+        "ishta": 36.4,
+        "kashta": 21.4,
+        "parts": {
+          "uchcha": 29.5,
+          "saptavargaja": 90,
+          "ojayugma": 7.5,
+          "kendradi": 60,
+          "drekkana": 0,
+          "nathonnatha": 0,
+          "paksha": 43.8,
+          "ayana": 7.2
+        }
       },
       "dasha": [],
       "lagnaLord": false,
@@ -316,7 +352,19 @@
         "drik": 7.5,
         "total": 423,
         "required": 420,
-        "ratio": 1.01
+        "ratio": 1.01,
+        "ishta": 27.7,
+        "kashta": 20,
+        "parts": {
+          "uchcha": 51.1,
+          "saptavargaja": 67.5,
+          "ojayugma": 15,
+          "kendradi": 60,
+          "drekkana": 15,
+          "nathonnatha": 60,
+          "paksha": 16.2,
+          "ayana": 30
+        }
       },
       "dasha": [
         "maha",
@@ -402,7 +450,19 @@
         "drik": 7.5,
         "total": 501.6,
         "required": 390,
-        "ratio": 1.29
+        "ratio": 1.29,
+        "ishta": 47.6,
+        "kashta": 0,
+        "parts": {
+          "uchcha": 37.7,
+          "saptavargaja": 157.5,
+          "ojayugma": 15,
+          "kendradi": 60,
+          "drekkana": 0,
+          "nathonnatha": 60,
+          "paksha": 16.2,
+          "ayana": 53.4
+        }
       },
       "dasha": [],
       "lagnaLord": false,
@@ -490,7 +550,19 @@
         "drik": 7.5,
         "total": 432.3,
         "required": 330,
-        "ratio": 1.31
+        "ratio": 1.31,
+        "ishta": 11.7,
+        "kashta": 47.8,
+        "parts": {
+          "uchcha": 9.1,
+          "saptavargaja": 161.3,
+          "ojayugma": 7.5,
+          "kendradi": 60,
+          "drekkana": 15,
+          "nathonnatha": 60,
+          "paksha": 16.2,
+          "ayana": 7.8
+        }
       },
       "dasha": [],
       "lagnaLord": true,
@@ -573,7 +645,19 @@
         "drik": 0,
         "total": 317.3,
         "required": 300,
-        "ratio": 1.06
+        "ratio": 1.06,
+        "ishta": 38.7,
+        "kashta": 17.4,
+        "parts": {
+          "uchcha": 49.9,
+          "saptavargaja": 86.3,
+          "ojayugma": 0,
+          "kendradi": 30,
+          "drekkana": 0,
+          "nathonnatha": 0,
+          "paksha": 43.8,
+          "ayana": 58.8
+        }
       },
       "dasha": [],
       "lagnaLord": false,

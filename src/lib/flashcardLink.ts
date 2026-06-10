@@ -91,6 +91,7 @@ export function resolveFlashcard(
       sthana: "Sthana Bala", dig: "Dig Bala", kala: "Kala Bala", chesta: "Cheshta Bala",
       naisargika: "Naisargika Bala", drik: "Drik Bala",
       total: "Reading the Numbers", ratio: "Reading the Numbers", required: "Minimum Strength Thresholds",
+      ishta: "Ishta & Kashta Phala", kashta: "Ishta & Kashta Phala",
     };
     const deck = DECKS.find((d) => d.id === "shadbala");
     if (!deck) return null;

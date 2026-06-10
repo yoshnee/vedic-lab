@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
 import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha, ShadbalaScore } from "@/core/types";
+import { tierOf, type ShadbalaTier } from "@/core/shadbala";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
 const PNAME: Record<PlanetKey, string> = {
@@ -174,6 +175,10 @@ const SHADBALA_ROWS: { id: string; label: string; get: (s: ShadbalaScore) => num
   { id: "drik", label: "Drik · aspectual", get: (s) => s.drik },
 ];
 
+const TIER_LABEL: Record<ShadbalaTier, string> = {
+  strong: "Strong", adequate: "Adequate", borderline: "Borderline", weak: "Weak",
+};
+
 function ShadbalaDrawer({
   sb,
   pkey,
@@ -186,14 +191,15 @@ function ShadbalaDrawer({
   const [open, setOpen] = useState(false);
   if (!sb) return null;
   const strong = sb.ratio >= 1;
+  const tier = tierOf(sb);
   const rupas = (sb.total / 60).toFixed(2);
 
   return (
     <div className="pp-ava" data-open={open} style={{ "--pc": `var(--p-${pkey})` } as React.CSSProperties}>
       <button type="button" className="pp-ava-head" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         <span className="lbl">Shadbala</span>
-        <span className="pp-sb-sum" data-strong={strong || undefined}>
-          {rupas} rupas · {strong ? "strong" : "weak"}
+        <span className="pp-sb-sum" data-tier={tier}>
+          {rupas} rupas · {TIER_LABEL[tier]}
         </span>
         <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
       </button>
@@ -212,6 +218,26 @@ function ShadbalaDrawer({
                 </button>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "ishta"); }}
+              >
+                <span className="sys">Ishta Phala</span>
+                <span className="str">{sb.ishta}</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "kashta"); }}
+              >
+                <span className="sys">Kashta Phala</span>
+                <span className="str">{sb.kashta}</span>
+              </button>
+            </li>
             <li>
               <button
                 type="button"

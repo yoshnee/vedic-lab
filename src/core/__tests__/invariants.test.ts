@@ -16,7 +16,7 @@ import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
 } from "../vedic";
 import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa } from "../divisional";
-import { computeShadbala, SHADBALA_REQUIRED } from "../shadbala";
+import { computeShadbala, SHADBALA_REQUIRED, tierOf } from "../shadbala";
 import type { ShadbalaBody } from "../shadbala";
 import type { PlanetKey } from "../types";
 
@@ -254,6 +254,31 @@ describe("shadbala", () => {
     expect(day.sun!.kala - night.sun!.kala).toBeCloseTo(60, 1);
     expect(night.moon!.kala - day.moon!.kala).toBeCloseTo(60, 1);
     expect(day.mercury!.kala).toBeCloseTo(night.mercury!.kala, 1); // Mercury: 60 always
+  });
+
+  it("ishta/kashta are 0–60 geometric means of uchcha & chesta; parts sum to their components", () => {
+    const out = computeShadbala(mkBodies(), 0);
+    for (const [key, s] of Object.entries(out)) {
+      expect(s.ishta, `${key} ishta`).toBeGreaterThanOrEqual(0);
+      expect(s.ishta, `${key} ishta`).toBeLessThanOrEqual(60);
+      expect(s.kashta, `${key} kashta`).toBeGreaterThanOrEqual(0);
+      expect(s.kashta, `${key} kashta`).toBeLessThanOrEqual(60);
+      expect(s.ishta, `${key} ishta identity`).toBeCloseTo(
+        Math.sqrt(s.parts.uchcha * s.chesta), 0);
+      const sthanaSum =
+        s.parts.uchcha + s.parts.saptavargaja + s.parts.ojayugma + s.parts.kendradi + s.parts.drekkana;
+      expect(Math.abs(s.sthana - sthanaSum), `${key} sthana = Σ parts`).toBeLessThan(0.5);
+      const kalaSum = s.parts.nathonnatha + s.parts.paksha + s.parts.ayana;
+      expect(Math.abs(s.kala - kalaSum), `${key} kala = Σ parts`).toBeLessThan(0.5);
+    }
+  });
+
+  it("tierOf: +20% strong · ≥minimum adequate · within 10% below borderline · else weak", () => {
+    expect(tierOf({ total: 360, required: 300 })).toBe("strong"); // exactly +20%
+    expect(tierOf({ total: 300, required: 300 })).toBe("adequate"); // exactly at the bar
+    expect(tierOf({ total: 359, required: 300 })).toBe("adequate");
+    expect(tierOf({ total: 270, required: 300 })).toBe("borderline"); // exactly −10%
+    expect(tierOf({ total: 269, required: 300 })).toBe("weak");
   });
 
   it("drik bala may be negative and is never produced for the nodes", () => {
