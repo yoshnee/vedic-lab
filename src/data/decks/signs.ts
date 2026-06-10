@@ -64,7 +64,9 @@ export const signs: Deck = {
       points: [
         "Every sign sorts by three filters: polarity, quality, and element",
         "Polarity — odd/male signs are active; even/female signs are receptive",
-        "Quality (modality) — Cardinal initiates; Fixed stabilizes; Mutable adapts",
+        "Quality (modality) — Movable (Chara) signs are the place of action",
+        "Fixed (Sthira) signs are fixed in nature, with qualities of determination and stability",
+        "Dual (Dvisvabhava) signs are changeable in nature and adaptable",
         "Element — Fire is aspirational & creative; Earth stable & grounded; Air mental & communicative; Water sensitive & intuitive",
       ],
     },
