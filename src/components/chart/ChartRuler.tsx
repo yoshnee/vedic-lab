@@ -92,10 +92,9 @@ export function ChartRuler({
         {conjuncts.map((c, i) => (
           <span key={c}>
             {i > 0 && " · "}
-            <FcLink onClick={() => onSelectPlanet?.(c)}>{PNAME[c]}</FcLink>
+            <FcLink onClick={() => onOpenCard("planet", PNAME[c])}>{PNAME[c]}</FcLink>
           </span>
         ))}
-        {" "}— read these alongside the ruler.
       </>,
     );
   }

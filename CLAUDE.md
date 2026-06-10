@@ -36,7 +36,7 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 
 ### Study side
 - Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
-  the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership fact), **Combustion** (Asta),
+  the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership point on each card back), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
   (concept), **Gandanta** (concept), **The Four Elements** (Tattva, concept — backs the chart's
   element-balance readout via its exported `ELEMENT_INFO`), **Planetary Conditions** (Panchadha
@@ -248,9 +248,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   rail, element balance, and planet panels stay natal-D1 regardless of the selectors. Below the
   charts, a full-width **`ChartRuler`** card — the "start here" lagneśa walkthrough: a numbered chain
   (ascendant → its ruler = the chart ruler → the sign it occupies → that whole-sign house → the
-  ruler's own nakshatra/pada, explicitly distinct from the Moon's daśā-seeding nakshatra → co-tenant
-  planets), every noun a flashcard link via the same resolver, the header echoing the ruler's maitri
-  pill and dignity/retro glyph, name/co-tenants jumping to the planet panels. Pure presentation —
+  ruler's occupied nakshatra/pada + its lord, explicitly distinct from the Moon's daśā-seeding
+  nakshatra → co-tenant planets, each opening its graha card), every noun a flashcard link via the
+  same resolver, the header echoing the ruler's maitri pill and dignity/retro glyph, the header name
+  jumping to the ruler's panel. Pure presentation —
   reads only `ChartData.lagnaLord` + `planets[]`. An **`ElementBalance`** block (in the sticky rail on
   desktop, an inline card on mobile — CSS shows exactly one of the two rendered copies) tallies all
   nine planets by sign element (`SIGN_ELEMENT`, nodes included), highlights the predominant
