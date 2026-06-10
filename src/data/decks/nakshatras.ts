@@ -8,11 +8,17 @@
    the intercalary 28th (Abhijit) is intentionally omitted; add it later only if
    a 28-fold treatment is wanted.
 
+   The "Life aim" fact is each nakshatra's own main purushartha, read straight
+   from the engine's NAKSHATRA_PURUSHARTHA table (Sutton, vendored verbatim) so
+   the card and the engine can't diverge. Rows align by index — both lists run
+   Ashwini → Revati.
+
    "General nature" is the traditional muhurta activity-nature (gentle Mridu /
    swift Kshipra / fixed Sthira / movable Chara / mixed Mishra / fierce Ugra /
    sharp Tikshna) — a starting point to refine later, per the source note. */
 import type { Deck } from "./types";
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
+import { NAKSHATRA_PURUSHARTHA } from "@/core/constants";
 
 type Lord = keyof typeof PLANET_COLORS;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
@@ -333,6 +339,7 @@ export const nakshatras: Deck = {
     facts: [
       { label: "Span", value: d.span },
       { label: "Ruler", value: cap(d.lord) },
+      { label: "Life aim", value: NAKSHATRA_PURUSHARTHA[i] },
       { label: "Nature", value: d.nature },
     ],
     points: d.points,

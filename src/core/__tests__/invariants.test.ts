@@ -9,7 +9,7 @@ import { describe, it, expect } from "vitest";
 import {
   PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
-  DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS,
+  DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
@@ -121,6 +121,21 @@ describe("nakshatras & vimshottari", () => {
     }
     expect(PADA_PURUSHARTHAS[21]).toEqual(DAKM); // Shravana restarts forward
     expect(PADA_PURUSHARTHAS[26]).toEqual(MKAD); // Revati ends reversed
+  });
+
+  it("nakshatra main purusharthas match Sutton's column verbatim", () => {
+    expect(NAKSHATRA_PURUSHARTHA).toHaveLength(27);
+    // Ashwini..Dhanishta (with pada-less Abhijit=Kama implicitly before Shravana)
+    // snake through the 8-cycle D·A·K·M·M·K·A·D…
+    const SNAKE = ["Dharma", "Artha", "Kama", "Moksha", "Moksha", "Kama", "Artha", "Dharma"];
+    for (let i = 0; i <= 20; i++) {
+      expect(NAKSHATRA_PURUSHARTHA[i], NAKSHATRAS[i].name).toBe(SNAKE[i % 8]);
+    }
+    expect(NAKSHATRA_PURUSHARTHA[21]).toBe("Artha"); // Shravana (Abhijit takes the Kama slot)
+    expect(NAKSHATRA_PURUSHARTHA[22]).toBe("Dharma"); // Dhanishta
+    // …but Sutton's last four run M·K·A·D where dirah/Harness continue D·A·K·M —
+    // her column is vendored verbatim (owner-directed); this pin stops a "fix".
+    expect(NAKSHATRA_PURUSHARTHA.slice(23)).toEqual(["Moksha", "Kama", "Artha", "Dharma"]);
   });
 
   it("nakshatraOf lands on the right nakshatra + pada at boundaries", () => {

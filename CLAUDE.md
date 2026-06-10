@@ -175,7 +175,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
-  span + ruler + general nature; rulers/spans match the engine's validated `NAKSHATRAS` table.)
+  span + ruler + **life aim** (the nakshatra's own main purushartha, read from the engine's
+  `NAKSHATRA_PURUSHARTHA` table — Sutton's column vendored verbatim; NB her last four diverge from
+  dirah/Harness, pinned by an invariant test) + general nature; rulers/spans match the engine's
+  validated `NAKSHATRAS` table.)
   (The `padas` deck is concept-based — 5 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
   · "The Alternating Cycle" · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's
   `pada N (purushartha)` placement link

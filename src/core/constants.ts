@@ -93,6 +93,43 @@ export const PADA_PURUSHARTHAS: Purushartha[][] = [
   MKAD, // Revati
 ];
 
+/* Each nakshatra's own main purushartha (rows align with NAKSHATRAS) — the
+   "Purushartha" column of the same Sutton table, vendored verbatim. With Abhijit
+   (Kama) inserted after Uttara Ashadha it snakes D·A·K·M·M·K·A·D through Dhanishta,
+   but Sutton's last four (Shatabhisha→Revati) run M·K·A·D where other sources
+   (dirah.org, Dennis Harness) continue the snake with D·A·K·M — her column wins
+   here (owner-directed); don't "fix" it to the formula. Feeds the Nakshatras
+   deck's "Life aim" fact (single source, so card and engine can't diverge). */
+export const NAKSHATRA_PURUSHARTHA: Purushartha[] = [
+  "Dharma", // Ashwini
+  "Artha",  // Bharani
+  "Kama",   // Krittika
+  "Moksha", // Rohini
+  "Moksha", // Mrigashira
+  "Kama",   // Ardra
+  "Artha",  // Punarvasu
+  "Dharma", // Pushya
+  "Dharma", // Ashlesha
+  "Artha",  // Magha
+  "Kama",   // Purva Phalguni
+  "Moksha", // Uttara Phalguni
+  "Moksha", // Hasta
+  "Kama",   // Chitra
+  "Artha",  // Swati
+  "Dharma", // Vishakha
+  "Dharma", // Anuradha
+  "Artha",  // Jyeshtha
+  "Kama",   // Mula
+  "Moksha", // Purva Ashadha
+  "Moksha", // Uttara Ashadha
+  "Artha",  // Shravana — Abhijit (Kama, pada-less) sits before it in the book's cycle
+  "Dharma", // Dhanishta
+  "Moksha", // Shatabhisha
+  "Kama",   // Purva Bhadrapada
+  "Artha",  // Uttara Bhadrapada
+  "Dharma", // Revati
+];
+
 /* Dignity by sign number (1–12). Nodes have no dignity (always neutral). */
 export const EXALTATION: Partial<Record<PlanetKey, number>> = {
   sun: 1, moon: 2, mars: 10, mercury: 6, jupiter: 4, venus: 12, saturn: 7,
