@@ -75,14 +75,12 @@ export function ChartRuler({
       {ruler.name} occupies the nakshatra{" "}
       <FcLink onClick={() => onOpenCard("nakshatra", ruler.nakshatra.name)}>
         {ruler.nakshatra.name}
-      </FcLink>{" "}
-      (whose lord is{" "}
-      <FcLink onClick={() => onOpenCard("planet", ruler.nakshatra.lord)}>{ruler.nakshatra.lord}</FcLink>
-      ),{" "}
+      </FcLink>
+      ,{" "}
       <FcLink onClick={() => onOpenCard("pada", ruler.pada)}>
         pada {ruler.pada} ({ruler.purushartha})
       </FcLink>
-      . Note we read the chart ruler&rsquo;s nakshatra here — not the Moon&rsquo;s, which seeds the daśā.
+      .
     </>,
   ];
   if (conjuncts.length > 0) {
