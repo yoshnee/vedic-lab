@@ -268,13 +268,13 @@ export const NAKSHATRA_ARC = 360 / 27; // 13°20′
 export const PADA_ARC = 360 / 108; // 3°20′
 
 /* Gandanta — the three water→fire sign junctions: Pisces→Aries (0°/360°),
-   Cancer→Leo (120°), Scorpio→Sagittarius (240°). A point is in gandanta within
-   GANDANTA_ORB of a junction — the zone 28°20′ of the water sign → 1°40′ of the
-   fire sign, i.e. 1°40′ each side (3°20′ total), per the owner's source. The
-   "deep" emphasis tier is ±48′, the source's nakshatra-gandanta (Moon) band.
-   NB the Hora-Prakash reference uses a FULL pada each side (calculations.js
-   `_GANDANTA_DEG = 360/108` = 3°20′ per side) — the owner chose the tighter
-   zone; don't re-align to the reference. */
+   Cancer→Leo (120°), Scorpio→Sagittarius (240°). Two tiers (owner-directed,
+   encoding both schools): the FLAG covers the full junction padas — one pada
+   (3°20′) each side, matching the Hora-Prakash reference (calculations.js
+   `_GANDANTA_DEG = 360/108`); DEEP is the narrower 28°20′→1°40′ "true gandanta"
+   zone — 1°40′ each side (Sutton). The still-tighter named bands (nakshatra
+   gandanta ±48′, lagna gandanta ±14′) live in the Gandanta deck as study
+   content, not engine logic. */
 export const GANDANTA_BOUNDARIES = [0, 120, 240];
-export const GANDANTA_ORB = 100 / 60; // 1°40′ each side of the junction
-export const GANDANTA_DEEP_ORB = 48 / 60; // within ±48′ → "deep" gandanta (UI emphasis)
+export const GANDANTA_ORB = 360 / 108; // 3°20′ each side — the full junction padas (flag)
+export const GANDANTA_DEEP_ORB = 100 / 60; // within ±1°40′ → "deep" (the 28°20′→1°40′ zone)

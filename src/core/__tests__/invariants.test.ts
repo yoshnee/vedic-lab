@@ -210,23 +210,23 @@ describe("combustion", () => {
 });
 
 describe("gandanta", () => {
-  it("flags ±1°40′ around the three water→fire junctions (28°20′ → 1°40′ zone)", () => {
-    // Owner-chosen zone (the reference uses a full pada each side) — see the
-    // GANDANTA_ORB note in constants.ts before "fixing" this.
+  it("flags the full junction padas — ±3°20′ around the three water→fire junctions", () => {
+    // Two-tier owner scheme: flag = junction padas (reference orb), deep = the
+    // 28°20′→1°40′ zone — see the GANDANTA_ORB note in constants.ts.
     for (const junction of [0, 120, 240]) {
       expect(gandantaOf(junction)).toMatchObject({ on: true, deep: true });
     }
-    expect(gandantaOf(241.5).on).toBe(true); // 1°30′ into Sagittarius ≤ 1°40′
-    expect(gandantaOf(238.5).on).toBe(true); // 28°30′ Scorpio — 1°30′ before the junction
-    expect(gandantaOf(242).on).toBe(false); // 2° → outside the 1°40′ zone
-    expect(gandantaOf(238).on).toBe(false); // 28° Scorpio — 2° before → outside
+    expect(gandantaOf(243).on).toBe(true); // 3° into Sagittarius ≤ 3°20′
+    expect(gandantaOf(237).on).toBe(true); // 27° Scorpio — 3° before the junction
+    expect(gandantaOf(244).on).toBe(false); // 4° → outside the pada
+    expect(gandantaOf(115).on).toBe(false); // 5° before a junction → outside
     expect(gandantaOf(60).on).toBe(false); // mid-Taurus, far from any junction
   });
 
-  it("deep band is ±48′ (the nakshatra-gandanta band)", () => {
-    expect(gandantaOf(240.5).deep).toBe(true); // 30′ ≤ 48′
-    expect(gandantaOf(239.3).deep).toBe(true); // 42′ before the junction
-    expect(gandantaOf(241)).toMatchObject({ on: true, deep: false }); // 1° → on, not deep
+  it("deep band is ±1°40′ — the 28°20′→1°40′ 'true gandanta' zone", () => {
+    expect(gandantaOf(241.5).deep).toBe(true); // 1°30′ ≤ 1°40′
+    expect(gandantaOf(238.5).deep).toBe(true); // 28°30′ Scorpio — 1°30′ before
+    expect(gandantaOf(242)).toMatchObject({ on: true, deep: false }); // 2° — flagged, not deep
   });
 });
 

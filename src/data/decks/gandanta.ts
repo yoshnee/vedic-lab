@@ -7,8 +7,9 @@
    the dasha cycle resets at the knot. (Rulers verified against src/core/constants.ts.)
    The soul-stage card ("Three Knots, Three Soul Stages"), the named gandanta types
    (nakshatra ±48′ / lagna ±14′ / tithi), the daśā-changeover-birth point, and the
-   contrary-elements framing are sourced from Komilla Sutton (komilla.com/lib-gandanta)
-   with the zone math (28°20′→1°40′) matching the engine's GANDANTA_ORB. */
+   contrary-elements framing are sourced from Komilla Sutton (komilla.com/lib-gandanta).
+   Zone math matches the engine's two tiers: flag = junction padas (GANDANTA_ORB,
+   3°20′/side), deep = the 28°20′→1°40′ zone (GANDANTA_DEEP_ORB, 1°40′/side). */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
 
@@ -51,9 +52,9 @@ export const gandanta: Deck = {
         "Pisces → Aries: last pada of Revati (water) into the first pada of Ashwini (fire)",
         "Cancer → Leo: last pada of Ashlesha (water) into the first pada of Magha (fire)",
         "Scorpio → Sagittarius: last pada of Jyeshtha (water) into the first pada of Mula (fire)",
-        "The zone runs 28°20′ of the water sign to 1°40′ of the fire sign — 1°40′ either side of the boundary, 3°20′ in all",
-        "The knot is tightest right at the exact boundary — within ±48′ it reads as deep gandanta",
-        "Exact width varies by school — some flag the full junction padas (3°20′ either side)",
+        "Widest reading: the full junction padas — the water sign's last pada + the fire sign's first, 3°20′ either side (the chart's gandanta flag)",
+        "Narrower reading: 28°20′ → 1°40′, just 1°40′ either side — the chart marks this “true gandanta” zone as deep",
+        "Schools differ on the width; all agree the knot tightens toward the exact boundary",
       ],
     },
     {
@@ -118,7 +119,7 @@ export const gandanta: Deck = {
       points: [
         "The affected significations face turbulence, instability, or accelerated soul-growth — e.g. Venus in gandanta puts relationships and finances at the knot",
         "The Moon and the Lagna in gandanta are the most emphasized placements, with their own named (tighter) definitions",
-        "The closer to the exact boundary, the more acute the effect — the chart's deep band (±48′)",
+        "The closer to the exact boundary, the more acute the effect — the chart's deep band (±1°40′)",
         "Best read as an area calling for conscious work and remedy, not simply as “bad”",
       ],
     },

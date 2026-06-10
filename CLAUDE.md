@@ -200,10 +200,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (`vedic.functionalNatureOf` — reads the single canonical `ASCENDANT_FUNCTIONAL` table in `constants.ts`
   that **also generates the Ascendants deck's** Yogakaraka/Benefics/Neutral/Malefics facts, so badge and
   deck can't diverge; per planet `functionalNature` ∈ benefic/malefic/neutral/yogakaraka/null, yogakaraka
-  taking precedence over benefic; nodes → null), **gandanta** (within 1°40′ of a water→fire
-  junction 0°/120°/240° — `vedic.gandantaOf`; the 28°20′→1°40′ zone, `GANDANTA_ORB = 100/60`,
-  **owner-directed** — the reference uses a full pada (3°20′) per side, don't re-align; `deep` flag
-  within ±48′, the nakshatra-gandanta band; carried by every planet **and the Lagna**), **tithi** (Moon only —
+  taking precedence over benefic; nodes → null), **gandanta** (two-tier, **owner-directed** —
+  `vedic.gandantaOf`; the flag covers the full junction padas, one pada/3°20′ per side
+  (`GANDANTA_ORB = 360/108`, matching the reference), and `deep` is the narrower 28°20′→1°40′
+  "true gandanta" zone, ±1°40′ (Sutton); carried by every planet **and the Lagna**), **tithi** (Moon only —
   `vedic.tithiOf`; absolute 1–30 from the Moon–Sun elongation, `tithiNumber`/`waxing`/`illumination` on
   the Moon's data; `waxing` kept for paksha bala when Shadbala lands), Vimshottari dasha (MD→AD→PD), and
   a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
