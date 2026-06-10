@@ -20,11 +20,60 @@ export interface VargaPoint {
 const degInSign = (lon: number) => ((lon % 30) + 30) % 30;
 const signOf = (lon: number) => Math.floor((((lon % 360) + 360) % 360) / 30) + 1;
 
+const part = (lon: number, n: number) => Math.floor((degInSign(lon) * n) / 30);
+const divDeg = (lon: number, n: number) => (degInSign(lon) * n) % 30;
+const normSign = (s: number) => ((((s - 1) % 12) + 12) % 12) + 1;
+
 /** D9 — navamsa. Element-group seeds per the reference (fire/earth/air/water →
     Aries/Capricorn/Libra/Cancer), 9 parts of 3°20′ per sign. */
 export function navamsa(lon: number): VargaPoint {
   const sign = signOf(lon);
-  const part = Math.floor((degInSign(lon) * 9) / 30);
   const SEEDS = [0, 9, 6, 3, 0, 9, 6, 3, 0, 9, 6, 3];
-  return { sign: ((SEEDS[sign - 1] + part) % 12) + 1, degree: (degInSign(lon) * 9) % 30 };
+  return { sign: ((SEEDS[sign - 1] + part(lon, 9)) % 12) + 1, degree: divDeg(lon, 9) };
+}
+
+/* The remaining saptavargaja vargas (used by Shadbala's Sthana Bala) — each a
+   verbatim port of the reference's divisional.js (JHora "Traditional"). */
+
+/** D2 — hora, Udayashakti rule: odd signs run forward, even signs mirrored. */
+export function hora(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  const d = degInSign(lon);
+  const first = d < 15;
+  let dSign: number, degree: number;
+  if (sign % 2 === 1) {
+    dSign = first ? 2 * sign - 1 : 2 * sign;
+    degree = first ? d * 2 : (d - 15) * 2;
+  } else {
+    dSign = first ? 2 * sign : 2 * sign - 1;
+    degree = first ? 30 - d * 2 : 30 - (d - 15) * 2;
+    if (degree >= 30) degree = 0;
+  }
+  return { sign: normSign(dSign), degree };
+}
+
+/** D3 — drekkana: trikona advance, +4 signs per 10° part. */
+export function drekkana(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  return { sign: ((sign - 1 + part(lon, 3) * 4) % 12) + 1, degree: divDeg(lon, 3) };
+}
+
+/** D7 — saptamsa: odd signs start from self, even from the 7th. */
+export function saptamsa(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  const offset = sign % 2 === 0 ? 6 : 0;
+  return { sign: ((sign - 1 + offset + part(lon, 7)) % 12) + 1, degree: divDeg(lon, 7) };
+}
+
+/** D12 — dwadasamsa: starts from the sign itself, +1 per part. */
+export function dwadasamsa(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  return { sign: ((sign - 1 + part(lon, 12)) % 12) + 1, degree: divDeg(lon, 12) };
+}
+
+/** D16 — shodasamsa: movable→Aries, fixed→Leo, dual→Sagittarius. */
+export function shodasamsa(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  const seed = ((sign - 1) % 3) * 4;
+  return { sign: ((seed + part(lon, 16)) % 12) + 1, degree: divDeg(lon, 16) };
 }

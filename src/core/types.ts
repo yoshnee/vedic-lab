@@ -79,6 +79,19 @@ export interface Avastha {
   flashcard: { type: "avastha"; id: string }; // tap target → onOpenCard("avastha", id)
 }
 
+/** Six-fold strength, all in virupas (60 = 1 rupa). See core/shadbala.ts. */
+export interface ShadbalaScore {
+  sthana: number;
+  dig: number;
+  kala: number;
+  chesta: number;
+  naisargika: number;
+  drik: number; // can be negative (net malefic aspect pressure) — never clamp
+  total: number;
+  required: number; // BPHS minimum for this planet
+  ratio: number; // total / required — ≥1 reads strong (Bal-Yukta)
+}
+
 export interface PlanetData {
   key: PlanetKey;
   name: string;
@@ -103,6 +116,7 @@ export interface PlanetData {
   gandantaDeep: boolean; // within ~1° of the exact junction
   gandantaDistance: number; // ° to the nearest water→fire junction
   avasthas: Avastha[]; // planetary "states" (Baladi, Jagradadi, …); [] for nodes
+  shadbala: ShadbalaScore | null; // six-fold strength (virupas); null for the nodes
   /* ---- Moon only (tithi, from the Moon–Sun elongation) ---- */
   tithiNumber?: number; // 1–30 absolute (15 = Purnima/full, 30 = Amavasya/new)
   waxing?: boolean; // Shukla paksha; kept for paksha bala (shadbala, later)

@@ -16,6 +16,7 @@ import { rawPositions, transitLongitude, julianDayUT } from "./swisseph";
 import * as v from "./vedic";
 import { computeDasha } from "./dasha";
 import { computeAvasthas } from "./avastha";
+import { computeShadbala } from "./shadbala";
 
 export type { ChartData, PlanetData, PlanetKey, BirthInput, PlacedBody, TransitSet } from "./types";
 
@@ -196,6 +197,20 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
     },
   ];
 
+  // Six-fold strength for the seven grahas (nodes have no shadbala).
+  const shadbala = computeShadbala(
+    PLANET_ORDER.map((key) => ({
+      key,
+      lon: raw.longitudes[key],
+      sign: signs[key],
+      house: v.houseOf(signs[key], lagnaSign),
+      degreeValue: v.degInSign(raw.longitudes[key]),
+      retro: key === "rahu" || key === "ketu" || key === "sun" || key === "moon" ? false : raw.speeds[key] < 0,
+      speed: raw.speeds[key],
+    })),
+    raw.ascendant,
+  );
+
   const planets: PlanetData[] = PLANET_ORDER.map((key) => {
     const lon = raw.longitudes[key];
     const sign = signs[key];
@@ -252,6 +267,7 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
             inMooltrikona: MOOLTRIKONA[key] === sign,
             naturalToLord: v.naturalToDispositor(key, signs),
           }),
+      shadbala: shadbala[key] ?? null,
       tithiNumber: tithi?.number,
       waxing: tithi?.waxing,
       illumination: tithi?.illumination,

@@ -11,7 +11,7 @@
 import { useState } from "react";
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
-import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha } from "@/core/types";
+import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha, ShadbalaScore } from "@/core/types";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
 const PNAME: Record<PlanetKey, string> = {
@@ -153,6 +153,85 @@ function AvasthaDrawer({
                 </button>
               </li>
             ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* The Shadbala drawer — the six-fold strength breakdown, a sibling of the
+   Avasthas drawer (same collapsible pattern + classes). Collapsed header shows
+   the verdict at a glance (rupas + ratio, strong/weak); expanded, one tappable
+   row per bala (virupas) plus total/required rows — every row opens its
+   Shadbala deck card. Null (nodes) → renders nothing. */
+const SHADBALA_ROWS: { id: string; label: string; get: (s: ShadbalaScore) => number }[] = [
+  { id: "sthana", label: "Sthana · positional", get: (s) => s.sthana },
+  { id: "dig", label: "Dig · directional", get: (s) => s.dig },
+  { id: "kala", label: "Kala · temporal", get: (s) => s.kala },
+  { id: "chesta", label: "Cheshta · motional", get: (s) => s.chesta },
+  { id: "naisargika", label: "Naisargika · natural", get: (s) => s.naisargika },
+  { id: "drik", label: "Drik · aspectual", get: (s) => s.drik },
+];
+
+function ShadbalaDrawer({
+  sb,
+  pkey,
+  onOpenCard,
+}: {
+  sb: ShadbalaScore | null;
+  pkey: PlanetKey;
+  onOpenCard: OpenCard;
+}) {
+  const [open, setOpen] = useState(false);
+  if (!sb) return null;
+  const strong = sb.ratio >= 1;
+  const rupas = (sb.total / 60).toFixed(2);
+
+  return (
+    <div className="pp-ava" data-open={open} style={{ "--pc": `var(--p-${pkey})` } as React.CSSProperties}>
+      <button type="button" className="pp-ava-head" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <span className="lbl">Shadbala</span>
+        <span className="pp-sb-sum" data-strong={strong || undefined}>
+          {rupas} rupas · {strong ? "strong" : "weak"}
+        </span>
+        <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+      <div className="pp-ava-body">
+        <div className="pp-ava-in">
+          <ul className="pp-ava-list">
+            {SHADBALA_ROWS.map((r) => (
+              <li key={r.id}>
+                <button
+                  type="button"
+                  className="fc-link pp-ava-row"
+                  onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", r.id); }}
+                >
+                  <span className="sys">{r.label}</span>
+                  <span className="str">{r.get(sb)}</span>
+                </button>
+              </li>
+            ))}
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "total"); }}
+              >
+                <span className="sys">Total</span>
+                <span className="str">{sb.total} virupas · {rupas} rupas</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "required"); }}
+              >
+                <span className="sys">Required</span>
+                <span className="str" data-strong={strong || undefined}>{sb.required} · {sb.ratio}× {strong ? "(Bal-Yukta)" : "(Balaheena)"}</span>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -337,6 +416,7 @@ export function PlanetPanel({
                 </div>
               </div>
 
+              <ShadbalaDrawer sb={p.shadbala ?? null} pkey={p.key} onOpenCard={onOpenCard} />
               <AvasthaDrawer items={p.avasthas ?? []} pkey={p.key} onOpenCard={onOpenCard} />
 
               {p.extraRows.map((row) =>

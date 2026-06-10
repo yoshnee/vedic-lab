@@ -15,7 +15,9 @@ import {
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
 } from "../vedic";
-import { navamsa } from "../divisional";
+import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa } from "../divisional";
+import { computeShadbala, SHADBALA_REQUIRED } from "../shadbala";
+import type { ShadbalaBody } from "../shadbala";
 import type { PlanetKey } from "../types";
 
 /** The seven non-node grahas — the only bodies with dignity / friendships. */
@@ -182,6 +184,83 @@ describe("navamsa (D9)", () => {
       expect(degree).toBeGreaterThanOrEqual(0);
       expect(degree).toBeLessThan(30);
     }
+  });
+});
+
+describe("saptavargaja vargas (reference spot checks)", () => {
+  it("D2 hora: odd signs run forward, even signs mirrored (Udayashakti)", () => {
+    expect(hora(5).sign).toBe(1); // Aries 1st half
+    expect(hora(20).sign).toBe(2); // Aries 2nd half
+    expect(hora(35).sign).toBe(4); // Taurus 1st half (even → 2N)
+    expect(hora(50).sign).toBe(3); // Taurus 2nd half (even → 2N−1)
+  });
+  it("D3/D7/D12/D16 seeding matches the reference rules", () => {
+    expect(drekkana(5).sign).toBe(1); // Aries 1st decanate → itself
+    expect(drekkana(15).sign).toBe(5); // 2nd → +4 (Leo)
+    expect(drekkana(25).sign).toBe(9); // 3rd → +8 (Sagittarius)
+    expect(saptamsa(1).sign).toBe(1); // odd sign starts from self
+    expect(saptamsa(31).sign).toBe(8); // even sign starts from the 7th
+    expect(dwadasamsa(1).sign).toBe(1); // starts from self
+    expect(dwadasamsa(29).sign).toBe(12); // last part → 12th from self
+    expect(shodasamsa(0.5).sign).toBe(1); // movable → Aries
+    expect(shodasamsa(30.5).sign).toBe(5); // fixed → Leo
+    expect(shodasamsa(60.5).sign).toBe(9); // dual → Sagittarius
+  });
+});
+
+describe("shadbala", () => {
+  /** Seven grahas, one per sign Aries→Libra, house = sign (Aries lagna). */
+  const mkBodies = (mut?: (b: ShadbalaBody) => void): ShadbalaBody[] => {
+    const keys: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
+    return keys.map((key, i) => {
+      const lon = i * 30 + 5;
+      const b: ShadbalaBody = {
+        key, lon, sign: i + 1, house: i + 1, degreeValue: 5, retro: false, speed: 1,
+      };
+      mut?.(b);
+      return b;
+    });
+  };
+
+  it("total = sum of the six components; ratio = total/required; tables exact", () => {
+    const out = computeShadbala(mkBodies(), 0);
+    const NAISARGIKA = { sun: 60, moon: 51.43, venus: 42.86, jupiter: 34.28, mercury: 25.71, mars: 17.14, saturn: 8.57 };
+    for (const [key, s] of Object.entries(out)) {
+      const sum = s.sthana + s.dig + s.kala + s.chesta + s.naisargika + s.drik;
+      expect(Math.abs(s.total - sum), `${key} total`).toBeLessThan(0.5); // per-component rounding
+      expect(s.required, `${key} required`).toBe(SHADBALA_REQUIRED[key]);
+      expect(s.ratio, `${key} ratio`).toBeCloseTo(s.total / s.required, 2);
+      expect(s.naisargika, `${key} naisargika`).toBeCloseTo(NAISARGIKA[key as keyof typeof NAISARGIKA], 1);
+    }
+  });
+
+  it("dig bala peaks (60) in the planet's best house and zeroes opposite", () => {
+    const at = (house: number) =>
+      computeShadbala(mkBodies((b) => { if (b.key === "sun") b.house = house; }), 0).sun!.dig;
+    expect(at(10)).toBe(60); // Sun's best: the 10th
+    expect(at(4)).toBe(0); // opposite house
+  });
+
+  it("retrograde grahas take full chesta (60)", () => {
+    const out = computeShadbala(mkBodies((b) => { if (b.key === "mars") b.retro = true; }), 0);
+    expect(out.mars!.chesta).toBe(60);
+  });
+
+  it("nathonnatha flips with day/night birth (Sun gains by day, Moon by night)", () => {
+    const bodies = mkBodies();
+    // sun lon 5: asc 100 → (5−100+360)%360 = 265 > 180 → day; asc 0 → 5 → night
+    const day = computeShadbala(bodies, 100);
+    const night = computeShadbala(bodies, 0);
+    expect(day.sun!.kala - night.sun!.kala).toBeCloseTo(60, 1);
+    expect(night.moon!.kala - day.moon!.kala).toBeCloseTo(60, 1);
+    expect(day.mercury!.kala).toBeCloseTo(night.mercury!.kala, 1); // Mercury: 60 always
+  });
+
+  it("drik bala may be negative and is never produced for the nodes", () => {
+    const out = computeShadbala(mkBodies(), 0);
+    expect(out.rahu).toBeUndefined();
+    expect(out.ketu).toBeUndefined();
+    for (const s of Object.values(out)) expect(Math.abs(s.drik)).toBeLessThanOrEqual(52.5);
   });
 });
 

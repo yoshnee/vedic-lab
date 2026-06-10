@@ -42,7 +42,8 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   element-balance readout via its exported `ELEMENT_INFO`), **Planetary Conditions** (Panchadha
   Maitri, concept),
   **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;
-  **Shadbala (6)** is scaffolded (canonical titles seeded, card bodies empty to fill in later);
+  **Shadbala (10)** has full content (overview + six balas + BPHS minimums + Ishta/Kashta +
+  reading-the-numbers; owner-provided, no em-dashes by request);
   **Karakas / Dashas / Yogas** are registered as "coming soon" roadmap tiles.
 - **English-primary** with optional subtle Sanskrit.
 - Built on a reusable **Card / Deck** system: flip to reveal the meaning, swipe / arrow-key to advance.
@@ -112,7 +113,8 @@ src/
   core/                   THE ENGINE (UI-free; follows the Hora-Prakash reference)
     swisseph.ts           swisseph-wasm wrapper (Lahiri positions, speeds, Lagna)
     vedic.ts              sign/degree, nakshatra/pada/lord, whole-sign houses, dignity, drishti, combust
-    divisional.ts         varga mapping (D9 navamsa live; later vargas slot in here)
+    divisional.ts         varga mapping (D9 chart-ready; D2/D3/D7/D12/D16 for shadbala's saptavargaja)
+    shadbala.ts           six-fold strength (reference's simplified scheme; see engine bullet)
     dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
     avastha.ts            Baladi (degree) + Jagradadi (dignity + natural maitri) "states"; no invented strength
     constants.ts          dignity tables, nakshatras, drishti, combustion orbs, dasha years
@@ -176,8 +178,8 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (←/→ nav, space/enter flip, Esc close, tab-trap, swipe, `aria-live`). Empty card bodies show a
   tasteful "coming soon"; coming-soon decks render as non-interactive tiles.
 - **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` +
-  `Nakshatras` + `Padas` + `Gandanta` + `Maitri` + `Avasthas` + `Aspects` (full content); `Shadbala` (titles seeded,
-  bodies empty); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
+  `Nakshatras` + `Padas` + `Gandanta` + `Elements` + `Maitri` + `Avasthas` + `Aspects` + `Shadbala`
+  (full content); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
@@ -210,8 +212,15 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (`GANDANTA_ORB = 360/108`, matching the reference), and `deep` is the narrower 28°20′→1°40′
   "true gandanta" zone, ±1°40′ (Sutton); carried by every planet **and the Lagna**), **tithi** (Moon only —
   `vedic.tithiOf`; absolute 1–30 from the Moon–Sun elongation, `tithiNumber`/`waxing`/`illumination` on
-  the Moon's data; `waxing` kept for paksha bala when Shadbala lands), Vimshottari dasha (MD→AD→PD), and
-  a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
+  the Moon's data), **shadbala** (`src/core/shadbala.ts` — the reference's simplified six-fold scheme,
+  per planet on `PlanetData.shadbala`: Sthana = Ucha + Saptavargaja over D1/D2/D3/D7/D9/D12/D16 (the
+  reference's varga set; those mappings live in `divisional.ts`) + Ojayugma + Kendradi + Drekkana,
+  Dig, Kala = Nathonnatha + Paksha + Ayana, Chesta (retro/speed brackets; Sun & Moon take Ayana),
+  Naisargika, Drik (±15 × strength ÷ 2, can go negative); totals + BPHS required + ratio; nodes null;
+  NB it is NOT JHora-exact — JHora's full Kala/Chesta have more sub-balas; one documented divergence:
+  day/night birth uses the ecliptic-horizon test (Sun above the asc/desc axis) since we compute no
+  sunrise — the reference reads panchang sunrise and silently defaults to "day" without it),
+  Vimshottari dasha (MD→AD→PD), and a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
   positions/nakshatra/lord/pada/retro plus the full MD→AD dasha tree (MD ≤5d, AD ≤7d of JHora; the
   linear-vs-JHora-hybrid drift the reference's `DASHA_CALCULATION_METHODS.md` documents) — and **invariant
   tests** over the dignity/nakshatra/dasha/drishti tables. Aspects &
@@ -265,7 +274,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   gold for own; omitted for nodes) shows each planet's panchadha relation to its dispositor and opens the
   Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned;
   inside the ±1°40′ zone it brightens and reads **"True Gandanta"**) and on the Lagna marker in the
-  hero — tapping either opens the Gandanta deck's "What Gandanta Is" card. An **Avasthas** drawer (collapsed by default, subordinate to the badges/
+  hero — tapping either opens the Gandanta deck's "What Gandanta Is" card. A **Shadbala** drawer (same collapsible pattern as Avasthas, rendered above it;
+  collapsed header shows the verdict — rupas + strong/weak; expanded, six bala rows + total +
+  required/ratio, every row opening its Shadbala deck card via the `shadbala` flashcard type;
+  hidden for nodes). An **Avasthas** drawer (collapsed by default, subordinate to the badges/
   pills) groups each planet's "states" — launching with **Baladi** (five ages by degree-in-sign;
   odd signs Bala→Mrita, even reversed) and **Jagradadi** (Awake/Dreaming/Asleep by dignity, splitting
   the middle case on the **natural/naisargika** relation to the sign lord, with mooltrikona → Awake).
@@ -282,7 +294,7 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
 
 **Not yet wired:** reading `sessionStorage['vedic:birthDetails']` into a client-side `computeChart`
 on `/chart` (the popup persists the data; the live in-browser compute + navigation is the remaining
-seam). Card bodies for **Shadbala** still to fill. Out of scope: automated
+seam). Out of scope: automated
 yoga detection, divisional charts beyond D1.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)

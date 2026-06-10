@@ -298,6 +298,11 @@
 
 /* ---- Avasthas drawer: a subordinate, collapsible "states" group ---- */
 .pp-ava { border-top: 1px solid var(--border-soft); padding-top: 12px; }
+/* Shadbala drawer header verdict + total rows (shares the .pp-ava pattern) */
+.pp-sb-sum { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .04em; color: var(--text-3); }
+.pp-sb-sum[data-strong] { color: var(--accent); }
+.pp-sb-total { border-top: 1px solid var(--border-soft); }
+.pp-sb-total .str[data-strong] { color: var(--accent); }
 /* a compact, clickable pill (matches .pp-pill) with a chevron that rotates
    from "›" to "⌄" to reveal the states downward */
 .pp-ava-head { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
