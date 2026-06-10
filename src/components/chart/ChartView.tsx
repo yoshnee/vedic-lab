@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
 import { ChartCard } from "./ChartCard";
+import { ChartRuler } from "./ChartRuler";
 import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
@@ -164,6 +165,8 @@ export function ChartView({ model }: { model: ChartModel }) {
                 onSelectPlanet={selectPlanet}
               />
             </div>
+
+            <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
 
             <section className="pp-grid" aria-label="Planet details">
               {chart.planets.map((p) => (

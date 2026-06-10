@@ -162,6 +162,29 @@
 
 /* 2-column grid, row-major (navagraha reads left→right, top→bottom). An expanded
    panel spans the full width so its detail body has room. */
+/* ── Chart Ruler (lagneśa walkthrough) — full-width card above the panels ── */
+.cr-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2)); box-shadow: 0 16px 38px -28px #000;
+  padding: 18px 20px 20px; margin-bottom: clamp(26px, 4vw, 40px); }
+.cr-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 14px;
+  border-bottom: 1px solid var(--border-soft); }
+.cr-eyebrow { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.cr-who { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.cr-who svg { flex: none; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
+.cr-name { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -.01em;
+  color: var(--text); background: none; border: 0; padding: 0; cursor: pointer; }
+.cr-name:hover { color: var(--accent); }
+.cr-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.cr-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.cr-step { display: flex; align-items: baseline; gap: 12px; }
+.cr-num { flex: none; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 11%, transparent); color: var(--accent);
+  font-family: var(--font-mono), monospace; font-size: 10.5px; transform: translateY(4px); }
+.cr-text { font-size: 14.5px; color: var(--text-2); line-height: 1.6; text-wrap: pretty; }
+.cr-text b { color: var(--text); font-weight: 600; }
+.cr-deg { font-family: var(--font-mono), monospace; font-size: 12.5px; color: var(--accent); }
+
 .pp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 .pp-panel { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
   background: linear-gradient(180deg, var(--surface), var(--bg-2)); box-shadow: 0 16px 38px -28px #000; transition: border-color .22s; }

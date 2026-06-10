@@ -126,8 +126,9 @@ src/
     home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
     chart/                ChartView, NorthIndianChart (generic: frame+planets), ChartCard
-                          (title/type-selector wrapper), DashaRail (sticky/​drawer), Legend
-                          (symbol-key drawer), PlanetPanel, FlashcardPopover
+                          (title/type-selector wrapper), ChartRuler (lagneśa walkthrough),
+                          DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
+                          FlashcardPopover
   data/decks/             registry.ts + per-deck data files
 scripts/                  validate-engine.ts, gen-sample-chart.ts (dev: tsx)
 design-reference/         read-only design handoffs (flashcards, planet-panel, birth-modal, chats)
@@ -221,9 +222,14 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   then **two charts** — Chart 1 natal D1, Chart 2 a `ChartCard` with a type `<select>` (**Transit**
   live; D9/D10/D60 disabled "soon" stubs). Both render through the **generic `NorthIndianChart`**
   (`frame {ascSign,ascDegree}` + `planets ChartBody[]`); transit uses the **same natal frame**, so
-  transiting planets read through the natal houses, captioned with the compute timestamp. Below,
-  **full-width 2-column Planet Detail Panels** (`.pp-grid`, row-major navagraha order; an open panel
-  spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
+  transiting planets read through the natal houses, captioned with the compute timestamp. Below the
+  charts, a full-width **`ChartRuler`** card — the "start here" lagneśa walkthrough: a numbered chain
+  (ascendant → its ruler = the chart ruler → the sign it occupies → that whole-sign house → the
+  ruler's own nakshatra/pada, explicitly distinct from the Moon's daśā-seeding nakshatra → co-tenant
+  planets), every noun a flashcard link via the same resolver, the header echoing the ruler's maitri
+  pill and dignity/retro glyph, name/co-tenants jumping to the planet panels. Pure presentation —
+  reads only `ChartData.lagnaLord` + `planets[]`. Then **full-width 2-column Planet Detail Panels**
+  (`.pp-grid`, row-major navagraha order; an open panel spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
   zodiac glyph + muted rāśi number. On mobile everything stacks and the rail becomes a **slide-in
   drawer** (a "Daśā" trigger). A header **Legend** button opens a slide-in **symbol-key drawer**
   (`Legend.tsx`) — planet colors, dignity (rendered via real `body()` glyphs), B/M/N/Y, friendship,
