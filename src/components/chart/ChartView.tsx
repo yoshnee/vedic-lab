@@ -14,7 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
-import { buildD9 } from "@/lib/chart/varga";
+import { buildD9, buildVargaPanels } from "@/lib/chart/varga";
 import { ChartCard, type ChartOption } from "./ChartCard";
 import { ChartRuler } from "./ChartRuler";
 import { ElementBalance } from "./ElementBalance";
@@ -104,6 +104,15 @@ export function ChartView({ model }: { model: ChartModel }) {
 
   const frame = { ascSign: chart.ascendant.sign, ascDegree: chart.ascendant.degree };
   const d9 = useMemo(() => buildD9(chart), [chart]);
+
+  /* Chart 1 is the PANEL CONTEXT: toggling it re-derives the planet panels for
+     that varga (sign-level facts only — see buildVargaPanels); toggling back
+     restores the natal detail. Chart 2 never affects the panels. */
+  const d9Panels = useMemo(() => buildVargaPanels(chart), [chart]);
+  const vargaMode = chart1 !== "d1";
+  const panelPlanets = vargaMode ? d9Panels.planets : chart.planets;
+  const panelAscSign = vargaMode ? d9Panels.ascendant.signName : chart.ascendant.signName;
+  const vargaLabel = vargaMode ? "Navāṁśa · D9" : undefined;
 
   /** Dataset for a selected chart type — toggling is non-destructive; every
       set derives from the model already in memory, so switching back restores. */
@@ -209,15 +218,23 @@ export function ChartView({ model }: { model: ChartModel }) {
 
             <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
 
+            {vargaMode && (
+              <p className="pp-context">
+                Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
+                {d9Panels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
+                rāśi detail (nakshatra, combustion, shadbala …)
+              </p>
+            )}
             <section className="pp-grid" aria-label="Planet details">
-              {chart.planets.map((p) => (
+              {panelPlanets.map((p) => (
                 <PlanetPanel
-                  key={p.key}
+                  key={`${chart1}-${p.key}`}
                   id={`panel-${p.key}`}
                   planet={p}
-                  ascendantSign={chart.ascendant.signName}
+                  ascendantSign={panelAscSign}
                   onOpenCard={openCard}
                   onOpenDasha={openDasha}
+                  vargaLabel={vargaLabel}
                 />
               ))}
             </section>

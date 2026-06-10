@@ -246,6 +246,7 @@ export function PlanetPanel({
   id,
   onOpenCard,
   onOpenDasha,
+  vargaLabel,
 }: {
   planet: PlanetData;
   ascendantSign: string;
@@ -253,6 +254,9 @@ export function PlanetPanel({
   id?: string;
   onOpenCard: OpenCard;
   onOpenDasha?: () => void;
+  /** Set when the panel shows a divisional chart's placements (e.g. "Navāṁśa · D9"):
+      hides the nakshatra/pada line — a real-longitude concept the varga doesn't have. */
+  vargaLabel?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const p = planet;
@@ -348,14 +352,23 @@ export function PlanetPanel({
                 {p.retro && <span className="deg">℞</span>}
                 <span className="deg">{p.degree}</span>
                 <span>{p.signName}</span>
-                <span className="dot">·</span>
-                <FcLink onClick={() => onOpenCard("nakshatra", p.nakshatra.name)}>
-                  {p.nakshatra.name}
-                </FcLink>
-                <span className="dot">·</span>
-                <FcLink onClick={() => onOpenCard("pada", p.pada)}>
-                  pada {p.pada} ({p.purushartha})
-                </FcLink>
+                {vargaLabel ? (
+                  <>
+                    <span className="dot">·</span>
+                    <span className="mutedp">{vargaLabel}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="dot">·</span>
+                    <FcLink onClick={() => onOpenCard("nakshatra", p.nakshatra.name)}>
+                      {p.nakshatra.name}
+                    </FcLink>
+                    <span className="dot">·</span>
+                    <FcLink onClick={() => onOpenCard("pada", p.pada)}>
+                      pada {p.pada} ({p.purushartha})
+                    </FcLink>
+                  </>
+                )}
               </div>
               {p.key === "moon" && p.tithiNumber != null && (
                 <div className="pp-tithi">

@@ -238,6 +238,14 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   **D1 ⇄ D9** (default D1), Chart 2 **Transit / D1 / D9** (default Transit; transit is
   deliberately right-only — the natal-vs-X reading layout); D10/D60 are disabled "soon" stubs on
   both sides. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
+  **Chart 1 is also the PANEL CONTEXT**: toggling it to D9 re-derives the nine planet panels for the
+  varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn for future D10/…) —
+  only sign-level facts recompute (sign/expanded degree/house from the varga lagna/dignity/aspects/
+  conjunctions/rulerships/varga lagna-lord pill, all reused validated sign math); D1-longitude and
+  rasi-chart concepts (nakshatra/pada, combustion, gandanta, tithi, avasthas, shadbala, sade sati,
+  functional nature, maitri) are deliberately emptied so panels hide them rather than invent varga
+  values (a `.pp-context` caption + per-panel `vargaLabel` say so). Chart 2 never affects the panels;
+  the daśā rail, element balance, and ChartRuler stay natal.
   **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
   continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'
   `navamsa_sign` per body; `lib/chart/varga.ts` `buildD9()` makes the render set (frame = navamsa
