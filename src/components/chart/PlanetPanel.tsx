@@ -306,7 +306,7 @@ export function PlanetPanel({
           <span className="pp-name">
             <span className="nm">{p.name}</span>
           </span>
-          {(p.dasha.length > 0 || p.lagnaLord || p.gandanta || p.maitriToDispositor || p.functionalNature) && (
+          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor || p.functionalNature) && (
             <span className="pp-pills">
               {p.functionalNature && (
                 <button type="button" className="pp-fn" data-fn={p.functionalNature}
@@ -324,12 +324,8 @@ export function PlanetPanel({
                 <button type="button" className="pp-pill" data-kind="antar"
                   onClick={(e) => { e.stopPropagation(); onOpenDasha?.(); }}>Antardaśā lord</button>
               )}
-              {p.lagnaLord && (
-                <button type="button" className="pp-pill" data-kind="lagna"
-                  onClick={(e) => { e.stopPropagation(); onOpenCard("sign", ascendantSign); }}>
-                  Ascendant Lord
-                </button>
-              )}
+              {/* (The "Ascendant Lord" pill was retired — the ChartRuler card
+                  above the panels now owns that identity.) */}
               {p.gandanta && (
                 <button type="button" className="pp-pill" data-kind="gandanta"
                   data-deep={p.gandantaDeep || undefined}

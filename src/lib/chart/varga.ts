@@ -7,21 +7,23 @@
    Two consumers:
    - buildD9 → the diamond (frame + minimal ChartBody[]).
    - buildVargaPanels → full PlanetData[] for the planet detail panels when
-     Chart 1 is toggled to a varga. Sign-level facts are recomputed
-     (sign/house/dignity/aspects/conjunctions/rulerships — all validated
-     sign math reused from core/vedic), and AVASTHAS are recomputed from the
-     varga placement (owner-directed, per Ryan Kurczak's method: Baladi from
-     the varga's expanded degree + sign parity, Jagradadi from the varga
-     dignity + natural relation to the varga sign's lord — same
-     computeAvasthas, varga inputs). D1-longitude and rasi-chart concepts
-     (nakshatra/pada, combustion, gandanta, tithi, shadbala, sade sati,
-     functional nature, panchadha maitri) are deliberately EMPTIED so the
-     panels hide them instead of showing invented varga values.
+     Chart 1 is toggled to a varga. Owner-directed "D9 == D1": the varga is
+     read as a full chart in its own right, so everything chart-derivable is
+     RECOMPUTED from the varga placements with the same validated functions —
+     sign/house/dignity/aspects/conjunctions/rulerships, panchadha maitri to
+     the varga dispositor, functional nature from the varga lagna, combustion
+     from the varga pseudo-longitudes ((sign−1)·30 + expanded degree), and
+     avasthas (per Ryan Kurczak: Baladi from the expanded degree + varga sign
+     parity, Jagradadi from varga dignity + natural relation to the varga
+     sign's lord). The ASCENDANT-LORD identity is D1-only (pill suppressed
+     here; ChartView also hides the ChartRuler card in varga mode). Still
+     hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta,
+     tithi) and rasi-only systems (shadbala, sade sati) — no invented values.
    ============================================================ */
 import { navamsa, type VargaPoint } from "@/core/divisional";
 import * as v from "@/core/vedic";
 import { computeAvasthas } from "@/core/avastha";
-import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA } from "@/core/constants";
+import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA, COMBUSTION_ORB } from "@/core/constants";
 import type { ChartData, PlanetData, PlanetKey } from "@/core/types";
 import type { ChartBody, ChartFrame } from "@/components/chart/NorthIndianChart";
 
@@ -39,13 +41,20 @@ export function buildVargaPanels(
 ): VargaPanelSet {
   const asc = varga(chart.ascendant.longitude);
   const signs = {} as Record<PlanetKey, number>;
-  for (const p of chart.planets) signs[p.key] = varga(p.longitude).sign;
+  const pseudoLon = {} as Record<PlanetKey, number>; // (sign−1)·30 + expanded degree
+  for (const p of chart.planets) {
+    const d = varga(p.longitude);
+    signs[p.key] = d.sign;
+    pseudoLon[p.key] = (d.sign - 1) * 30 + d.degree;
+  }
   const lagnaLord = SIGN_RULER[asc.sign - 1];
 
   const planets: PlanetData[] = chart.planets.map((p) => {
     const d = varga(p.longitude);
     const isNode = p.key === "rahu" || p.key === "ketu";
     const dignity = v.dignityOf(p.key, d.sign);
+    const maitri = v.maitriToDispositor(p.key, signs);
+    const combOn = v.isCombust(p.key, pseudoLon[p.key], pseudoLon.sun);
     return {
       ...p,
       sign: d.sign,
@@ -55,11 +64,20 @@ export function buildVargaPanels(
       degreeValue: d.degree,
       house: v.houseOf(d.sign, asc.sign),
       dignity,
-      // sign-level recomputes within the varga chart
-      lagnaLord: lagnaLord === p.key,
+      // chart-level recomputes within the varga ("D9 == D1")
+      lagnaLord: false, // the Ascendant-Lord identity is D1-only (owner-directed)
       rules: v.rulesOf(p.key, asc.sign),
       aspectedBy: v.aspectsOnto(d.sign, signs),
       conjunct: v.conjunctIn(p.key, d.sign, signs),
+      dispositor: maitri.dispositor,
+      maitriToDispositor: maitri.relation,
+      functionalNature: v.functionalNatureOf(p.key, asc.sign),
+      combust: combOn
+        ? {
+            on: true as const,
+            note: `Within ${COMBUSTION_ORB[p.key]}° of the Sun — its significations are absorbed into the Sun's glare.`,
+          }
+        : { on: false as const },
       // avasthas re-read from the varga placement (Kurczak method — see header)
       avasthas: isNode
         ? [] // nodes: no avasthas, as in the rasi chart
@@ -70,11 +88,7 @@ export function buildVargaPanels(
             inMooltrikona: MOOLTRIKONA[p.key] === d.sign,
             naturalToLord: v.naturalToDispositor(p.key, signs),
           }),
-      // D1-longitude / rasi-chart concepts — emptied so the panels hide them
-      combust: { on: false as const },
-      dispositor: null,
-      maitriToDispositor: null,
-      functionalNature: null,
+      // real-longitude / rasi-only concepts — emptied so the panels hide them
       gandanta: false,
       gandantaDeep: false,
       shadbala: null,

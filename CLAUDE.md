@@ -246,15 +246,16 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   deliberately right-only — the natal-vs-X reading layout); D10/D60 are disabled "soon" stubs on
   both sides. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
   **Chart 1 is also the PANEL CONTEXT**: toggling it to D9 re-derives the nine planet panels for the
-  varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn for future D10/…) —
-  only sign-level facts recompute (sign/expanded degree/house from the varga lagna/dignity/aspects/
-  conjunctions/rulerships/varga lagna-lord pill, all reused validated sign math), and **avasthas are
-  re-read from the varga placement** (owner-directed, Ryan Kurczak's method: Baladi from the varga's
-  expanded degree + sign parity, Jagradadi from varga dignity + natural relation to the varga sign's
-  lord — same `computeAvasthas`, varga inputs; nodes still none); D1-longitude and rasi-chart
-  concepts (nakshatra/pada, combustion, gandanta, tithi, shadbala, sade sati, functional nature,
-  maitri) are deliberately emptied so panels hide them rather than invent varga values (a
-  `.pp-context` caption + per-panel `vargaLabel` say so). Chart 2 never affects the panels;
+  varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn for future D10/…).
+  **Owner-directed "D9 == D1"** — the varga is read as a full chart: recomputed are sign/expanded
+  degree/house from the varga lagna/dignity/aspects/conjunctions/rulerships, **panchadha maitri** to
+  the varga dispositor, **functional nature** from the varga lagna, **combustion** from varga
+  pseudo-longitudes ((sign−1)·30 + expanded degree), and **avasthas** (Ryan Kurczak's method: Baladi
+  from the expanded degree + varga sign parity, Jagradadi from varga dignity + natural relation to
+  the varga sign's lord; nodes still none) — all reused validated functions, no new math. Still
+  hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta, tithi) and rasi-only
+  systems (shadbala, sade sati) (a `.pp-context` caption + per-panel `vargaLabel` say so). The
+  **ChartRuler card renders in D1 context only** (a natal-lagna reading). Chart 2 never affects the panels;
   the daśā rail, element balance, and ChartRuler stay natal.
   **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
   continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'
@@ -284,7 +285,8 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   the live UI (so it can't drift), most rows a flashcard link. Panels: nine Planet Detail Panels
   (placement
   prose, aspect/conjunct chips — conjunct/combust hidden when empty, Sade Sati phase-track timeline,
-  MD/AD/**Ascendant-Lord**/**Gandanta** pills), with a single-card flashcard popover
+  MD/AD/**Gandanta** pills — the old Ascendant-Lord pill was retired, the ChartRuler card owns that
+  identity), with a single-card flashcard popover
   (house/nakshatra/**pada**/sign/ascendant/**gandanta**/maitri/**avastha** → real deck cards). The placement line reads
   `…° Sign · Nakshatra · pada N (Purushartha)`, each of the last three a tappable card link. A small
   **square B/M/N/Y badge** (functional benefic/malefic/neutral/yogakaraka for the lagna — square so it

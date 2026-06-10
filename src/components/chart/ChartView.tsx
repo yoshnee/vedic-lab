@@ -216,7 +216,11 @@ export function ChartView({ model }: { model: ChartModel }) {
 
             <ElementBalance planets={chart.planets} onOpenCard={openCard} inline />
 
-            <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
+            {/* The Chart Ruler (ascendant-lord) walkthrough is a natal-lagna
+                reading — D1 panel context only (owner-directed). */}
+            {!vargaMode && (
+              <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
+            )}
 
             {vargaMode && (
               <p className="pp-context">
