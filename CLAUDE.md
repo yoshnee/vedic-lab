@@ -248,10 +248,13 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   **Chart 1 is also the PANEL CONTEXT**: toggling it to D9 re-derives the nine planet panels for the
   varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn for future D10/…) —
   only sign-level facts recompute (sign/expanded degree/house from the varga lagna/dignity/aspects/
-  conjunctions/rulerships/varga lagna-lord pill, all reused validated sign math); D1-longitude and
-  rasi-chart concepts (nakshatra/pada, combustion, gandanta, tithi, avasthas, shadbala, sade sati,
-  functional nature, maitri) are deliberately emptied so panels hide them rather than invent varga
-  values (a `.pp-context` caption + per-panel `vargaLabel` say so). Chart 2 never affects the panels;
+  conjunctions/rulerships/varga lagna-lord pill, all reused validated sign math), and **avasthas are
+  re-read from the varga placement** (owner-directed, Ryan Kurczak's method: Baladi from the varga's
+  expanded degree + sign parity, Jagradadi from varga dignity + natural relation to the varga sign's
+  lord — same `computeAvasthas`, varga inputs; nodes still none); D1-longitude and rasi-chart
+  concepts (nakshatra/pada, combustion, gandanta, tithi, shadbala, sade sati, functional nature,
+  maitri) are deliberately emptied so panels hide them rather than invent varga values (a
+  `.pp-context` caption + per-panel `vargaLabel` say so). Chart 2 never affects the panels;
   the daśā rail, element balance, and ChartRuler stay natal.
   **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
   continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'

@@ -7,16 +7,21 @@
    Two consumers:
    - buildD9 → the diamond (frame + minimal ChartBody[]).
    - buildVargaPanels → full PlanetData[] for the planet detail panels when
-     Chart 1 is toggled to a varga. Only sign-level facts are recomputed
+     Chart 1 is toggled to a varga. Sign-level facts are recomputed
      (sign/house/dignity/aspects/conjunctions/rulerships — all validated
-     sign math reused from core/vedic). D1-longitude and rasi-chart concepts
-     (nakshatra/pada, combustion, gandanta, tithi, avasthas, shadbala, sade
-     sati, functional nature, panchadha maitri) are deliberately EMPTIED so
-     the panels hide them instead of showing invented varga values.
+     sign math reused from core/vedic), and AVASTHAS are recomputed from the
+     varga placement (owner-directed, per Ryan Kurczak's method: Baladi from
+     the varga's expanded degree + sign parity, Jagradadi from the varga
+     dignity + natural relation to the varga sign's lord — same
+     computeAvasthas, varga inputs). D1-longitude and rasi-chart concepts
+     (nakshatra/pada, combustion, gandanta, tithi, shadbala, sade sati,
+     functional nature, panchadha maitri) are deliberately EMPTIED so the
+     panels hide them instead of showing invented varga values.
    ============================================================ */
 import { navamsa, type VargaPoint } from "@/core/divisional";
 import * as v from "@/core/vedic";
-import { SIGN_ABBR, SIGN_RULER } from "@/core/constants";
+import { computeAvasthas } from "@/core/avastha";
+import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA } from "@/core/constants";
 import type { ChartData, PlanetData, PlanetKey } from "@/core/types";
 import type { ChartBody, ChartFrame } from "@/components/chart/NorthIndianChart";
 
@@ -39,6 +44,8 @@ export function buildVargaPanels(
 
   const planets: PlanetData[] = chart.planets.map((p) => {
     const d = varga(p.longitude);
+    const isNode = p.key === "rahu" || p.key === "ketu";
+    const dignity = v.dignityOf(p.key, d.sign);
     return {
       ...p,
       sign: d.sign,
@@ -47,12 +54,22 @@ export function buildVargaPanels(
       degree: v.formatDMS(d.degree),
       degreeValue: d.degree,
       house: v.houseOf(d.sign, asc.sign),
-      dignity: v.dignityOf(p.key, d.sign),
+      dignity,
       // sign-level recomputes within the varga chart
       lagnaLord: lagnaLord === p.key,
       rules: v.rulesOf(p.key, asc.sign),
       aspectedBy: v.aspectsOnto(d.sign, signs),
       conjunct: v.conjunctIn(p.key, d.sign, signs),
+      // avasthas re-read from the varga placement (Kurczak method — see header)
+      avasthas: isNode
+        ? [] // nodes: no avasthas, as in the rasi chart
+        : computeAvasthas({
+            degreeValue: d.degree,
+            sign: d.sign,
+            dignity,
+            inMooltrikona: MOOLTRIKONA[p.key] === d.sign,
+            naturalToLord: v.naturalToDispositor(p.key, signs),
+          }),
       // D1-longitude / rasi-chart concepts — emptied so the panels hide them
       combust: { on: false as const },
       dispositor: null,
@@ -60,7 +77,6 @@ export function buildVargaPanels(
       functionalNature: null,
       gandanta: false,
       gandantaDeep: false,
-      avasthas: [],
       shadbala: null,
       tithiNumber: undefined,
       waxing: undefined,
