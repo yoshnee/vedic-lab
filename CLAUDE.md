@@ -176,8 +176,9 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
   span + ruler + general nature; rulers/spans match the engine's validated `NAKSHATRAS` table.)
-  (The `padas` deck is concept-based — 4 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
-  · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's `pada N (purushartha)` placement link
+  (The `padas` deck is concept-based — 5 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
+  · "The Alternating Cycle" · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's
+  `pada N (purushartha)` placement link
   opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the
   **per-nakshatra alternating cycle** from Komilla Sutton's *The Nakshatras: The Stars Beyond the
   Zodiac* — forward Dharma·Artha·Kama·Moksha in one nakshatra, reversed in the next, with the parity

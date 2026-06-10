@@ -50,11 +50,28 @@ export const padas: Deck = {
         { label: "Pada 4", value: "Moksha — or Dharma" },
       ],
       points: [
-        "The four aims cycle through the padas — forward in one nakshatra, reversed in the next",
-        "Ashwini runs Dharma → Artha → Kama → Moksha; Bharani reverses to Moksha → Kama → Artha → Dharma",
-        "The alternation counts pada-less Abhijit, so Shravana restarts the forward cycle",
-        "Every nakshatra still touches all four aims — only the order changes",
+        "Every nakshatra's four padas touch all four aims of life — the order depends on the nakshatra",
+        "Dharma — purpose and right action · Artha — wealth and security · Kama — desire and creativity · Moksha — liberation",
         "The purushartha colors how that planet pursues its agenda: purpose, wealth, desire, or liberation",
+        "Which order a given nakshatra runs is the alternating cycle — see the next card",
+      ],
+    },
+    {
+      title: "The Alternating Cycle",
+      sanskrit: "Puruṣārtha krama",
+      icon: { kind: "diamond" },
+      body: "",
+      facts: [
+        { label: "Odd nakshatras", value: "Dharma → Artha → Kama → Moksha" },
+        { label: "Even nakshatras", value: "Moksha → Kama → Artha → Dharma" },
+        { label: "From Shravana", value: "Parity flips — Abhijit counts" },
+      ],
+      points: [
+        "Ashwini (1st) runs forward — Dharma, Artha, Kama, Moksha; Bharani (2nd) reverses — so Bharani pada 2 is Kama",
+        "The zigzag holds through Uttara Ashadha (21st)",
+        "Pada-less Abhijit is next in the cycle, so Shravana restarts forward and the odd/even rule flips for the last six",
+        "From Shravana on: Shravana, Shatabhisha and Uttara Bhadrapada run forward; Dhanishta, Purva Bhadrapada and Revati reverse",
+        "Tabled in Komilla Sutton's “The Nakshatras: The Stars Beyond the Zodiac”",
       ],
     },
     {
