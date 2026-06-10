@@ -15,6 +15,7 @@ import {
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
 } from "../vedic";
+import { navamsa } from "../divisional";
 import type { PlanetKey } from "../types";
 
 /** The seven non-node grahas — the only bodies with dignity / friendships. */
@@ -155,6 +156,31 @@ describe("nakshatras & vimshottari", () => {
       const { pada } = nakshatraOf(lon);
       expect(pada).toBeGreaterThanOrEqual(1);
       expect(pada).toBeLessThanOrEqual(4);
+    }
+  });
+});
+
+describe("navamsa (D9)", () => {
+  it("elemental seeds match the classical movable/fixed/dual rule AND the continuous cycle", () => {
+    for (let s = 1; s <= 12; s++) {
+      const firstPart = navamsa((s - 1) * 30 + 0.1).sign;
+      const classical =
+        [1, 4, 7, 10].includes(s) ? s // movable: starts from itself
+        : [2, 5, 8, 11].includes(s) ? ((s - 1 + 8) % 12) + 1 // fixed: from the 9th
+        : ((s - 1 + 4) % 12) + 1; // dual: from the 5th
+      expect(firstPart, `sign ${s} first navamsa`).toBe(classical);
+    }
+    for (let L = 0.05; L < 360; L += 1.7) {
+      expect(navamsa(L).sign).toBe((Math.floor(L / (360 / 108)) % 12) + 1);
+    }
+  });
+
+  it("expanded degree spans 0–30 within each 3°20′ part (mid-part = 15°)", () => {
+    expect(navamsa(360 / 108 / 2).degree).toBeCloseTo(15, 6); // middle of Aries' first navamsa
+    for (let L = 0.05; L < 360; L += 2.3) {
+      const { degree } = navamsa(L);
+      expect(degree).toBeGreaterThanOrEqual(0);
+      expect(degree).toBeLessThan(30);
     }
   });
 });

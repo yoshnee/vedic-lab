@@ -3,10 +3,9 @@
 /* ============================================================
    ChartCard.tsx — a titled card around the generic NorthIndianChart. Both
    charts use the SAME header (a chart-type <select> + a caption) so they line
-   up: Chart 1 = "Natal · Rāśi (D1)", Chart 2 = "Transit · Gochara". Each
-   dropdown carries a single option for now (divisionals come later by extending
-   its `options`). The card is the seam where natal / transit / future
-   divisionals all reuse one renderer — only the frame + planets differ.
+   up. The selects are live: Chart 1 toggles D1/D9, Chart 2 Transit/D1/D9
+   (unbuilt vargas ship as disabled options). The card is the seam where natal /
+   transit / divisionals all reuse one renderer — only frame + planets differ.
    ============================================================ */
 import { NorthIndianChart, type ChartBody, type ChartFrame } from "./NorthIndianChart";
 import type { PlanetKey } from "@/core/types";
@@ -14,6 +13,7 @@ import type { PlanetKey } from "@/core/types";
 export interface ChartOption {
   value: string;
   label: string;
+  disabled?: boolean;
 }
 
 export function ChartCard({
@@ -46,7 +46,7 @@ export function ChartCard({
             aria-label={`${label} type`}
           >
             {options.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+              <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>
             ))}
           </select>
         </label>

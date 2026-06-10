@@ -22,7 +22,8 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 3. **Everything stays client-side.** No backend, no server-side calculation, no secrets. External
    calls are limited to the two free geocoding/timezone services below.
 4. **Keep the engine longitude-based.** Expose each planet's raw **sidereal longitude** so divisional
-   charts (D9, D60, …) can be layered in later. Build **D1 (Rasi) only** for now.
+   charts layer on cleanly. **D1 (Rasi) and D9 (navamsa) are built**; further vargas (D10, D60, …)
+   drop into `src/core/divisional.ts` later, following the reference's `divisional.js`.
 5. **Components stay data-driven and reusable.** Content lives in data files; components render data.
    Adding content (a new flashcard deck, a new planet panel) should not require new component code.
 6. **License is AGPL-3.0.** The repo is public under AGPL-3.0 (required once Swiss Ephemeris is added).
@@ -111,6 +112,7 @@ src/
   core/                   THE ENGINE (UI-free; follows the Hora-Prakash reference)
     swisseph.ts           swisseph-wasm wrapper (Lahiri positions, speeds, Lagna)
     vedic.ts              sign/degree, nakshatra/pada/lord, whole-sign houses, dignity, drishti, combust
+    divisional.ts         varga mapping (D9 navamsa live; later vargas slot in here)
     dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
     avastha.ts            Baladi (degree) + Jagradadi (dignity + natural maitri) "states"; no invented strength
     constants.ts          dignity tables, nakshatras, drishti, combustion orbs, dasha years
@@ -120,7 +122,7 @@ src/
     __tests__/            Vitest: fixtures.test.ts (23 JHora charts) + invariants.test.ts (table guards)
     __fixtures__/jhora/   23 vendored JHora ground-truth charts (trimmed: birth+planets+dasha)
   lib/design/             tokens.css (source of truth), app.css, site.css (global nav/footer + content pages), chart.css, colors.ts
-  lib/chart/              generateChart() seam · ChartModel types · ChartProvider store
+  lib/chart/              generateChart() seam · ChartModel types · ChartProvider store · varga.ts (buildD9 render set)
   lib/{site.ts, flashcardLink.ts, geo.ts, time.ts, birth.ts, hooks/useDebounce.ts}
   celestial/celestial.ts  SVG art: body({state,retro}) / diamond / glyph / chart / zodiac / combust / conjunction
   components/
@@ -223,10 +225,18 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   uses the wider Parashari orbs incl. Moon 12°).
 - **Birth-chart page** (`/chart`) — a desktop **3-up layout**: a sticky **`DashaRail`** (Vimshottari
   MD→AD→PD current chain + the full mahadasha list, each expandable to its antardashas) on the left,
-  then **two charts** — Chart 1 natal D1, Chart 2 a `ChartCard` with a type `<select>` (**Transit**
-  live; D9/D10/D60 disabled "soon" stubs). Both render through the **generic `NorthIndianChart`**
+  then **two charts**, each a `ChartCard` with a **live type `<select>`** — Chart 1 toggles
+  **D1 ⇄ D9** (default D1), Chart 2 **Transit / D1 / D9** (default Transit; transit is
+  deliberately right-only — the natal-vs-X reading layout); D10/D60 are disabled "soon" stubs on
+  both sides. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
+  **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
+  continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'
+  `navamsa_sign` per body; `lib/chart/varga.ts` `buildD9()` makes the render set (frame = navamsa
+  of the natal ascendant, whole-sign houses from it, dignity on the varga sign, natal retro).
+  Both charts render through the **generic `NorthIndianChart`**
   (`frame {ascSign,ascDegree}` + `planets ChartBody[]`); transit uses the **same natal frame**, so
-  transiting planets read through the natal houses, captioned with the compute timestamp. Below the
+  transiting planets read through the natal houses, captioned with the compute timestamp. The daśā
+  rail, element balance, and planet panels stay natal-D1 regardless of the selectors. Below the
   charts, a full-width **`ChartRuler`** card — the "start here" lagneśa walkthrough: a numbered chain
   (ascendant → its ruler = the chart ruler → the sign it occupies → that whole-sign house → the
   ruler's own nakshatra/pada, explicitly distinct from the Moon's daśā-seeding nakshatra → co-tenant
@@ -487,8 +497,9 @@ Build in this order; everything from step 2 down reads from the engine.
 
 ### Out of scope (for now)
 - **Automated yoga detection** — **stub it** (leave a clean seam to add later).
-- **Divisional charts beyond D1** — don't build them, but **keep the engine longitude-based** so they
-  drop in cleanly (reference: `src/core/divisional.js`).
+- **Divisional charts beyond D9** — D9 is live (`core/divisional.ts`); D10/D60/… are disabled
+  dropdown stubs. Add them in `divisional.ts` following the reference's `divisional.js` +
+  `JHORA_DIVISIONAL_SPEC.md`, validated against the fixtures.
 
 ---
 

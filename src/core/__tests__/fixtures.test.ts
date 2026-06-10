@@ -19,6 +19,8 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { computeChart, birthFromCivil } from "../index";
 import { computeDasha } from "../dasha";
+import { navamsa } from "../divisional";
+import { signName } from "../vedic";
 import type { BirthInput, ChartData } from "../types";
 
 const DIR = new URL("../__fixtures__/jhora/", import.meta.url);
@@ -36,6 +38,7 @@ const NAK_ALIAS: Record<string, string> = {
 interface JhoraPlanet {
   longitude: number; sign: string; sign_degree: string;
   nakshatra: string; nakshatra_lord: string; pada: number; retrograde: boolean;
+  navamsa_sign?: string;
 }
 interface Fixture {
   slug: string; name: string;
@@ -109,6 +112,16 @@ describe.each(fixtures)("$name", (fx) => {
       if (f.nakshatra_lord) expect(p.nakshatra.lord, `${p.name} nakshatra lord`).toBe(f.nakshatra_lord);
       expect(p.nakshatra.pada, `${p.name} pada`).toBe(f.pada);
       expect(p.retro, `${p.name} retrograde`).toBe(f.retrograde);
+    }
+  });
+
+  it("navamsa (D9) sign matches JHora for the Lagna and every listed body", () => {
+    // Mapped from JHora's own longitudes, so this validates the varga mapping
+    // itself (our longitudes are validated separately above) — no boundary
+    // flakiness from the ≤3′ ephemeris tolerance.
+    for (const [name, f] of Object.entries(fx.planets)) {
+      if (!f.navamsa_sign) continue;
+      expect(signName(navamsa(f.longitude).sign), `${name} navamsa sign`).toBe(f.navamsa_sign);
     }
   });
 

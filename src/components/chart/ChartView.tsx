@@ -10,11 +10,12 @@
    drawer, the daśā drawer, and the Chart-2 type. Natal + transit render through
    the same NorthIndianChart on the SAME natal lagna frame.
    ============================================================ */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
-import { ChartCard } from "./ChartCard";
+import { buildD9 } from "@/lib/chart/varga";
+import { ChartCard, type ChartOption } from "./ChartCard";
 import { ChartRuler } from "./ChartRuler";
 import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
@@ -54,11 +55,29 @@ function MoonGlyph({ waxing }: { waxing: boolean }) {
   );
 }
 
+/* The chart-type selectors. Vargas can show on either side; Transit is
+   right-only (the natal-vs-X reading layout, and its "as of" caption belongs
+   there). Unbuilt vargas are visible-but-disabled "soon" stubs on both sides. */
+type Chart1Type = "d1" | "d9";
+type Chart2Type = "transit" | "d1" | "d9";
+const VARGA_OPTIONS: ChartOption[] = [
+  { value: "d1", label: "Natal · Rāśi (D1)" },
+  { value: "d9", label: "Navāṁśa (D9)" },
+  { value: "d10", label: "Daśāṁśa (D10) · soon", disabled: true },
+  { value: "d60", label: "Ṣaṣṭyāṁśa (D60) · soon", disabled: true },
+];
+const CHART2_OPTIONS: ChartOption[] = [
+  { value: "transit", label: "Transit · Gochara" },
+  ...VARGA_OPTIONS,
+];
+
 export function ChartView({ model }: { model: ChartModel }) {
   const { chart, meta, panchanga, transit } = model;
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
+  const [chart1, setChart1] = useState<Chart1Type>("d1");
+  const [chart2, setChart2] = useState<Chart2Type>("transit");
 
   // Lock body scroll while any overlay is open.
   useEffect(() => {
@@ -84,6 +103,22 @@ export function ChartView({ model }: { model: ChartModel }) {
     document.getElementById(`panel-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   const frame = { ascSign: chart.ascendant.sign, ascDegree: chart.ascendant.degree };
+  const d9 = useMemo(() => buildD9(chart), [chart]);
+
+  /** Dataset for a selected chart type — toggling is non-destructive; every
+      set derives from the model already in memory, so switching back restores. */
+  const dataFor = (t: Chart1Type | Chart2Type) =>
+    t === "transit"
+      ? {
+          frame,
+          planets: transit?.planets ?? [],
+          caption: transit ? fmtTransit(transit.computedUtcISO) : "transit unavailable",
+        }
+      : t === "d9"
+        ? { frame: d9.frame, planets: d9.planets, caption: "spouse · dharma · inner nature" }
+        : { frame, planets: chart.planets, caption: chart.birth.dateLabel };
+  const c1 = dataFor(chart1);
+  const c2 = dataFor(chart2);
 
   return (
     <>
@@ -150,20 +185,22 @@ export function ChartView({ model }: { model: ChartModel }) {
             <div className="chart-top">
               <ChartCard
                 label="Chart 1"
-                value="natal"
-                options={[{ value: "natal", label: "Natal · Rāśi (D1)" }]}
-                caption={chart.birth.dateLabel}
-                frame={frame}
-                planets={chart.planets}
+                value={chart1}
+                options={VARGA_OPTIONS}
+                onChange={(v) => { if (v === "d1" || v === "d9") setChart1(v); }}
+                caption={c1.caption}
+                frame={c1.frame}
+                planets={c1.planets}
                 onSelectPlanet={selectPlanet}
               />
               <ChartCard
                 label="Chart 2"
-                value="transit"
-                options={[{ value: "transit", label: "Transit · Gochara" }]}
-                caption={transit ? fmtTransit(transit.computedUtcISO) : "transit unavailable"}
-                frame={frame}
-                planets={transit?.planets ?? []}
+                value={chart2}
+                options={CHART2_OPTIONS}
+                onChange={(v) => { if (v === "transit" || v === "d1" || v === "d9") setChart2(v); }}
+                caption={c2.caption}
+                frame={c2.frame}
+                planets={c2.planets}
                 onSelectPlanet={selectPlanet}
               />
             </div>
