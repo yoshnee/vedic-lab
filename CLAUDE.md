@@ -35,7 +35,7 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 
 ### Study side
 - Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
-  the 12 signs as Lagnas, with functional lords/benefics/malefics), **Combustion** (Asta),
+  the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership fact), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
   (concept), **Gandanta** (concept), **Planetary Conditions** (Panchadha Maitri, concept),
   **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;

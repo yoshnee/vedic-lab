@@ -110,6 +110,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Back & top of the head, incl. the brain" },
         ...fnFacts(1),
       ],
       points: [
@@ -134,6 +135,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Face & throat" },
         ...fnFacts(2),
       ],
       points: [
@@ -158,6 +160,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Hands, arms & shoulders" },
         ...fnFacts(3),
       ],
       points: [
@@ -182,6 +185,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Chest & heart" },
         ...fnFacts(4),
       ],
       points: [
@@ -206,6 +210,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Stomach & surrounding organs" },
         ...fnFacts(5),
       ],
       points: [
@@ -230,6 +235,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Waist & small intestine" },
         ...fnFacts(6),
       ],
       points: [
@@ -254,6 +260,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Lower abdomen & bladder (below the navel)" },
         ...fnFacts(7),
       ],
       points: [
@@ -278,6 +285,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Internal reproductive organs & anus" },
         ...fnFacts(8),
       ],
       points: [
@@ -302,6 +310,7 @@ export const signs: Deck = {
         { label: "Element", value: "Fire" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Thighs & hips" },
         ...fnFacts(9),
       ],
       points: [
@@ -326,6 +335,7 @@ export const signs: Deck = {
         { label: "Element", value: "Earth" },
         { label: "Modality", value: "Movable (Chara)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Knees" },
         ...fnFacts(10),
       ],
       points: [
@@ -350,6 +360,7 @@ export const signs: Deck = {
         { label: "Element", value: "Air" },
         { label: "Modality", value: "Fixed (Sthira)" },
         { label: "Polarity", value: "Odd (male)" },
+        { label: "Body", value: "Calves, ankles & shins" },
         ...fnFacts(11),
       ],
       points: [
@@ -374,6 +385,7 @@ export const signs: Deck = {
         { label: "Element", value: "Water" },
         { label: "Modality", value: "Dual (Dvisvabhava)" },
         { label: "Polarity", value: "Even (female)" },
+        { label: "Body", value: "Feet" },
         ...fnFacts(12),
       ],
       points: [
