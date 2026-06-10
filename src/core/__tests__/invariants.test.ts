@@ -10,6 +10,7 @@ import {
   PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
   DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA, COMBUSTION_ORB,
+  SIGN_ELEMENT,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
@@ -41,6 +42,13 @@ describe("dignity tables", () => {
     expect(dignityOf("moon", 8)).toBe("debilitated"); // Scorpio
     expect(dignityOf("moon", 9)).toBe("neutral"); // Sagittarius — the reference's wrong value
     expect(dignityOf("moon", 2)).toBe("exalted"); // Taurus
+  });
+
+  it("sign elements cycle fire→earth→air→water from Aries, three signs each", () => {
+    expect(SIGN_ELEMENT).toHaveLength(12);
+    const cycle = ["fire", "earth", "air", "water"];
+    for (let s = 1; s <= 12; s++) expect(SIGN_ELEMENT[s - 1], `sign ${s}`).toBe(cycle[(s - 1) % 4]);
+    for (const e of cycle) expect(SIGN_ELEMENT.filter((x) => x === e)).toHaveLength(3);
   });
 
   it("own-sign and ruler tables agree both ways", () => {

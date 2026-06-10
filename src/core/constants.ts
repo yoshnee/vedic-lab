@@ -34,6 +34,15 @@ export const PLANET_SANSKRIT: Record<PlanetKey, string> = {
   venus: "Shukra", saturn: "Shani", rahu: "Rahu", ketu: "Ketu",
 };
 
+/** Element of each sign 1–12 — fire/earth/air/water cycling from Aries. Drives
+    the chart's element-balance readout and the Elements deck. */
+export type Element = "fire" | "earth" | "air" | "water";
+export const SIGN_ELEMENT: Element[] = [
+  "fire", "earth", "air", "water", // Aries Taurus Gemini Cancer
+  "fire", "earth", "air", "water", // Leo Virgo Libra Scorpio
+  "fire", "earth", "air", "water", // Sagittarius Capricorn Aquarius Pisces
+];
+
 /** Ruler of each sign 1–12 (used for house lordship; nodes rule nothing). */
 export const SIGN_RULER: PlanetKey[] = [
   "mars", "venus", "mercury", "moon", "sun", "mercury",

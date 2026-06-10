@@ -16,7 +16,7 @@
 import { DECKS } from "@/data/decks/registry";
 import type { Deck, Card } from "@/data/decks/types";
 
-export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet";
+export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet" | "element";
 
 export interface FlashcardTarget {
   deck: Deck;
@@ -83,6 +83,17 @@ export function resolveFlashcard(
     // a panel avastha row opens that system's card; fall back to the overview card
     const title = AVASTHA_CARDS[String(id)] ?? AVASTHA_OVERVIEW_CARD;
     return byTitle(DECKS.find((d) => d.id === "avasthas"), title);
+  }
+  if (type === "element") {
+    // the chart's element-balance rows open the matching Elements deck card
+    // (id "Fire" | "Earth" | "Air" | "Water"); no id → the overview card
+    const deck = DECKS.find((d) => d.id === "elements");
+    if (!deck) return null;
+    if (id != null) {
+      const byName = byTitle(deck, String(id));
+      if (byName) return byName;
+    }
+    return { deck, index: 0, card: deck.cards[0] };
   }
   if (type === "planet") {
     // the legend's planet-colors / dignity rows open the Planets (grahas) deck;

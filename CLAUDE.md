@@ -37,7 +37,9 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 - Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
   the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership fact), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
-  (concept), **Gandanta** (concept), **Planetary Conditions** (Panchadha Maitri, concept),
+  (concept), **Gandanta** (concept), **The Four Elements** (Tattva, concept — backs the chart's
+  element-balance readout via its exported `ELEMENT_INFO`), **Planetary Conditions** (Panchadha
+  Maitri, concept),
   **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;
   **Shadbala (6)** is scaffolded (canonical titles seeded, card bodies empty to fill in later);
   **Karakas / Dashas / Yogas** are registered as "coming soon" roadmap tiles.
@@ -127,6 +129,7 @@ src/
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
     chart/                ChartView, NorthIndianChart (generic: frame+planets), ChartCard
                           (title/type-selector wrapper), ChartRuler (lagneśa walkthrough),
+                          ElementBalance (element tally; rail on desktop, inline on mobile),
                           DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
                           FlashcardPopover
   data/decks/             registry.ts + per-deck data files
@@ -229,7 +232,12 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   ruler's own nakshatra/pada, explicitly distinct from the Moon's daśā-seeding nakshatra → co-tenant
   planets), every noun a flashcard link via the same resolver, the header echoing the ruler's maitri
   pill and dignity/retro glyph, name/co-tenants jumping to the planet panels. Pure presentation —
-  reads only `ChartData.lagnaLord` + `planets[]`. Then **full-width 2-column Planet Detail Panels**
+  reads only `ChartData.lagnaLord` + `planets[]`. An **`ElementBalance`** block (in the sticky rail on
+  desktop, an inline card on mobile — CSS shows exactly one of the two rendered copies) tallies all
+  nine planets by sign element (`SIGN_ELEMENT`, nodes included), highlights the predominant
+  element(s) with the prevailing trait, flags any missing element, and links each element to the
+  Four Elements deck (text from `ELEMENT_INFO`, the deck's lookup form — single source). Then
+  **full-width 2-column Planet Detail Panels**
   (`.pp-grid`, row-major navagraha order; an open panel spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
   zodiac glyph + muted rāśi number. On mobile everything stacks and the rail becomes a **slide-in
   drawer** (a "Daśā" trigger). A header **Legend** button opens a slide-in **symbol-key drawer**

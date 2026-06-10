@@ -13,6 +13,7 @@ import { signs } from "./signs";
 import { nakshatras } from "./nakshatras";
 import { padas } from "./padas";
 import { gandanta } from "./gandanta";
+import { elements } from "./elements";
 import { aspects } from "./aspects";
 import { combustion } from "./combustion";
 import { conjunctions } from "./conjunctions";
@@ -32,6 +33,7 @@ export const DECKS: Deck[] = [
   nakshatras,
   padas,
   gandanta,
+  elements,
   aspects,
   combustion,
   conjunctions,

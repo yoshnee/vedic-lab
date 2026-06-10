@@ -16,6 +16,7 @@ import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
 import { ChartCard } from "./ChartCard";
 import { ChartRuler } from "./ChartRuler";
+import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
@@ -129,6 +130,7 @@ export function ChartView({ model }: { model: ChartModel }) {
         <div className="chart-layout">
           <aside className="dasha-rail" aria-label="Vimśottarī daśā">
             <DashaRail dasha={chart.dasha} current={chart.currentDasha} />
+            <ElementBalance planets={chart.planets} onOpenCard={openCard} />
           </aside>
 
           <div className="chart-main">
@@ -165,6 +167,8 @@ export function ChartView({ model }: { model: ChartModel }) {
                 onSelectPlanet={selectPlanet}
               />
             </div>
+
+            <ElementBalance planets={chart.planets} onOpenCard={openCard} inline />
 
             <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
 
