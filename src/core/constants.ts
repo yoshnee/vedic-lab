@@ -53,6 +53,46 @@ export const NAKSHATRAS: { name: string; lord: PlanetKey }[] = [
   { name: "Purva Bhadrapada", lord: "jupiter" }, { name: "Uttara Bhadrapada", lord: "saturn" }, { name: "Revati", lord: "mercury" },
 ];
 
+/* Pada → purushartha per nakshatra (rows align with NAKSHATRAS, columns = padas 1–4).
+   Vendored verbatim from Komilla Sutton, "The Nakshatras: The Stars Beyond the Zodiac"
+   (Nakshatra Purushartha and Pada Purushartha table). The cycle alternates —
+   Dharma·Artha·Kama·Moksha, then reversed Moksha·Kama·Artha·Dharma — but the book's
+   alternation counts Abhijit (which has no padas) between Uttara Ashadha and Shravana,
+   so the parity flips there: Shravana restarts at Dharma. A plain odd/even rule over
+   27 nakshatras would be wrong from Shravana on — keep this an explicit table. */
+export type Purushartha = "Dharma" | "Artha" | "Kama" | "Moksha";
+const DAKM: Purushartha[] = ["Dharma", "Artha", "Kama", "Moksha"];
+const MKAD: Purushartha[] = ["Moksha", "Kama", "Artha", "Dharma"];
+export const PADA_PURUSHARTHAS: Purushartha[][] = [
+  DAKM, // Ashwini
+  MKAD, // Bharani
+  DAKM, // Krittika
+  MKAD, // Rohini
+  DAKM, // Mrigashira
+  MKAD, // Ardra
+  DAKM, // Punarvasu
+  MKAD, // Pushya
+  DAKM, // Ashlesha
+  MKAD, // Magha
+  DAKM, // Purva Phalguni
+  MKAD, // Uttara Phalguni
+  DAKM, // Hasta
+  MKAD, // Chitra
+  DAKM, // Swati
+  MKAD, // Vishakha
+  DAKM, // Anuradha
+  MKAD, // Jyeshtha
+  DAKM, // Mula
+  MKAD, // Purva Ashadha
+  DAKM, // Uttara Ashadha
+  DAKM, // Shravana — parity flips here (Abhijit, pada-less, sits before it in the book's cycle)
+  MKAD, // Dhanishta
+  DAKM, // Shatabhisha
+  MKAD, // Purva Bhadrapada
+  DAKM, // Uttara Bhadrapada
+  MKAD, // Revati
+];
+
 /* Dignity by sign number (1–12). Nodes have no dignity (always neutral). */
 export const EXALTATION: Partial<Record<PlanetKey, number>> = {
   sun: 1, moon: 2, mars: 10, mercury: 6, jupiter: 4, venus: 12, saturn: 7,

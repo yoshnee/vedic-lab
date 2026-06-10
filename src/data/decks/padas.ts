@@ -1,8 +1,9 @@
 /* Nakshatra Padas — a small concept deck (not one card per pada). Content from
    nakshatra_padas_flashcards.md: FRONT = compact facts, BACK = points. A pada is
-   a quarter of a nakshatra (3°20′); the four padas run through the four purusharthas
-   (aims of life) in the fixed order Dharma → Artha → Kama → Moksha, taken from the
-   element of each pada's navamsa sign (fire/earth/air/water).
+   a quarter of a nakshatra (3°20′); the four padas cycle through the four purusharthas
+   (aims of life) — forward (Dharma → Artha → Kama → Moksha) in one nakshatra, reversed
+   in the next (see PADA_PURUSHARTHAS in src/core/constants.ts, vendored from Komilla
+   Sutton's "The Nakshatras: The Stars Beyond the Zodiac").
 
    The chart's placement-line `pada N (purushartha)` link opens the "The Four Padas
    & the Purusharthas" card and highlights the tapped pada's row (see
@@ -43,16 +44,16 @@ export const padas: Deck = {
       icon: { kind: "diamond" },
       body: "",
       facts: [
-        { label: "Pada 1", value: "Dharma (fire)" },
-        { label: "Pada 2", value: "Artha (earth)" },
-        { label: "Pada 3", value: "Kama (air)" },
-        { label: "Pada 4", value: "Moksha (water)" },
+        { label: "Pada 1", value: "Dharma — or Moksha" },
+        { label: "Pada 2", value: "Artha — or Kama" },
+        { label: "Pada 3", value: "Kama — or Artha" },
+        { label: "Pada 4", value: "Moksha — or Dharma" },
       ],
       points: [
-        "The four padas always map to the four aims of life in this fixed order",
-        "Each pada's purushartha comes from the element of its navamsa sign (fire / earth / air / water)",
-        "It is fixed by pada number — pada 1 is always dharma, pada 4 always moksha, in every nakshatra",
-        "Same fire → dharma, earth → artha, air → kama, water → moksha logic as the house purushartha grouping",
+        "The four aims cycle through the padas — forward in one nakshatra, reversed in the next",
+        "Ashwini runs Dharma → Artha → Kama → Moksha; Bharani reverses to Moksha → Kama → Artha → Dharma",
+        "The alternation counts pada-less Abhijit, so Shravana restarts the forward cycle",
+        "Every nakshatra still touches all four aims — only the order changes",
         "The purushartha colors how that planet pursues its agenda: purpose, wealth, desire, or liberation",
       ],
     },
@@ -70,7 +71,6 @@ export const padas: Deck = {
         "A planet's pada tells you its navamsa (D9) sign",
         "The navamsa is the most important divisional chart — it refines and stress-tests the natal promise",
         "Because padas and navamsas share the same 3°20′ grid, knowing the pada places the planet in D9",
-        "The element of that navamsa sign is what assigns the pada's purushartha",
       ],
     },
     {

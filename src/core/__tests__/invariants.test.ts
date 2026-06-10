@@ -9,7 +9,7 @@ import { describe, it, expect } from "vitest";
 import {
   PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
-  DASHA_SEQUENCE, DASHA_TOTAL_YEARS,
+  DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
@@ -97,6 +97,30 @@ describe("nakshatras & vimshottari", () => {
     expect(new Set(DASHA_SEQUENCE.map((d) => d.lord)).size).toBe(9);
     expect(DASHA_SEQUENCE.reduce((s, d) => s + d.years, 0)).toBe(DASHA_TOTAL_YEARS);
     expect(DASHA_TOTAL_YEARS).toBe(120);
+  });
+
+  it("pada purusharthas: one row per nakshatra, each touching all four aims", () => {
+    expect(PADA_PURUSHARTHAS).toHaveLength(27);
+    for (let i = 0; i < 27; i++) {
+      expect(new Set(PADA_PURUSHARTHAS[i]), NAKSHATRAS[i].name)
+        .toEqual(new Set(["Dharma", "Artha", "Kama", "Moksha"]));
+    }
+  });
+
+  it("pada purusharthas alternate forward/reversed, with the parity flip at Shravana (Sutton)", () => {
+    const DAKM = ["Dharma", "Artha", "Kama", "Moksha"];
+    const MKAD = [...DAKM].reverse();
+    // Ashwini..Uttara Ashadha (indices 0–20): even forward, odd reversed
+    for (let i = 0; i <= 20; i++) {
+      expect(PADA_PURUSHARTHAS[i], NAKSHATRAS[i].name).toEqual(i % 2 === 0 ? DAKM : MKAD);
+    }
+    // pada-less Abhijit sits before Shravana in the book's cycle, flipping parity:
+    // Shravana..Revati (indices 21–26): odd forward, even reversed
+    for (let i = 21; i <= 26; i++) {
+      expect(PADA_PURUSHARTHAS[i], NAKSHATRAS[i].name).toEqual(i % 2 === 1 ? DAKM : MKAD);
+    }
+    expect(PADA_PURUSHARTHAS[21]).toEqual(DAKM); // Shravana restarts forward
+    expect(PADA_PURUSHARTHAS[26]).toEqual(MKAD); // Revati ends reversed
   });
 
   it("nakshatraOf lands on the right nakshatra + pada at boundaries", () => {

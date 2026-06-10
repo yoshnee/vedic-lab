@@ -178,9 +178,14 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   span + ruler + general nature; rulers/spans match the engine's validated `NAKSHATRAS` table.)
   (The `padas` deck is concept-based — 4 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
   · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's `pada N (purushartha)` placement link
-  opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the fixed map
-  1 Dharma · 2 Artha · 3 Kama · 4 Moksha, set in the engine; `FlashcardTarget.highlightFact` drives the
-  row emphasis, resolved by the card title in `flashcardLink.ts` (`PADA_CONCEPT_CARD`).)
+  opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the
+  **per-nakshatra alternating cycle** from Komilla Sutton's *The Nakshatras: The Stars Beyond the
+  Zodiac* — forward Dharma·Artha·Kama·Moksha in one nakshatra, reversed in the next, with the parity
+  flipping at Shravana because the book's cycle counts the pada-less Abhijit (`PADA_PURUSHARTHAS` in
+  `constants.ts`, an explicit 27-row table — owner-directed; NB other sources (navamsa-element
+  derivation, Trivedi) keep the fixed 1 Dharma…4 Moksha map at pada level and put the alternation at
+  the whole-nakshatra level; Sutton's per-pada table wins here). `FlashcardTarget.highlightFact`
+  drives the row emphasis, resolved by the card title in `flashcardLink.ts` (`PADA_CONCEPT_CARD`).)
 - **Engine** (`src/core/`) — `swisseph-wasm` + Lahiri; sign/degree, nakshatra/pada/lord, whole-sign
   houses, dignity, retrograde, combustion, graha-drishti, **panchadha maitri to the dispositor**
   (`vedic.maitriToDispositor` — occupant→dispositor, **asymmetric**; naisargika table

@@ -92,7 +92,7 @@ export interface PlanetData {
   house: number; // 1–12, whole-sign from the Lagna
   nakshatra: Nakshatra;
   pada: number; // 1–4, the nakshatra quarter (mirrors nakshatra.pada; surfaced for the placement line)
-  purushartha: string; // life-aim derived from the pada: 1 Dharma · 2 Artha · 3 Kama · 4 Moksha
+  purushartha: string; // life-aim of the pada — per-nakshatra alternating cycle (PADA_PURUSHARTHAS), not fixed by pada number
   dignity: Dignity;
   retro: boolean;
   combust: Combust;
