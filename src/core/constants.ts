@@ -236,18 +236,24 @@ export const ASCENDANT_FUNCTIONAL: AscendantFunctional[] = [
 
 /* Graha drishti — houses a planet aspects, counted from itself (1 = its own sign).
    Sun/Moon/Mercury/Venus: 7th only. Mars 4/7/8. Jupiter 5/7/9. Saturn 3/7/10.
-   Rahu/Ketu treated as Jupiter (5/7/9). */
+   Nodes (owner-directed school): Rahu casts 5/9 only, Ketu casts none — node
+   aspecting is classically disputed, and crucially NEITHER node has the 7th, so
+   the always-opposite nodes never read as aspecting each other. NB the
+   Hora-Prakash reference treats both nodes as Jupiter (5/7/9); the owner chose
+   this convention instead — don't re-align to the reference. */
 export const DRISHTI: Record<PlanetKey, number[]> = {
   sun: [7], moon: [7], mercury: [7], venus: [7],
   mars: [4, 7, 8], jupiter: [5, 7, 9], saturn: [3, 7, 10],
-  rahu: [5, 7, 9], ketu: [5, 7, 9],
+  rahu: [5, 9], ketu: [],
 };
 
-/* Combustion orbs (degrees) — reference values. Sun/Rahu/Ketu never combust.
-   NOTE: these intentionally differ from the Combustion study deck's orbs;
-   the engine follows the reference. */
+/* Combustion orbs (degrees) — matches the Combustion study deck (owner-directed):
+   only the five tara grahas combust; Sun/Moon/Rahu/Ketu never do. Mercury's tight
+   solar orbit gets the much smaller orb. NB the Hora-Prakash reference uses the
+   wider Parashari orbs (Moon 12, Mars 17, Mercury 14, Jupiter 11, Venus 10,
+   Saturn 15); the owner chose the deck's values — don't re-align to the reference. */
 export const COMBUSTION_ORB: Partial<Record<PlanetKey, number>> = {
-  moon: 12, mercury: 14, venus: 10, mars: 17, jupiter: 11, saturn: 15,
+  mercury: 1, venus: 8, mars: 10, jupiter: 10, saturn: 10,
 };
 
 /* Vimshottari dasha: lord order + years (sums to 120). */

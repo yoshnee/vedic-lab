@@ -4,10 +4,10 @@
    how to read aspect strength, and mutual aspects / sambandha.
    FRONT facts (label/value) → `facts`; BACK notes → `points`.
 
-   The Rahu–Ketu aspects are deliberately framed as DISPUTED (pick a
-   convention), and the partial-strength fractions are classical study
-   values — the engine's drishti / drishti-bala computation still follows
-   the Hora-Prakash reference, not these cards. */
+   The Rahu–Ketu aspects are framed as DISPUTED, with the app's chosen
+   convention stated (Rahu 5/9, Ketu none — matches the engine's DRISHTI
+   table, owner-directed). The partial-strength fractions are classical
+   study values, not an engine computation. */
 import type { Deck } from "./types";
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
 
@@ -104,14 +104,15 @@ export const aspects: Deck = {
       body: "",
       facts: [
         { label: "Aspecting power", value: "Disputed" },
-        { label: "Convention A", value: "No aspecting power at all" },
-        { label: "Convention B", value: "Same as Jupiter — 5th, 7th, 9th" },
+        { label: "This app", value: "Rahu 5th & 9th · Ketu none" },
+        { label: "Other schools", value: "None at all, or Jupiter's 5/7/9" },
       ],
       points: [
         "Classical texts disagree on whether the shadow planets cast aspects",
-        "Many astrologers assign them none; others give them Jupiter's 5/7/9 pattern",
-        "If used: Rahu's gaze amplifies, obsesses, and distorts; Ketu's detaches, spiritualizes, and reduces",
-        "Pick one convention and apply it consistently across the chart",
+        "Some astrologers assign them none; others give them Jupiter's 5/7/9 pattern",
+        "This app's charts give Rahu the trinal 5th and 9th gaze and Ketu no aspects",
+        "Neither node casts the 7th — so the always-opposite nodes never aspect each other",
+        "Rahu's gaze amplifies, obsesses, and distorts; Ketu stays inward — detached, spiritualizing",
       ],
     },
     {

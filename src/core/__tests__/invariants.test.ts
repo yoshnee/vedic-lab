@@ -9,7 +9,7 @@ import { describe, it, expect } from "vitest";
 import {
   PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
-  DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA,
+  DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA, COMBUSTION_ORB,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
@@ -152,37 +152,60 @@ describe("nakshatras & vimshottari", () => {
 });
 
 describe("graha drishti", () => {
-  it("every body aspects the 7th; specials are Mars 4/7/8, Jupiter 5/7/9, Saturn 3/7/10", () => {
-    for (const p of Object.keys(DRISHTI) as PlanetKey[]) expect(DRISHTI[p]).toContain(7);
+  it("the seven grahas aspect the 7th; specials are Mars 4/7/8, Jupiter 5/7/9, Saturn 3/7/10", () => {
+    for (const p of SEVEN) expect(DRISHTI[p]).toContain(7);
     expect(DRISHTI.mars).toEqual([4, 7, 8]);
     expect(DRISHTI.jupiter).toEqual([5, 7, 9]);
     expect(DRISHTI.saturn).toEqual([3, 7, 10]);
-    expect(DRISHTI.rahu).toEqual([5, 7, 9]); // nodes treated as Jupiter
+  });
+
+  it("nodes: Rahu casts 5/9 only, Ketu none — no 7th, so the nodes never aspect each other", () => {
+    // Owner-chosen convention (the reference treats nodes as Jupiter 5/7/9) —
+    // see the DRISHTI note in constants.ts before "fixing" this.
+    expect(DRISHTI.rahu).toEqual([5, 9]);
+    expect(DRISHTI.ketu).toEqual([]);
+    // Rahu in Aries, Ketu opposite in Libra: neither lands an aspect on the other.
+    const signs = { ...allSignsAt(1), ketu: 7 };
+    expect(aspectsOnto(7, signs).map((a) => a.planet)).not.toContain("rahu");
+    expect(aspectsOnto(1, signs).map((a) => a.planet)).not.toContain("ketu");
   });
 
   it("aspectsOnto resolves the special-aspect geometry (all bodies in Aries)", () => {
     const signs = allSignsAt(1);
     const onto = (s: number) => aspectsOnto(s, signs).map((a) => a.planet).sort();
-    const everyone = [...PLANET_ORDER].sort();
-    expect(onto(7)).toEqual(everyone); // 7th aspect — universal
+    const sevenGrahas = [...SEVEN].sort();
+    expect(onto(7)).toEqual(sevenGrahas); // 7th aspect — all grahas, but not the nodes
     expect(onto(1)).toEqual([]); // a body never aspects its own sign
     expect(onto(2)).toEqual([]); // no body has a 2nd-house drishti
     expect(onto(4)).toEqual(["mars"]); // Mars' 4th
     expect(onto(8)).toEqual(["mars"]); // Mars' 8th
     expect(onto(3)).toEqual(["saturn"]); // Saturn's 3rd
     expect(onto(10)).toEqual(["saturn"]); // Saturn's 10th
-    expect(onto(5)).toEqual(["jupiter", "ketu", "rahu"]); // 5th — Jupiter + nodes
-    expect(onto(9)).toEqual(["jupiter", "ketu", "rahu"]); // 9th — Jupiter + nodes
+    expect(onto(5)).toEqual(["jupiter", "rahu"]); // 5th — Jupiter + Rahu (not Ketu)
+    expect(onto(9)).toEqual(["jupiter", "rahu"]); // 9th — Jupiter + Rahu (not Ketu)
   });
 });
 
 describe("combustion", () => {
-  it("combust within the orb, clear beyond it, and never for Sun/nodes", () => {
-    expect(isCombust("mercury", 100, 105)).toBe(true); // 5° ≤ 14
-    expect(isCombust("mercury", 100, 120)).toBe(false); // 20° > 14
-    expect(isCombust("venus", 359, 1)).toBe(true); // 2° across 0° ≤ 10
+  it("orbs match the Combustion deck: Mercury 1°, Venus 8°, Mars/Jupiter/Saturn 10°", () => {
+    // Owner-chosen (deck) values — the reference's wider Parashari orbs were
+    // deliberately dropped; see the COMBUSTION_ORB note in constants.ts.
+    expect(COMBUSTION_ORB).toEqual({ mercury: 1, venus: 8, mars: 10, jupiter: 10, saturn: 10 });
+  });
+
+  it("combust within the planet's own orb, clear beyond it", () => {
+    expect(isCombust("mercury", 100, 100.5)).toBe(true); // 0.5° ≤ 1
+    expect(isCombust("mercury", 100, 105)).toBe(false); // 5° > 1 — Mercury's tight orb
+    expect(isCombust("venus", 359, 1)).toBe(true); // 2° across 0° ≤ 8
+    expect(isCombust("venus", 100, 109)).toBe(false); // 9° > 8
+    expect(isCombust("mars", 100, 109)).toBe(true); // 9° ≤ 10
+  });
+
+  it("only the five tara grahas combust — never Sun, Moon, or the nodes", () => {
     expect(isCombust("sun", 100, 100)).toBe(false); // the Sun cannot combust
+    expect(isCombust("moon", 100, 100)).toBe(false); // the Moon is not counted
     expect(isCombust("rahu", 100, 100)).toBe(false); // nodes never combust
+    expect(isCombust("ketu", 100, 100)).toBe(false);
   });
 });
 

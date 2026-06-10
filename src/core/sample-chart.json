@@ -76,12 +76,7 @@
       "rules": [
         11
       ],
-      "aspectedBy": [
-        {
-          "planet": "ketu",
-          "aspect": "9th"
-        }
-      ],
+      "aspectedBy": [],
       "conjunct": [],
       "yogas": [],
       "extraRows": []
@@ -147,12 +142,7 @@
       "rules": [
         10
       ],
-      "aspectedBy": [
-        {
-          "planet": "ketu",
-          "aspect": "7th"
-        }
-      ],
+      "aspectedBy": [],
       "conjunct": [
         "rahu"
       ],
@@ -614,12 +604,7 @@
       "dasha": [],
       "lagnaLord": false,
       "rules": [],
-      "aspectedBy": [
-        {
-          "planet": "ketu",
-          "aspect": "7th"
-        }
-      ],
+      "aspectedBy": [],
       "conjunct": [
         "moon"
       ],
@@ -671,10 +656,6 @@
         {
           "planet": "saturn",
           "aspect": "3rd"
-        },
-        {
-          "planet": "rahu",
-          "aspect": "7th"
         }
       ],
       "conjunct": [],

@@ -210,8 +210,12 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   tests** over the dignity/nakshatra/dasha/drishti tables. Aspects &
   combustion have no fixture ground-truth (rule-based, deterministic from validated positions; the invariant
   suite spot-checks their geometry).
-  Nodes shown non-retrograde (matches JHora); engine combustion orbs follow the reference (differ
-  from the Combustion deck).
+  Nodes shown non-retrograde (matches JHora). **Two owner-directed school choices diverge from the
+  reference** (both pinned by invariant tests — don't re-align): **node drishti** is Rahu 5/9 only,
+  Ketu none (no 7th for either, so the always-opposite nodes never aspect each other; the reference
+  treats both as Jupiter 5/7/9), and **combustion** uses the Combustion deck's orbs (Mercury 1°,
+  Venus 8°, Mars/Jupiter/Saturn 10°; only those five combust — Sun/Moon/nodes never; the reference
+  uses the wider Parashari orbs incl. Moon 12°).
 - **Birth-chart page** (`/chart`) — a desktop **3-up layout**: a sticky **`DashaRail`** (Vimshottari
   MD→AD→PD current chain + the full mahadasha list, each expandable to its antardashas) on the left,
   then **two charts** — Chart 1 natal D1, Chart 2 a `ChartCard` with a type `<select>` (**Transit**
