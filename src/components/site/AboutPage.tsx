@@ -39,7 +39,8 @@ export function AboutPage() {
 
         <p>
           Vedic Astrology Lab is where I put what I&apos;m learning to work. I built it as a study
-          tool: somewhere to generate a chart and actually see the pieces. A place to learn it, one
+          tool: somewhere to generate a chart and watch the pieces come together, and to refresh a
+          concept the moment it shows up on screen, so it actually sticks. A place to learn it, one
           layer at a time. If it helps you do the same, even better.
         </p>
 
