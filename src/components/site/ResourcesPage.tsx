@@ -43,7 +43,7 @@ const BOOKS: BookItem[] = [
   {
     tag: "Concepts",
     title: "Vedic Astrology for Beginners",
-    author: "An introduction to the origins & concepts",
+    author: "Pamela McDonough",
     href: "https://www.amazon.com/Vedic-Astrology-Beginners-Introduction-Concepts/dp/1646113071",
   },
   {
