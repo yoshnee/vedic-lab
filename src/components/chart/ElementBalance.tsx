@@ -31,8 +31,7 @@ export function ElementBalance({
   const counts: Record<Element, number> = { fire: 0, earth: 0, air: 0, water: 0 };
   for (const p of planets) counts[SIGN_ELEMENT[p.sign - 1]] += 1;
 
-  const max = Math.max(...ELEMENTS.map((e) => counts[e]));
-  const dominant = ELEMENTS.filter((e) => counts[e] === max);
+  const max = Math.max(...ELEMENTS.map((e) => counts[e])); // leaders get the gold highlight
   const missing = ELEMENTS.filter((e) => counts[e] === 0);
 
   return (
@@ -51,17 +50,11 @@ export function ElementBalance({
           </li>
         ))}
       </ul>
-      <p className="eb-note">
-        {dominant.length === 1
-          ? <><b>{ELEMENT_INFO[dominant[0]].label}</b> predominates — {ELEMENT_INFO[dominant[0]].dominant}.</>
-          : <><b>{dominant.map((e) => ELEMENT_INFO[e].label).join(" & ")}</b> share the lead — a blended temperament.</>}
-      </p>
       {missing.map((e) => (
         <p className="eb-note" data-missing="" key={e}>
           No planets in <b>{ELEMENT_INFO[e].label}</b> — {ELEMENT_INFO[e].missing}.
         </p>
       ))}
-      <p className="eb-cap">All 9 planets, by sign — the most basic elemental read.</p>
     </section>
   );
 }

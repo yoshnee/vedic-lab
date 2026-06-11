@@ -184,7 +184,6 @@
 .eb-note { margin: 0; font-size: 12px; color: var(--text-2); line-height: 1.55; text-wrap: pretty; }
 .eb-note b { color: var(--text); font-weight: 600; }
 .eb-note[data-missing] { color: var(--text-3); }
-.eb-cap { margin: 0; font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .04em; color: var(--text-3); }
 
 /* ── Chart Ruler (lagneśa walkthrough) — full-width card above the panels ── */
 .cr-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;

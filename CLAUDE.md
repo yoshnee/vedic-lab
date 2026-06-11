@@ -273,9 +273,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   jumping to the ruler's panel. Pure presentation —
   reads only `ChartData.lagnaLord` + `planets[]`. An **`ElementBalance`** block (in the sticky rail on
   desktop, an inline card on mobile — CSS shows exactly one of the two rendered copies) tallies all
-  nine planets by sign element (`SIGN_ELEMENT`, nodes included), highlights the predominant
-  element(s) with the prevailing trait, flags any missing element, and links each element to the
-  Four Elements deck (text from `ELEMENT_INFO`, the deck's lookup form — single source). Then
+  nine planets by sign element (`SIGN_ELEMENT`, nodes included), gold-highlights the leading
+  element(s), flags any missing element (counts only — the prevailing-trait prose and the footer
+  caption were removed, owner-directed), and links each element to the Four Elements deck (text
+  from `ELEMENT_INFO`, the deck's lookup form — single source). Then
   **full-width 2-column Planet Detail Panels**
   (`.pp-grid`, row-major navagraha order; an open panel spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
   zodiac glyph + muted rāśi number. On mobile everything stacks and the rail becomes a **slide-in

@@ -100,7 +100,7 @@ export function ChartRuler({
   return (
     <section className="cr-card" aria-label="Chart ruler">
       <header className="cr-head">
-        <span className="cr-eyebrow">Chart Ruler · Lagneśa</span>
+        <span className="cr-eyebrow">Chart Ruler</span>
         <span className="cr-who">
           <Svg html={body(ruler.key, 34, { state: ruler.dignity, retro: ruler.retro })} />
           <button
