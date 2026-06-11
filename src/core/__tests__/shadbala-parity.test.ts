@@ -11,21 +11,18 @@
    the birth instant to MATCH our engine's day/night result — i.e. it tests
    formula parity given an agreed day/night, not sunrise computation.
 
-   Known sub-gate deltas absorbed by the 0.1 tolerance: our Naisargika uses
-   exact 60/7 multiples where the upstream hardcodes rounded literals
-   (Jupiter 34.2857 vs 34.28 → 0.006 virupa).
+   Constants are kept literally the upstream's (e.g. Naisargika Jupiter 34.28)
+   so components match exactly; the 0.1 tolerance guards rounding only.
    ============================================================ */
 import { describe, it, expect, beforeAll } from "vitest";
-import { readdirSync, readFileSync } from "node:fs";
-import { birthFromCivil } from "../index";
 import { rawPositions } from "../swisseph";
 import { signOf, houseOf, degInSign } from "../vedic";
 import { computeShadbala, type ShadbalaBody } from "../shadbala";
-import type { PlanetKey, BirthInput } from "../types";
+import { loadJhoraFixtures, fixtureBirth } from "./jhora-fixtures";
+import type { PlanetKey } from "../types";
 // @ts-expect-error — vendored upstream JS, no type declarations (see __upstream__/README.md)
 import { calcShadbala } from "./__upstream__/src/core/shadbala.js";
 
-const DIR = new URL("../__fixtures__/jhora/", import.meta.url);
 const TOL = 0.1; // virupas
 
 const GRAHAS: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
@@ -43,37 +40,6 @@ const COMPONENTS = [
   ["total", "total"],
 ] as const;
 
-interface Fixture {
-  slug: string;
-  name: string;
-  birth: { dob: string; tob: string; timezone: string; lat: number; lon: number };
-}
-
-function loadFixtures(): Fixture[] {
-  return readdirSync(DIR)
-    .filter((f) => f.endsWith(".json"))
-    .sort()
-    .map((fn) => {
-      const j = JSON.parse(readFileSync(new URL(fn, DIR), "utf8"));
-      return { slug: fn.replace(/\.json$/, ""), name: j.meta?.name ?? fn, birth: j.birth };
-    });
-}
-
-function tzHours(s: string): number {
-  const m = s.match(/([+-])(\d\d):(\d\d)/);
-  if (!m) throw new Error(`unparseable timezone: ${s}`);
-  return (m[1] === "-" ? -1 : 1) * (Number(m[2]) + Number(m[3]) / 60);
-}
-
-function toBirth(fx: Fixture): Promise<BirthInput> {
-  const [Y, Mo, Da] = fx.birth.dob.split("-").map(Number);
-  const [H, Mi, S] = fx.birth.tob.split(":").map(Number);
-  return birthFromCivil({
-    year: Y, month: Mo, day: Da, hour: H, minute: Mi, second: S || 0,
-    tzOffsetHours: tzHours(fx.birth.timezone), lat: fx.birth.lat, lon: fx.birth.lon, dateLabel: fx.birth.dob,
-  });
-}
-
 const jdToDate = (jd: number) => new Date((jd - 2440587.5) * 86_400_000);
 
 interface ParityRun {
@@ -81,12 +47,12 @@ interface ParityRun {
   upstream: Record<string, Record<string, number>>;
 }
 
-const fixtures = loadFixtures();
+const fixtures = loadJhoraFixtures();
 const runs = new Map<string, ParityRun>();
 
 beforeAll(async () => {
   for (const fx of fixtures) {
-    const birth = await toBirth(fx);
+    const birth = await fixtureBirth(fx);
     const raw = await rawPositions(birth.jdUT, birth.lat, birth.lon);
     const lagnaSign = signOf(raw.ascendant);
 

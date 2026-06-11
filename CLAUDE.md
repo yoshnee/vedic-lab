@@ -256,7 +256,8 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta, tithi) and rasi-only
   systems (shadbala, sade sati) (a `.pp-context` caption + per-panel `vargaLabel` say so). The
   **ChartRuler card renders in D1 context only** (a natal-lagna reading). Chart 2 never affects the panels;
-  the daśā rail, element balance, and ChartRuler stay natal.
+  the daśā rail and ChartRuler stay natal, while the **ElementBalance follows the Chart 1 context**
+  (tallies the varga signs in D9 mode — so the readout never contradicts the visible panels).
   **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
   continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'
   `navamsa_sign` per body; `lib/chart/varga.ts` `buildD9()` makes the render set (frame = navamsa

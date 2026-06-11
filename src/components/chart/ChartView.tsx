@@ -174,7 +174,7 @@ export function ChartView({ model }: { model: ChartModel }) {
         <div className="chart-layout">
           <aside className="dasha-rail" aria-label="Vimśottarī daśā">
             <DashaRail dasha={chart.dasha} current={chart.currentDasha} />
-            <ElementBalance planets={chart.planets} onOpenCard={openCard} />
+            <ElementBalance planets={panelPlanets} onOpenCard={openCard} />
           </aside>
 
           <div className="chart-main">
@@ -214,7 +214,7 @@ export function ChartView({ model }: { model: ChartModel }) {
               />
             </div>
 
-            <ElementBalance planets={chart.planets} onOpenCard={openCard} inline />
+            <ElementBalance planets={panelPlanets} onOpenCard={openCard} inline />
 
             {/* The Chart Ruler (ascendant-lord) walkthrough is a natal-lagna
                 reading — D1 panel context only (owner-directed). */}
@@ -226,7 +226,7 @@ export function ChartView({ model }: { model: ChartModel }) {
               <p className="pp-context">
                 Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
                 {d9Panels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
-                rāśi detail (nakshatra, combustion, shadbala …)
+                rāśi detail (nakshatra, gandanta, shadbala …)
               </p>
             )}
             <section className="pp-grid" aria-label="Planet details">

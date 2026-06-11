@@ -187,8 +187,11 @@ export function computeShadbala(
   ascLon: number,
 ): Partial<Record<PlanetKey, ShadbalaScore>> {
   const grahas = bodies.filter((b) => GRAHAS.includes(b.key));
-  const sun = grahas.find((b) => b.key === "sun")!;
-  const moon = grahas.find((b) => b.key === "moon")!;
+  const sun = grahas.find((b) => b.key === "sun");
+  const moon = grahas.find((b) => b.key === "moon");
+  if (!sun || !moon) {
+    throw new Error("computeShadbala requires both Sun and Moon in `bodies` (paksha & day/night depend on them)");
+  }
   // Day birth ⇔ the Sun is above the asc/desc axis (see header note).
   const isDayBirth = (sun.lon - ascLon + 360) % 360 > 180;
 
