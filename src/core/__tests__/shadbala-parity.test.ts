@@ -22,7 +22,7 @@ import { rawPositions } from "../swisseph";
 import { signOf, houseOf, degInSign } from "../vedic";
 import { computeShadbala, type ShadbalaBody } from "../shadbala";
 import type { PlanetKey, BirthInput } from "../types";
-// @ts-ignore — vendored upstream JS, no type declarations (see __upstream__/README.md)
+// @ts-expect-error — vendored upstream JS, no type declarations (see __upstream__/README.md)
 import { calcShadbala } from "./__upstream__/src/core/shadbala.js";
 
 const DIR = new URL("../__fixtures__/jhora/", import.meta.url);

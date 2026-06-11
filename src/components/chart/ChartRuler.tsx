@@ -103,14 +103,18 @@ export function ChartRuler({
         <span className="cr-eyebrow">Chart Ruler</span>
         <span className="cr-who">
           <Svg html={body(ruler.key, 34, { state: ruler.dignity, retro: ruler.retro })} />
-          <button
-            type="button"
-            className="cr-name"
-            onClick={() => onSelectPlanet?.(ruler.key)}
-            title={`Jump to the ${ruler.name} panel`}
-          >
-            {ruler.name}
-          </button>
+          {onSelectPlanet ? (
+            <button
+              type="button"
+              className="cr-name"
+              onClick={() => onSelectPlanet(ruler.key)}
+              title={`Jump to the ${ruler.name} panel`}
+            >
+              {ruler.name}
+            </button>
+          ) : (
+            <span className="cr-name">{ruler.name}</span>
+          )}
           {ruler.maitriToDispositor && (
             <button
               type="button"

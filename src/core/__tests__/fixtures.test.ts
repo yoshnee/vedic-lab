@@ -120,7 +120,7 @@ describe.each(fixtures)("$name", (fx) => {
     // itself (our longitudes are validated separately above) — no boundary
     // flakiness from the ≤3′ ephemeris tolerance.
     for (const [name, f] of Object.entries(fx.planets)) {
-      if (!f.navamsa_sign) continue;
+      expect(f.navamsa_sign, `${name} navamsa_sign present in fixture`).toBeTruthy();
       expect(signName(navamsa(f.longitude).sign), `${name} navamsa sign`).toBe(f.navamsa_sign);
     }
   });

@@ -145,7 +145,7 @@ export function Legend({ onClose }: { onClose: () => void }) {
             </div>
             <p className="lg-note">
               Each planet is judged against its own minimum (Sun 6.5 rupas, Mercury 7 …); the
-              drawer's Required row keeps the classical Bal-Yukta / Balaheena binary.
+              drawer&apos;s Required row keeps the classical Bal-Yukta / Balaheena binary.
             </p>
           </section>
 

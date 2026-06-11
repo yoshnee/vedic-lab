@@ -137,7 +137,7 @@ function AvasthaDrawer({
         <span className="lbl">Avasthas</span>
         <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
       </button>
-      <div className="pp-ava-body">
+      <div className="pp-ava-body" inert={!open || undefined}>
         <div className="pp-ava-in">
           <ul className="pp-ava-list">
             {items.map((a) => (
@@ -203,7 +203,7 @@ function ShadbalaDrawer({
         </span>
         <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
       </button>
-      <div className="pp-ava-body">
+      <div className="pp-ava-body" inert={!open || undefined}>
         <div className="pp-ava-in">
           <ul className="pp-ava-list">
             {SHADBALA_ROWS.map((r) => (
