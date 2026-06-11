@@ -78,7 +78,6 @@ export const avasthas: Deck = {
         "Vriddha (old): past its peak, winding down",
         "Mrita (dead): already worked through across past lifetimes; the struggle is over, so it now comes naturally and effortlessly: mastered, not depleted",
         "Key arc: potency rises to adult then settles by dead; your power to reshape the karma is greatest at infant (still unformed) and least once it is adult (fully set) or dead (already resolved)",
-        "(Karmic-fruition lens, per the Kurczak reading; the strength bands are the same avasthas seen purely as raw strength)",
       ],
     },
     {
