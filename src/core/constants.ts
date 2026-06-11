@@ -34,6 +34,15 @@ export const PLANET_SANSKRIT: Record<PlanetKey, string> = {
   venus: "Shukra", saturn: "Shani", rahu: "Rahu", ketu: "Ketu",
 };
 
+/** Element of each sign 1–12 — fire/earth/air/water cycling from Aries. Drives
+    the chart's element-balance readout and the Elements deck. */
+export type Element = "fire" | "earth" | "air" | "water";
+export const SIGN_ELEMENT: Element[] = [
+  "fire", "earth", "air", "water", // Aries Taurus Gemini Cancer
+  "fire", "earth", "air", "water", // Leo Virgo Libra Scorpio
+  "fire", "earth", "air", "water", // Sagittarius Capricorn Aquarius Pisces
+];
+
 /** Ruler of each sign 1–12 (used for house lordship; nodes rule nothing). */
 export const SIGN_RULER: PlanetKey[] = [
   "mars", "venus", "mercury", "moon", "sun", "mercury",
@@ -51,6 +60,83 @@ export const NAKSHATRAS: { name: string; lord: PlanetKey }[] = [
   { name: "Mula", lord: "ketu" }, { name: "Purva Ashadha", lord: "venus" }, { name: "Uttara Ashadha", lord: "sun" },
   { name: "Shravana", lord: "moon" }, { name: "Dhanishta", lord: "mars" }, { name: "Shatabhisha", lord: "rahu" },
   { name: "Purva Bhadrapada", lord: "jupiter" }, { name: "Uttara Bhadrapada", lord: "saturn" }, { name: "Revati", lord: "mercury" },
+];
+
+/* Pada → purushartha per nakshatra (rows align with NAKSHATRAS, columns = padas 1–4).
+   Vendored verbatim from Komilla Sutton, "The Nakshatras: The Stars Beyond the Zodiac"
+   (Nakshatra Purushartha and Pada Purushartha table). The cycle alternates —
+   Dharma·Artha·Kama·Moksha, then reversed Moksha·Kama·Artha·Dharma — but the book's
+   alternation counts Abhijit (which has no padas) between Uttara Ashadha and Shravana,
+   so the parity flips there: Shravana restarts at Dharma. A plain odd/even rule over
+   27 nakshatras would be wrong from Shravana on — keep this an explicit table. */
+export type Purushartha = "Dharma" | "Artha" | "Kama" | "Moksha";
+const DAKM: Purushartha[] = ["Dharma", "Artha", "Kama", "Moksha"];
+const MKAD: Purushartha[] = ["Moksha", "Kama", "Artha", "Dharma"];
+export const PADA_PURUSHARTHAS: Purushartha[][] = [
+  DAKM, // Ashwini
+  MKAD, // Bharani
+  DAKM, // Krittika
+  MKAD, // Rohini
+  DAKM, // Mrigashira
+  MKAD, // Ardra
+  DAKM, // Punarvasu
+  MKAD, // Pushya
+  DAKM, // Ashlesha
+  MKAD, // Magha
+  DAKM, // Purva Phalguni
+  MKAD, // Uttara Phalguni
+  DAKM, // Hasta
+  MKAD, // Chitra
+  DAKM, // Swati
+  MKAD, // Vishakha
+  DAKM, // Anuradha
+  MKAD, // Jyeshtha
+  DAKM, // Mula
+  MKAD, // Purva Ashadha
+  DAKM, // Uttara Ashadha
+  DAKM, // Shravana — parity flips here (Abhijit, pada-less, sits before it in the book's cycle)
+  MKAD, // Dhanishta
+  DAKM, // Shatabhisha
+  MKAD, // Purva Bhadrapada
+  DAKM, // Uttara Bhadrapada
+  MKAD, // Revati
+];
+
+/* Each nakshatra's own main purushartha (rows align with NAKSHATRAS) — the
+   "Purushartha" column of the same Sutton table, vendored verbatim. With Abhijit
+   (Kama) inserted after Uttara Ashadha it snakes D·A·K·M·M·K·A·D through Dhanishta,
+   but Sutton's last four (Shatabhisha→Revati) run M·K·A·D where other sources
+   (dirah.org, Dennis Harness) continue the snake with D·A·K·M — her column wins
+   here (owner-directed); don't "fix" it to the formula. Feeds the Nakshatras
+   deck's "Life aim" fact (single source, so card and engine can't diverge). */
+export const NAKSHATRA_PURUSHARTHA: Purushartha[] = [
+  "Dharma", // Ashwini
+  "Artha",  // Bharani
+  "Kama",   // Krittika
+  "Moksha", // Rohini
+  "Moksha", // Mrigashira
+  "Kama",   // Ardra
+  "Artha",  // Punarvasu
+  "Dharma", // Pushya
+  "Dharma", // Ashlesha
+  "Artha",  // Magha
+  "Kama",   // Purva Phalguni
+  "Moksha", // Uttara Phalguni
+  "Moksha", // Hasta
+  "Kama",   // Chitra
+  "Artha",  // Swati
+  "Dharma", // Vishakha
+  "Dharma", // Anuradha
+  "Artha",  // Jyeshtha
+  "Kama",   // Mula
+  "Moksha", // Purva Ashadha
+  "Moksha", // Uttara Ashadha
+  "Artha",  // Shravana — Abhijit (Kama, pada-less) sits before it in the book's cycle
+  "Dharma", // Dhanishta
+  "Moksha", // Shatabhisha
+  "Kama",   // Purva Bhadrapada
+  "Artha",  // Uttara Bhadrapada
+  "Dharma", // Revati
 ];
 
 /* Dignity by sign number (1–12). Nodes have no dignity (always neutral). */
@@ -159,18 +245,24 @@ export const ASCENDANT_FUNCTIONAL: AscendantFunctional[] = [
 
 /* Graha drishti — houses a planet aspects, counted from itself (1 = its own sign).
    Sun/Moon/Mercury/Venus: 7th only. Mars 4/7/8. Jupiter 5/7/9. Saturn 3/7/10.
-   Rahu/Ketu treated as Jupiter (5/7/9). */
+   Nodes (owner-directed school): Rahu casts 5/9 only, Ketu casts none — node
+   aspecting is classically disputed, and crucially NEITHER node has the 7th, so
+   the always-opposite nodes never read as aspecting each other. NB the
+   Hora-Prakash reference treats both nodes as Jupiter (5/7/9); the owner chose
+   this convention instead — don't re-align to the reference. */
 export const DRISHTI: Record<PlanetKey, number[]> = {
   sun: [7], moon: [7], mercury: [7], venus: [7],
   mars: [4, 7, 8], jupiter: [5, 7, 9], saturn: [3, 7, 10],
-  rahu: [5, 7, 9], ketu: [5, 7, 9],
+  rahu: [5, 9], ketu: [],
 };
 
-/* Combustion orbs (degrees) — reference values. Sun/Rahu/Ketu never combust.
-   NOTE: these intentionally differ from the Combustion study deck's orbs;
-   the engine follows the reference. */
+/* Combustion orbs (degrees) — matches the Combustion study deck (owner-directed):
+   only the five tara grahas combust; Sun/Moon/Rahu/Ketu never do. Mercury's tight
+   solar orbit gets the much smaller orb. NB the Hora-Prakash reference uses the
+   wider Parashari orbs (Moon 12, Mars 17, Mercury 14, Jupiter 11, Venus 10,
+   Saturn 15); the owner chose the deck's values — don't re-align to the reference. */
 export const COMBUSTION_ORB: Partial<Record<PlanetKey, number>> = {
-  moon: 12, mercury: 14, venus: 10, mars: 17, jupiter: 11, saturn: 15,
+  mercury: 1, venus: 8, mars: 10, jupiter: 10, saturn: 10,
 };
 
 /* Vimshottari dasha: lord order + years (sums to 120). */
@@ -185,10 +277,13 @@ export const NAKSHATRA_ARC = 360 / 27; // 13°20′
 export const PADA_ARC = 360 / 108; // 3°20′
 
 /* Gandanta — the three water→fire sign junctions: Pisces→Aries (0°/360°),
-   Cancer→Leo (120°), Scorpio→Sagittarius (240°). A point is in gandanta within
-   GANDANTA_ORB of a junction (the last pada of the water sign / first pada of the
-   fire sign). Orb = one pada (360/108 = 3°20′), matching the Hora-Prakash reference
-   (calculations.js `_GANDANTA_DEG = 360/108`, water signs {4,8,12}, fire {1,5,9}). */
+   Cancer→Leo (120°), Scorpio→Sagittarius (240°). Two tiers (owner-directed,
+   encoding both schools): the FLAG covers the full junction padas — one pada
+   (3°20′) each side, matching the Hora-Prakash reference (calculations.js
+   `_GANDANTA_DEG = 360/108`); DEEP is the narrower 28°20′→1°40′ "true gandanta"
+   zone — 1°40′ each side (Sutton). The still-tighter named bands (nakshatra
+   gandanta ±48′, lagna gandanta ±14′) live in the Gandanta deck as study
+   content, not engine logic. */
 export const GANDANTA_BOUNDARIES = [0, 120, 240];
-export const GANDANTA_ORB = 360 / 108; // 3°20′ ≈ 3.3333° — one pada, per the reference
-export const GANDANTA_DEEP_ORB = 1; // within 1° of the exact junction → "deep" gandanta (UI emphasis)
+export const GANDANTA_ORB = 360 / 108; // 3°20′ each side — the full junction padas (flag)
+export const GANDANTA_DEEP_ORB = 100 / 60; // within ±1°40′ → "deep" (the 28°20′→1°40′ zone)

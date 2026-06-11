@@ -4,7 +4,8 @@
    DashaRail.tsx — the Vimśottarī daśā rail. A vertical, compact version of the
    old DashaDrill: the current MD → AD → PD chain summary on top, then the full
    mahādaśā list, each row expandable to its antardaśās (→ pratyantardaśās). The
-   running node is highlighted and open by default. Built to hold the whole
+   running nodes are highlighted; only the running mahādaśā opens by default
+   (the antardaśā level loads collapsed). Built to hold the whole
    sequence — the rail shape grows into a full timeline. Rendered in a sticky
    left rail on desktop and inside a slide-in drawer on mobile (same content).
    Reuses the engine's dasha tree directly and the shared .dnode/.drow classes.
@@ -32,7 +33,9 @@ function fmt(iso: string): string {
 function DashaNode({ node, level }: { node: DashaPeriod; level: number }) {
   const children = node.children;
   const hasChildren = !!(children && children.length);
-  const [open, setOpen] = useState(node.running);
+  // Only the running mahādaśā auto-expands (to its antardaśās); the running
+  // antardaśā loads collapsed — pratyantardaśās are a tap away, not default.
+  const [open, setOpen] = useState(node.running && level === 0);
   const running = node.running;
 
   return (

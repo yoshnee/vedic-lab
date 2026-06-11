@@ -64,7 +64,9 @@ export const signs: Deck = {
       points: [
         "Every sign sorts by three filters: polarity, quality, and element",
         "Polarity — odd/male signs are active; even/female signs are receptive",
-        "Quality (modality) — Cardinal initiates; Fixed stabilizes; Mutable adapts",
+        "Quality (modality) — Movable (Chara) signs are the place of action",
+        "Fixed (Sthira) signs are fixed in nature, with qualities of determination and stability",
+        "Dual (Dvisvabhava) signs are changeable in nature and adaptable",
         "Element — Fire is aspirational & creative; Earth stable & grounded; Air mental & communicative; Water sensitive & intuitive",
       ],
     },
@@ -111,6 +113,7 @@ export const signs: Deck = {
         ...fnFacts(1),
       ],
       points: [
+        "Body: rules the back & top of the head, incl. the brain",
         "Action, courage, initiation — the spark of beginnings",
         "Bold, fearless natural leaders; charge forward without asking permission",
         "Dynamic, independent; driven by momentum, instinct into action",
@@ -135,6 +138,7 @@ export const signs: Deck = {
         ...fnFacts(2),
       ],
       points: [
+        "Body: rules the face & throat",
         "Steady builder — stability, material comfort, security",
         "Practical, grounded, reliable; you can count on them",
         "Strong appreciation of art, beauty, refined taste",
@@ -159,6 +163,7 @@ export const signs: Deck = {
         ...fnFacts(3),
       ],
       points: [
+        "Body: rules the hands, arms & shoulders",
         "Curious, witty, adaptable communicator; the Twins, duality",
         "Thinks fast, moves fast; hungry for new knowledge and ideas",
         "Articulate storytellers and wordsmiths — verbal and written",
@@ -183,6 +188,7 @@ export const signs: Deck = {
         ...fnFacts(4),
       ],
       points: [
+        "Body: rules the chest & heart",
         "Emotional depth and intuition; feels everything",
         "Senses others' emotions; an incredible listener",
         "Strong nurturing and protective instincts",
@@ -207,6 +213,7 @@ export const signs: Deck = {
         ...fnFacts(5),
       ],
       points: [
+        "Body: rules the stomach & surrounding organs",
         "Built for self-expression, creativity, and recognition",
         "Radiant, bold, born to lead; charismatic and confident",
         "Magnetic personality; self-assured and determined",
@@ -231,6 +238,7 @@ export const signs: Deck = {
         ...fnFacts(6),
       ],
       points: [
+        "Body: rules the waist & small intestine",
         "Quiet powerhouse; perfection-seeking, analytical, precise",
         "Methodical, practical, fact-driven; razor-sharp mind",
         "Unmatched eye for detail; breaks down complex problems",
@@ -255,6 +263,7 @@ export const signs: Deck = {
         ...fnFacts(7),
       ],
       points: [
+        "Body: rules the lower abdomen & bladder (below the navel)",
         "Diplomat of the zodiac; graceful, fair-minded",
         "Wired for beauty, harmony, and balance",
         "Peacemaker — soothes tension, finds the middle ground",
@@ -279,6 +288,7 @@ export const signs: Deck = {
         ...fnFacts(8),
       ],
       points: [
+        "Body: rules the internal reproductive organs & anus",
         "Intensity, depth, transformation — the deep diver",
         "Fearless, passionate, determined; feels everything deeply",
         "Remarkable emotional strength; resilient, rises from the ashes",
@@ -303,6 +313,7 @@ export const signs: Deck = {
         ...fnFacts(9),
       ],
       points: [
+        "Body: rules the thighs & hips",
         "Adventurer of the zodiac; optimistic and expansive",
         "Hunger for exploration and higher knowledge",
         "Values freedom, independence, a philosophical outlook",
@@ -327,6 +338,7 @@ export const signs: Deck = {
         ...fnFacts(10),
       ],
       points: [
+        "Body: rules the knees",
         "Architect of the zodiac; ambition, discipline, work ethic",
         "Practical, responsible, focused on long-term goals",
         "High standards; diligence, patience, unwavering focus",
@@ -351,6 +363,7 @@ export const signs: Deck = {
         ...fnFacts(11),
       ],
       points: [
+        "Body: rules the calves, ankles & shins",
         "Breaks the mold; wired for innovation and originality",
         "Humanitarian, forward-thinking, progressive idealist",
         "Bold, unconventional ideas; dreams of a better world",
@@ -375,6 +388,7 @@ export const signs: Deck = {
         ...fnFacts(12),
       ],
       points: [
+        "Body: rules the feet",
         "Dreamer of the zodiac; sensitive, compassionate, soulful",
         "Empathetic and imaginative; floats between worlds",
         "Senses what others feel before it is spoken",

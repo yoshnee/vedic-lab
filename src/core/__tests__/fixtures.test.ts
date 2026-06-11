@@ -16,12 +16,13 @@
    expected drift.
    ============================================================ */
 import { describe, it, expect, beforeAll } from "vitest";
-import { readdirSync, readFileSync } from "node:fs";
-import { computeChart, birthFromCivil } from "../index";
+import { computeChart } from "../index";
 import { computeDasha } from "../dasha";
+import { navamsa } from "../divisional";
+import { signName } from "../vedic";
+import { loadJhoraFixtures, fixtureBirth } from "./jhora-fixtures";
 import type { BirthInput, ChartData } from "../types";
 
-const DIR = new URL("../__fixtures__/jhora/", import.meta.url);
 const DAY = 86_400_000;
 const TOL_DEG = 0.05; // ~3 arcmin — absorbs apparent/true & rounding
 const TOL_MD_DAYS = 5; // observed max 3.90d
@@ -33,32 +34,6 @@ const NAK_ALIAS: Record<string, string> = {
   Pushyami: "Pushya", Shravan: "Shravana", Anu: "Anuradha", Dhanishtha: "Dhanishta",
 };
 
-interface JhoraPlanet {
-  longitude: number; sign: string; sign_degree: string;
-  nakshatra: string; nakshatra_lord: string; pada: number; retrograde: boolean;
-}
-interface Fixture {
-  slug: string; name: string;
-  birth: { dob: string; tob: string; timezone: string; lat: number; lon: number };
-  planets: Record<string, JhoraPlanet>;
-  dasha: Record<string, { start: string; antardashas: Record<string, string> }>;
-}
-
-function loadFixtures(): Fixture[] {
-  return readdirSync(DIR)
-    .filter((f) => f.endsWith(".json"))
-    .sort()
-    .map((fn) => {
-      const j = JSON.parse(readFileSync(new URL(fn, DIR), "utf8"));
-      return { slug: fn.replace(/\.json$/, ""), name: j.meta?.name ?? fn, birth: j.birth, planets: j.planets, dasha: j.dasha };
-    });
-}
-
-function tzHours(s: string): number {
-  const m = s.match(/([+-])(\d\d):(\d\d)/);
-  if (!m) throw new Error(`unparseable timezone: ${s}`);
-  return (m[1] === "-" ? -1 : 1) * (Number(m[2]) + Number(m[3]) / 60);
-}
 function parseSignDeg(s: string): number {
   const m = s.match(/(\d+)°(\d+)/); // "16°55'"
   return m ? Number(m[1]) + Number(m[2]) / 60 : NaN;
@@ -66,21 +41,12 @@ function parseSignDeg(s: string): number {
 const cmpAngle = (a: number, b: number) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
 const diffDays = (iso: string, date: string) => Math.abs(new Date(iso).getTime() - Date.parse(date)) / DAY;
 
-function toBirth(fx: Fixture): Promise<BirthInput> {
-  const [Y, Mo, Da] = fx.birth.dob.split("-").map(Number);
-  const [H, Mi, S] = fx.birth.tob.split(":").map(Number);
-  return birthFromCivil({
-    year: Y, month: Mo, day: Da, hour: H, minute: Mi, second: S || 0,
-    tzOffsetHours: tzHours(fx.birth.timezone), lat: fx.birth.lat, lon: fx.birth.lon, dateLabel: fx.birth.dob,
-  });
-}
-
-const fixtures = loadFixtures();
+const fixtures = loadJhoraFixtures();
 const computed = new Map<string, { chart: ChartData; birth: BirthInput }>();
 
 beforeAll(async () => {
   for (const fx of fixtures) {
-    const birth = await toBirth(fx);
+    const birth = await fixtureBirth(fx);
     computed.set(fx.slug, { chart: await computeChart(birth, AS_OF), birth });
   }
 }, 60_000);
@@ -109,6 +75,16 @@ describe.each(fixtures)("$name", (fx) => {
       if (f.nakshatra_lord) expect(p.nakshatra.lord, `${p.name} nakshatra lord`).toBe(f.nakshatra_lord);
       expect(p.nakshatra.pada, `${p.name} pada`).toBe(f.pada);
       expect(p.retro, `${p.name} retrograde`).toBe(f.retrograde);
+    }
+  });
+
+  it("navamsa (D9) sign matches JHora for the Lagna and every listed body", () => {
+    // Mapped from JHora's own longitudes, so this validates the varga mapping
+    // itself (our longitudes are validated separately above) — no boundary
+    // flakiness from the ≤3′ ephemeris tolerance.
+    for (const [name, f] of Object.entries(fx.planets)) {
+      expect(f.navamsa_sign, `${name} navamsa_sign present in fixture`).toBeTruthy();
+      expect(signName(navamsa(f.longitude).sign), `${name} navamsa sign`).toBe(f.navamsa_sign);
     }
   });
 

@@ -11,7 +11,8 @@
 import { useState } from "react";
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
-import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha } from "@/core/types";
+import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha, ShadbalaScore } from "@/core/types";
+import { tierOf, type ShadbalaTier } from "@/core/shadbala";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
 const PNAME: Record<PlanetKey, string> = {
@@ -136,7 +137,7 @@ function AvasthaDrawer({
         <span className="lbl">Avasthas</span>
         <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
       </button>
-      <div className="pp-ava-body">
+      <div className="pp-ava-body" inert={!open || undefined}>
         <div className="pp-ava-in">
           <ul className="pp-ava-list">
             {items.map((a) => (
@@ -160,6 +161,110 @@ function AvasthaDrawer({
   );
 }
 
+/* The Shadbala drawer — the six-fold strength breakdown, a sibling of the
+   Avasthas drawer (same collapsible pattern + classes). Collapsed header shows
+   the verdict at a glance (rupas + ratio, strong/weak); expanded, one tappable
+   row per bala (virupas) plus total/required rows — every row opens its
+   Shadbala deck card. Null (nodes) → renders nothing. */
+const SHADBALA_ROWS: { id: string; label: string; get: (s: ShadbalaScore) => number }[] = [
+  { id: "sthana", label: "Sthana · positional", get: (s) => s.sthana },
+  { id: "dig", label: "Dig · directional", get: (s) => s.dig },
+  { id: "kala", label: "Kala · temporal", get: (s) => s.kala },
+  { id: "chesta", label: "Cheshta · motional", get: (s) => s.chesta },
+  { id: "naisargika", label: "Naisargika · natural", get: (s) => s.naisargika },
+  { id: "drik", label: "Drik · aspectual", get: (s) => s.drik },
+];
+
+const TIER_LABEL: Record<ShadbalaTier, string> = {
+  strong: "Strong", adequate: "Adequate", borderline: "Borderline", weak: "Weak",
+};
+
+function ShadbalaDrawer({
+  sb,
+  pkey,
+  onOpenCard,
+}: {
+  sb: ShadbalaScore | null;
+  pkey: PlanetKey;
+  onOpenCard: OpenCard;
+}) {
+  const [open, setOpen] = useState(false);
+  if (!sb) return null;
+  const strong = sb.ratio >= 1;
+  const tier = tierOf(sb);
+  const rupas = (sb.total / 60).toFixed(2);
+
+  return (
+    <div className="pp-ava" data-open={open} style={{ "--pc": `var(--p-${pkey})` } as React.CSSProperties}>
+      <button type="button" className="pp-ava-head" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <span className="lbl">Shadbala</span>
+        <span className="pp-sb-sum" data-tier={tier}>
+          {rupas} rupas · {TIER_LABEL[tier]}
+        </span>
+        <svg className="pp-ava-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+      <div className="pp-ava-body" inert={!open || undefined}>
+        <div className="pp-ava-in">
+          <ul className="pp-ava-list">
+            {SHADBALA_ROWS.map((r) => (
+              <li key={r.id}>
+                <button
+                  type="button"
+                  className="fc-link pp-ava-row"
+                  onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", r.id); }}
+                >
+                  <span className="sys">{r.label}</span>
+                  <span className="str">{r.get(sb)}</span>
+                </button>
+              </li>
+            ))}
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "ishta"); }}
+              >
+                <span className="sys">Ishta Phala</span>
+                <span className="str">{sb.ishta}</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "kashta"); }}
+              >
+                <span className="sys">Kashta Phala</span>
+                <span className="str">{sb.kashta}</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "total"); }}
+              >
+                <span className="sys">Total</span>
+                <span className="str">{sb.total} virupas · {rupas} rupas</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="fc-link pp-ava-row pp-sb-total"
+                onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "required"); }}
+              >
+                <span className="sys">Required</span>
+                <span className="str" data-strong={strong || undefined}>{sb.required} · {sb.ratio}× {strong ? "(Bal-Yukta)" : "(Balaheena)"}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function PlanetPanel({
   planet,
   ascendantSign,
@@ -167,6 +272,7 @@ export function PlanetPanel({
   id,
   onOpenCard,
   onOpenDasha,
+  vargaLabel,
 }: {
   planet: PlanetData;
   ascendantSign: string;
@@ -174,6 +280,9 @@ export function PlanetPanel({
   id?: string;
   onOpenCard: OpenCard;
   onOpenDasha?: () => void;
+  /** Set when the panel shows a divisional chart's placements (e.g. "Navāṁśa · D9"):
+      hides the nakshatra/pada line — a real-longitude concept the varga doesn't have. */
+  vargaLabel?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const p = planet;
@@ -197,7 +306,7 @@ export function PlanetPanel({
           <span className="pp-name">
             <span className="nm">{p.name}</span>
           </span>
-          {(p.dasha.length > 0 || p.lagnaLord || p.gandanta || p.maitriToDispositor || p.functionalNature) && (
+          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor || p.functionalNature) && (
             <span className="pp-pills">
               {p.functionalNature && (
                 <button type="button" className="pp-fn" data-fn={p.functionalNature}
@@ -215,18 +324,14 @@ export function PlanetPanel({
                 <button type="button" className="pp-pill" data-kind="antar"
                   onClick={(e) => { e.stopPropagation(); onOpenDasha?.(); }}>Antardaśā lord</button>
               )}
-              {p.lagnaLord && (
-                <button type="button" className="pp-pill" data-kind="lagna"
-                  onClick={(e) => { e.stopPropagation(); onOpenCard("sign", ascendantSign); }}>
-                  Ascendant Lord
-                </button>
-              )}
+              {/* (The "Ascendant Lord" pill was retired — the ChartRuler card
+                  above the panels now owns that identity.) */}
               {p.gandanta && (
                 <button type="button" className="pp-pill" data-kind="gandanta"
                   data-deep={p.gandantaDeep || undefined}
-                  title={`${p.gandantaDistance.toFixed(2)}° from the water→fire junction${p.gandantaDeep ? " — deep gandanta" : ""}`}
+                  title={`${p.gandantaDistance.toFixed(2)}° from the water→fire junction${p.gandantaDeep ? " — inside the 28°20′→1°40′ true gandanta zone" : ""}`}
                   onClick={(e) => { e.stopPropagation(); onOpenCard("gandanta"); }}>
-                  {p.gandantaDeep ? "Gandanta · deep" : "Gandanta"}
+                  {p.gandantaDeep ? "True Gandanta" : "Gandanta"}
                 </button>
               )}
               {p.maitriToDispositor && (
@@ -269,14 +374,23 @@ export function PlanetPanel({
                 {p.retro && <span className="deg">℞</span>}
                 <span className="deg">{p.degree}</span>
                 <span>{p.signName}</span>
-                <span className="dot">·</span>
-                <FcLink onClick={() => onOpenCard("nakshatra", p.nakshatra.name)}>
-                  {p.nakshatra.name}
-                </FcLink>
-                <span className="dot">·</span>
-                <FcLink onClick={() => onOpenCard("pada", p.pada)}>
-                  pada {p.pada} ({p.purushartha})
-                </FcLink>
+                {vargaLabel ? (
+                  <>
+                    <span className="dot">·</span>
+                    <span className="mutedp">{vargaLabel}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="dot">·</span>
+                    <FcLink onClick={() => onOpenCard("nakshatra", p.nakshatra.name)}>
+                      {p.nakshatra.name}
+                    </FcLink>
+                    <span className="dot">·</span>
+                    <FcLink onClick={() => onOpenCard("pada", p.pada)}>
+                      pada {p.pada} ({p.purushartha})
+                    </FcLink>
+                  </>
+                )}
               </div>
               {p.key === "moon" && p.tithiNumber != null && (
                 <div className="pp-tithi">
@@ -337,6 +451,7 @@ export function PlanetPanel({
                 </div>
               </div>
 
+              <ShadbalaDrawer sb={p.shadbala ?? null} pkey={p.key} onOpenCard={onOpenCard} />
               <AvasthaDrawer items={p.avasthas ?? []} pkey={p.key} onOpenCard={onOpenCard} />
 
               {p.extraRows.map((row) =>

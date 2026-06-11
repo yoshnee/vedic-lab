@@ -10,18 +10,18 @@ import type {
 } from "./types";
 import {
   PLANET_ORDER, PLANET_NAMES, PLANET_SANSKRIT, SIGN_ABBR, SIGN_RULER, COMBUSTION_ORB, SE_BODY, MOOLTRIKONA,
+  PADA_PURUSHARTHAS,
 } from "./constants";
 import { rawPositions, transitLongitude, julianDayUT } from "./swisseph";
 import * as v from "./vedic";
 import { computeDasha } from "./dasha";
 import { computeAvasthas } from "./avastha";
+import { computeShadbala } from "./shadbala";
 
 export type { ChartData, PlanetData, PlanetKey, BirthInput, PlacedBody, TransitSet } from "./types";
 
 const DAY_MS = 86_400_000;
 const YEAR_MS = 365.25 * DAY_MS;
-/** Pada → purushartha (life-aim), fixed mapping across each nakshatra's four quarters. */
-const PURUSHARTHA_BY_PADA: Record<number, string> = { 1: "Dharma", 2: "Artha", 3: "Kama", 4: "Moksha" };
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const fmtMonth = (t: number) => {
   const d = new Date(t);
@@ -197,6 +197,20 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
     },
   ];
 
+  // Six-fold strength for the seven grahas (nodes have no shadbala).
+  const shadbala = computeShadbala(
+    PLANET_ORDER.map((key) => ({
+      key,
+      lon: raw.longitudes[key],
+      sign: signs[key],
+      house: v.houseOf(signs[key], lagnaSign),
+      degreeValue: v.degInSign(raw.longitudes[key]),
+      retro: key === "rahu" || key === "ketu" || key === "sun" || key === "moon" ? false : raw.speeds[key] < 0,
+      speed: raw.speeds[key],
+    })),
+    raw.ascendant,
+  );
+
   const planets: PlanetData[] = PLANET_ORDER.map((key) => {
     const lon = raw.longitudes[key];
     const sign = signs[key];
@@ -233,7 +247,8 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       house: v.houseOf(sign, lagnaSign),
       nakshatra: nak,
       pada: nak.pada,
-      purushartha: PURUSHARTHA_BY_PADA[nak.pada],
+      // life-aim of the pada — per-nakshatra cycle (Sutton table), NOT fixed by pada number
+      purushartha: PADA_PURUSHARTHAS[v.nakshatraIndex(lon)][nak.pada - 1],
       dignity,
       retro,
       combust,
@@ -252,6 +267,7 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
             inMooltrikona: MOOLTRIKONA[key] === sign,
             naturalToLord: v.naturalToDispositor(key, signs),
           }),
+      shadbala: shadbala[key] ?? null,
       tithiNumber: tithi?.number,
       waxing: tithi?.waxing,
       illumination: tithi?.illumination,

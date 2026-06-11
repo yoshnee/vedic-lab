@@ -22,7 +22,8 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 3. **Everything stays client-side.** No backend, no server-side calculation, no secrets. External
    calls are limited to the two free geocoding/timezone services below.
 4. **Keep the engine longitude-based.** Expose each planet's raw **sidereal longitude** so divisional
-   charts (D9, D60, …) can be layered in later. Build **D1 (Rasi) only** for now.
+   charts layer on cleanly. **D1 (Rasi) and D9 (navamsa) are built**; further vargas (D10, D60, …)
+   drop into `src/core/divisional.ts` later, following the reference's `divisional.js`.
 5. **Components stay data-driven and reusable.** Content lives in data files; components render data.
    Adding content (a new flashcard deck, a new planet panel) should not require new component code.
 6. **License is AGPL-3.0.** The repo is public under AGPL-3.0 (required once Swiss Ephemeris is added).
@@ -35,11 +36,14 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 
 ### Study side
 - Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
-  the 12 signs as Lagnas, with functional lords/benefics/malefics), **Combustion** (Asta),
+  the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership point on each card back), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
-  (concept), **Gandanta** (concept), **Planetary Conditions** (Panchadha Maitri, concept),
+  (concept), **Gandanta** (concept), **The Four Elements** (Tattva, concept — backs the chart's
+  element-balance readout via its exported `ELEMENT_INFO`), **Planetary Conditions** (Panchadha
+  Maitri, concept),
   **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;
-  **Shadbala (6)** is scaffolded (canonical titles seeded, card bodies empty to fill in later);
+  **Shadbala (10)** has full content (overview + six balas + BPHS minimums + Ishta/Kashta +
+  reading-the-numbers; owner-provided, no em-dashes by request);
   **Karakas / Dashas / Yogas** are registered as "coming soon" roadmap tiles.
 - **English-primary** with optional subtle Sanskrit.
 - Built on a reusable **Card / Deck** system: flip to reveal the meaning, swipe / arrow-key to advance.
@@ -109,6 +113,8 @@ src/
   core/                   THE ENGINE (UI-free; follows the Hora-Prakash reference)
     swisseph.ts           swisseph-wasm wrapper (Lahiri positions, speeds, Lagna)
     vedic.ts              sign/degree, nakshatra/pada/lord, whole-sign houses, dignity, drishti, combust
+    divisional.ts         varga mapping (D9 chart-ready; D2/D3/D7/D12/D16 for shadbala's saptavargaja)
+    shadbala.ts           six-fold strength (reference's simplified scheme; see engine bullet)
     dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
     avastha.ts            Baladi (degree) + Jagradadi (dignity + natural maitri) "states"; no invented strength
     constants.ts          dignity tables, nakshatras, drishti, combustion orbs, dasha years
@@ -118,7 +124,7 @@ src/
     __tests__/            Vitest: fixtures.test.ts (23 JHora charts) + invariants.test.ts (table guards)
     __fixtures__/jhora/   23 vendored JHora ground-truth charts (trimmed: birth+planets+dasha)
   lib/design/             tokens.css (source of truth), app.css, site.css (global nav/footer + content pages), chart.css, colors.ts
-  lib/chart/              generateChart() seam · ChartModel types · ChartProvider store
+  lib/chart/              generateChart() seam · ChartModel types · ChartProvider store · varga.ts (buildD9 render set)
   lib/{site.ts, flashcardLink.ts, geo.ts, time.ts, birth.ts, hooks/useDebounce.ts}
   celestial/celestial.ts  SVG art: body({state,retro}) / diamond / glyph / chart / zodiac / combust / conjunction
   components/
@@ -126,8 +132,10 @@ src/
     home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
     chart/                ChartView, NorthIndianChart (generic: frame+planets), ChartCard
-                          (title/type-selector wrapper), DashaRail (sticky/​drawer), Legend
-                          (symbol-key drawer), PlanetPanel, FlashcardPopover
+                          (title/type-selector wrapper), ChartRuler (lagneśa walkthrough),
+                          ElementBalance (element tally; rail on desktop, inline on mobile),
+                          DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
+                          FlashcardPopover
   data/decks/             registry.ts + per-deck data files
 scripts/                  validate-engine.ts, gen-sample-chart.ts (dev: tsx)
 design-reference/         read-only design handoffs (flashcards, planet-panel, birth-modal, chats)
@@ -170,17 +178,26 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (←/→ nav, space/enter flip, Esc close, tab-trap, swipe, `aria-live`). Empty card bodies show a
   tasteful "coming soon"; coming-soon decks render as non-interactive tiles.
 - **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` +
-  `Nakshatras` + `Padas` + `Gandanta` + `Maitri` + `Avasthas` + `Aspects` (full content); `Shadbala` (titles seeded,
-  bodies empty); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
+  `Nakshatras` + `Padas` + `Gandanta` + `Elements` + `Maitri` + `Avasthas` + `Aspects` + `Shadbala`
+  (full content); `Karakas`/`Dashas`/`Yogas` (coming-soon). Registry: `src/data/decks/registry.ts`.
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
-  span + ruler + general nature; rulers/spans match the engine's validated `NAKSHATRAS` table.)
-  (The `padas` deck is concept-based — 4 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
-  · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's `pada N (purushartha)` placement link
-  opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the fixed map
-  1 Dharma · 2 Artha · 3 Kama · 4 Moksha, set in the engine; `FlashcardTarget.highlightFact` drives the
-  row emphasis, resolved by the card title in `flashcardLink.ts` (`PADA_CONCEPT_CARD`).)
+  span + ruler + **life aim** (the nakshatra's own main purushartha, read from the engine's
+  `NAKSHATRA_PURUSHARTHA` table — Sutton's column vendored verbatim; NB her last four diverge from
+  dirah/Harness, pinned by an invariant test) + general nature; rulers/spans match the engine's
+  validated `NAKSHATRAS` table.)
+  (The `padas` deck is concept-based — 5 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
+  · "The Alternating Cycle" · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's
+  `pada N (purushartha)` placement link
+  opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the
+  **per-nakshatra alternating cycle** from Komilla Sutton's *The Nakshatras: The Stars Beyond the
+  Zodiac* — forward Dharma·Artha·Kama·Moksha in one nakshatra, reversed in the next, with the parity
+  flipping at Shravana because the book's cycle counts the pada-less Abhijit (`PADA_PURUSHARTHAS` in
+  `constants.ts`, an explicit 27-row table — owner-directed; NB other sources (navamsa-element
+  derivation, Trivedi) keep the fixed 1 Dharma…4 Moksha map at pada level and put the alternation at
+  the whole-nakshatra level; Sutton's per-pada table wins here). `FlashcardTarget.highlightFact`
+  drives the row emphasis, resolved by the card title in `flashcardLink.ts` (`PADA_CONCEPT_CARD`).)
 - **Engine** (`src/core/`) — `swisseph-wasm` + Lahiri; sign/degree, nakshatra/pada/lord, whole-sign
   houses, dignity, retrograde, combustion, graha-drishti, **panchadha maitri to the dispositor**
   (`vedic.maitriToDispositor` — occupant→dispositor, **asymmetric**; naisargika table
@@ -190,27 +207,79 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (`vedic.functionalNatureOf` — reads the single canonical `ASCENDANT_FUNCTIONAL` table in `constants.ts`
   that **also generates the Ascendants deck's** Yogakaraka/Benefics/Neutral/Malefics facts, so badge and
   deck can't diverge; per planet `functionalNature` ∈ benefic/malefic/neutral/yogakaraka/null, yogakaraka
-  taking precedence over benefic; nodes → null), **gandanta** (within one pada of a water→fire
-  junction 0°/120°/240° — `vedic.gandantaOf`; orb `GANDANTA_ORB = 360/108` per the reference; also a
-  `deep` flag within 1°; carried by every planet **and the Lagna**), **tithi** (Moon only —
+  taking precedence over benefic; nodes → null), **gandanta** (two-tier, **owner-directed** —
+  `vedic.gandantaOf`; the flag covers the full junction padas, one pada/3°20′ per side
+  (`GANDANTA_ORB = 360/108`, matching the reference), and `deep` is the narrower 28°20′→1°40′
+  "true gandanta" zone, ±1°40′ (Sutton); carried by every planet **and the Lagna**), **tithi** (Moon only —
   `vedic.tithiOf`; absolute 1–30 from the Moon–Sun elongation, `tithiNumber`/`waxing`/`illumination` on
-  the Moon's data; `waxing` kept for paksha bala when Shadbala lands), Vimshottari dasha (MD→AD→PD), and
-  a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
+  the Moon's data), **shadbala** (`src/core/shadbala.ts` — the canonical Hora-Prakash six-fold scheme,
+  **PARITY-GATED**: `__tests__/shadbala-parity.test.ts` runs all 23 fixture charts through our engine
+  AND the byte-identical vendored upstream `shadbala.js` (`__tests__/__upstream__/`, AGPL, test-only,
+  never bundled) asserting every component + total ≤0.1 virupa — constants must stay literally the
+  upstream's (e.g. Naisargika Jupiter 34.28, NOT the exact 60/7 multiple; the gate catches drift).
+  Per planet on `PlanetData.shadbala`: Sthana = Uchcha + Saptavargaja over D1/D2/D3/D7/D9/D12/D16 +
+  Ojayugma + Kendradi + Drekkana, Dig, Kala = Nathonnatha + Paksha + Ayana, Chesta (retro/speed
+  brackets; Sun & Moon take Ayana), Naisargika, Drik (±15 × strength ÷ 2, can go negative); totals +
+  classical BPHS required minimums + ratio; **Ishta/Kashta Phala** = √(uchcha×chesta) /
+  √((60−uchcha)(60−chesta)) (BPHS-derived — the upstream is silent, the one addition outside the
+  gate); `parts` carries the Sthana/Kala sub-components for future progressive disclosure; `tierOf`
+  grades total vs required (≥+20% strong · ≥min adequate · −10% borderline · weak); nodes null.
+  NB NOT JHora/desktop-exact by design (JHora's fuller Kala/Chesta diverge ~58 virupas mean — measured,
+  accepted); day/night birth uses the ecliptic-horizon test (documented; the upstream silently
+  defaults to "day" without panchang — the parity test brackets panchang to agree),
+  Vimshottari dasha (MD→AD→PD), and a Sade Sati timeline. **Validated via `npm test`** against **23 JHora ground-truth charts** —
   positions/nakshatra/lord/pada/retro plus the full MD→AD dasha tree (MD ≤5d, AD ≤7d of JHora; the
   linear-vs-JHora-hybrid drift the reference's `DASHA_CALCULATION_METHODS.md` documents) — and **invariant
   tests** over the dignity/nakshatra/dasha/drishti tables. Aspects &
   combustion have no fixture ground-truth (rule-based, deterministic from validated positions; the invariant
   suite spot-checks their geometry).
-  Nodes shown non-retrograde (matches JHora); engine combustion orbs follow the reference (differ
-  from the Combustion deck).
+  Nodes shown non-retrograde (matches JHora). **Two owner-directed school choices diverge from the
+  reference** (both pinned by invariant tests — don't re-align): **node drishti** is Rahu 5/9 only,
+  Ketu none (no 7th for either, so the always-opposite nodes never aspect each other; the reference
+  treats both as Jupiter 5/7/9), and **combustion** uses the Combustion deck's orbs (Mercury 1°,
+  Venus 8°, Mars/Jupiter/Saturn 10°; only those five combust — Sun/Moon/nodes never; the reference
+  uses the wider Parashari orbs incl. Moon 12°).
 - **Birth-chart page** (`/chart`) — a desktop **3-up layout**: a sticky **`DashaRail`** (Vimshottari
   MD→AD→PD current chain + the full mahadasha list, each expandable to its antardashas) on the left,
-  then **two charts** — Chart 1 natal D1, Chart 2 a `ChartCard` with a type `<select>` (**Transit**
-  live; D9/D10/D60 disabled "soon" stubs). Both render through the **generic `NorthIndianChart`**
+  then **two charts**, each a `ChartCard` with a **live type `<select>`** — Chart 1 toggles
+  **D1 ⇄ D9** (default D1), Chart 2 **Transit / D1 / D9** (default Transit; transit is
+  deliberately right-only — the natal-vs-X reading layout); D10/D60 are disabled "soon" stubs on
+  both sides. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
+  **Chart 1 is also the PANEL CONTEXT**: toggling it to D9 re-derives the nine planet panels for the
+  varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn for future D10/…).
+  **Owner-directed "D9 == D1"** — the varga is read as a full chart: recomputed are sign/expanded
+  degree/house from the varga lagna/dignity/aspects/conjunctions/rulerships, **panchadha maitri** to
+  the varga dispositor, **functional nature** from the varga lagna, **combustion** from varga
+  pseudo-longitudes ((sign−1)·30 + expanded degree), and **avasthas** (Ryan Kurczak's method: Baladi
+  from the expanded degree + varga sign parity, Jagradadi from varga dignity + natural relation to
+  the varga sign's lord; nodes still none) — all reused validated functions, no new math. Still
+  hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta, tithi) and rasi-only
+  systems (shadbala, sade sati) (a `.pp-context` caption + per-panel `vargaLabel` say so). The
+  **ChartRuler card renders in D1 context only** (a natal-lagna reading). Chart 2 never affects the panels;
+  the daśā rail and ChartRuler stay natal, while the **ElementBalance follows the Chart 1 context**
+  (tallies the varga signs in D9 mode — so the readout never contradicts the visible panels).
+  **D9 is real**: `core/divisional.ts` `navamsa()` (reference's elemental-seed method ≡ the
+  continuous 108-cycle; expanded degrees per the JHora spec), validated against all 23 fixtures'
+  `navamsa_sign` per body; `lib/chart/varga.ts` `buildD9()` makes the render set (frame = navamsa
+  of the natal ascendant, whole-sign houses from it, dignity on the varga sign, natal retro).
+  Both charts render through the **generic `NorthIndianChart`**
   (`frame {ascSign,ascDegree}` + `planets ChartBody[]`); transit uses the **same natal frame**, so
-  transiting planets read through the natal houses, captioned with the compute timestamp. Below,
-  **full-width 2-column Planet Detail Panels** (`.pp-grid`, row-major navagraha order; an open panel
-  spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
+  transiting planets read through the natal houses, captioned with the compute timestamp. The daśā
+  rail, element balance, and planet panels stay natal-D1 regardless of the selectors. Below the
+  charts, a full-width **`ChartRuler`** card — the "start here" lagneśa walkthrough: a numbered chain
+  (ascendant → its ruler = the chart ruler → the sign it occupies → that whole-sign house → the
+  ruler's occupied nakshatra/pada + its lord, explicitly distinct from the Moon's daśā-seeding
+  nakshatra → co-tenant planets, each opening its graha card), every noun a flashcard link via the
+  same resolver, the header echoing the ruler's maitri pill and dignity/retro glyph, the header name
+  jumping to the ruler's panel. Pure presentation —
+  reads only `ChartData.lagnaLord` + `planets[]`. An **`ElementBalance`** block (in the sticky rail on
+  desktop, an inline card on mobile — CSS shows exactly one of the two rendered copies) tallies all
+  nine planets by sign element (`SIGN_ELEMENT`, nodes included), gold-highlights the leading
+  element(s), flags any missing element (counts only — the prevailing-trait prose and the footer
+  caption were removed, owner-directed), and links each element to the Four Elements deck (text
+  from `ELEMENT_INFO`, the deck's lookup form — single source). Then
+  **full-width 2-column Planet Detail Panels**
+  (`.pp-grid`, row-major navagraha order; an open panel spans full width). Houses are **tinted by their sign's ruling-planet color** and labelled with the
   zodiac glyph + muted rāśi number. On mobile everything stacks and the rail becomes a **slide-in
   drawer** (a "Daśā" trigger). A header **Legend** button opens a slide-in **symbol-key drawer**
   (`Legend.tsx`) — planet colors, dignity (rendered via real `body()` glyphs), B/M/N/Y, friendship,
@@ -218,16 +287,21 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   the live UI (so it can't drift), most rows a flashcard link. Panels: nine Planet Detail Panels
   (placement
   prose, aspect/conjunct chips — conjunct/combust hidden when empty, Sade Sati phase-track timeline,
-  MD/AD/**Ascendant-Lord**/**Gandanta** pills), with a single-card flashcard popover
+  MD/AD/**Gandanta** pills — the old Ascendant-Lord pill was retired, the ChartRuler card owns that
+  identity), with a single-card flashcard popover
   (house/nakshatra/**pada**/sign/ascendant/**gandanta**/maitri/**avastha** → real deck cards). The placement line reads
   `…° Sign · Nakshatra · pada N (Purushartha)`, each of the last three a tappable card link. A small
   **square B/M/N/Y badge** (functional benefic/malefic/neutral/yogakaraka for the lagna — square so it
   reads distinct from the dignity halo on the glyph; omitted for nodes) opens the rising-sign card. A
   **maitri** pill (Great Friend → Friend → Neutral → Enemy → Great Enemy, or Own Sign; green→grey→red,
   gold for own; omitted for nodes) shows each planet's panchadha relation to its dispositor and opens the
-  Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned,
-  brighter when `deep`) and on the Lagna marker in the hero — tapping either opens the Gandanta deck's
-  "What Gandanta Is" card. An **Avasthas** drawer (collapsed by default, subordinate to the badges/
+  Maitri deck's compound card. A **Gandanta** header pill appears on any planet in gandanta (ember-toned;
+  inside the ±1°40′ zone it brightens and reads **"True Gandanta"**) and on the Lagna marker in the
+  hero — tapping either opens the Gandanta deck's "What Gandanta Is" card. A **Shadbala** drawer (same collapsible pattern as Avasthas, rendered above it;
+  collapsed header shows the verdict — rupas + the **tier word** (Strong/Adequate/Borderline/Weak,
+  tinted gold/neutral/ember/red via `data-tier`); expanded, six bala rows + **Ishta/Kashta Phala**
+  rows + total + required/ratio with the classical binary (Bal-Yukta/Balaheena), every row opening
+  its Shadbala deck card via the `shadbala` flashcard type; hidden for nodes). An **Avasthas** drawer (collapsed by default, subordinate to the badges/
   pills) groups each planet's "states" — launching with **Baladi** (five ages by degree-in-sign;
   odd signs Bala→Mrita, even reversed) and **Jagradadi** (Awake/Dreaming/Asleep by dignity, splitting
   the middle case on the **natural/naisargika** relation to the sign lord, with mooltrikona → Awake).
@@ -244,7 +318,7 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
 
 **Not yet wired:** reading `sessionStorage['vedic:birthDetails']` into a client-side `computeChart`
 on `/chart` (the popup persists the data; the live in-browser compute + navigation is the remaining
-seam). Card bodies for **Shadbala** still to fill. Out of scope: automated
+seam). Out of scope: automated
 yoga detection, divisional charts beyond D1.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)
@@ -414,14 +488,17 @@ prototype's geometry as the starting point for the real chart component.
 **LIVE in production** at **studyvedicastrology.kerjasama.dev** (valid SSL). Source is public at
 **github.com/yoshnee/vedic-lab** (AGPL-3.0).
 
-- **Vercel project:** `yoshnee-rs-projects/vedic-lab`. Linked via the CLI (`.vercel/` is gitignored),
-  so the project is **not git-connected yet** — deploys are run from the CLI:
-  - Preview: `vercel deploy --scope yoshnee-rs-projects`
-  - Production: `vercel deploy --prod --scope yoshnee-rs-projects` (updates the custom domain).
-  - (Production deploys are guarded by the harness — they need explicit user authorization.)
+- **Vercel project:** `yoshnee-rs-projects/vedic-lab`, **git-connected** to github.com/yoshnee/vedic-lab
+  (since 2026-06; production branch `main`). Deploys are git-driven:
+  - **Every PR / branch push → a preview deployment** (unique URL; the custom domain is untouched).
+  - **Merge/push to `main` → the production deployment** (updates the custom domain). Don't CLI-deploy
+    to production; merging is the deploy. CLI (`vercel deploy --scope yoshnee-rs-projects`) remains
+    for ad-hoc previews only. (`.vercel/` stays gitignored.)
+  - (Production-affecting actions — merging to main, or any `--prod` deploy — need explicit user
+    authorization.)
 - **`vercel.json` pins `buildCommand` to `npm test && npm run build`** — two jobs in one:
   1. **Test gate** — the Vitest suite runs first; any failure aborts the build, so a broken engine
-     never deploys (covers CLI deploys now and git-based deploys later).
+     never deploys (applies to git previews, git production builds, and CLI deploys alike).
   2. **WASM copy** — running the npm `build` script (not a bare `next build`) guarantees the
      `prebuild` hook (`scripts/copy-wasm.mjs`) runs, so `public/wasm/*` (gitignored, 12.5 MB) is
      always populated. A bare `next build` would skip it and ship an engine that 404s at runtime.
@@ -459,8 +536,9 @@ Build in this order; everything from step 2 down reads from the engine.
 
 ### Out of scope (for now)
 - **Automated yoga detection** — **stub it** (leave a clean seam to add later).
-- **Divisional charts beyond D1** — don't build them, but **keep the engine longitude-based** so they
-  drop in cleanly (reference: `src/core/divisional.js`).
+- **Divisional charts beyond D9** — D9 is live (`core/divisional.ts`); D10/D60/… are disabled
+  dropdown stubs. Add them in `divisional.ts` following the reference's `divisional.js` +
+  `JHORA_DIVISIONAL_SPEC.md`, validated against the fixtures.
 
 ---
 

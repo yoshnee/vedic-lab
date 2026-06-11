@@ -10,11 +10,14 @@
    drawer, the daśā drawer, and the Chart-2 type. Natal + transit render through
    the same NorthIndianChart on the SAME natal lagna frame.
    ============================================================ */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
-import { ChartCard } from "./ChartCard";
+import { buildD9, buildVargaPanels } from "@/lib/chart/varga";
+import { ChartCard, type ChartOption } from "./ChartCard";
+import { ChartRuler } from "./ChartRuler";
+import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
@@ -52,11 +55,29 @@ function MoonGlyph({ waxing }: { waxing: boolean }) {
   );
 }
 
+/* The chart-type selectors. Vargas can show on either side; Transit is
+   right-only (the natal-vs-X reading layout, and its "as of" caption belongs
+   there). Unbuilt vargas are visible-but-disabled "soon" stubs on both sides. */
+type Chart1Type = "d1" | "d9";
+type Chart2Type = "transit" | "d1" | "d9";
+const VARGA_OPTIONS: ChartOption[] = [
+  { value: "d1", label: "Natal · Rāśi (D1)" },
+  { value: "d9", label: "Navāṁśa (D9)" },
+  { value: "d10", label: "Daśāṁśa (D10) · soon", disabled: true },
+  { value: "d60", label: "Ṣaṣṭyāṁśa (D60) · soon", disabled: true },
+];
+const CHART2_OPTIONS: ChartOption[] = [
+  { value: "transit", label: "Transit · Gochara" },
+  ...VARGA_OPTIONS,
+];
+
 export function ChartView({ model }: { model: ChartModel }) {
   const { chart, meta, panchanga, transit } = model;
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
+  const [chart1, setChart1] = useState<Chart1Type>("d1");
+  const [chart2, setChart2] = useState<Chart2Type>("transit");
 
   // Lock body scroll while any overlay is open.
   useEffect(() => {
@@ -82,6 +103,31 @@ export function ChartView({ model }: { model: ChartModel }) {
     document.getElementById(`panel-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   const frame = { ascSign: chart.ascendant.sign, ascDegree: chart.ascendant.degree };
+  const d9 = useMemo(() => buildD9(chart), [chart]);
+
+  /* Chart 1 is the PANEL CONTEXT: toggling it re-derives the planet panels for
+     that varga (sign-level facts only — see buildVargaPanels); toggling back
+     restores the natal detail. Chart 2 never affects the panels. */
+  const d9Panels = useMemo(() => buildVargaPanels(chart), [chart]);
+  const vargaMode = chart1 !== "d1";
+  const panelPlanets = vargaMode ? d9Panels.planets : chart.planets;
+  const panelAscSign = vargaMode ? d9Panels.ascendant.signName : chart.ascendant.signName;
+  const vargaLabel = vargaMode ? "Navāṁśa · D9" : undefined;
+
+  /** Dataset for a selected chart type — toggling is non-destructive; every
+      set derives from the model already in memory, so switching back restores. */
+  const dataFor = (t: Chart1Type | Chart2Type) =>
+    t === "transit"
+      ? {
+          frame,
+          planets: transit?.planets ?? [],
+          caption: transit ? fmtTransit(transit.computedUtcISO) : "transit unavailable",
+        }
+      : t === "d9"
+        ? { frame: d9.frame, planets: d9.planets, caption: "spouse · dharma · inner nature" }
+        : { frame, planets: chart.planets, caption: chart.birth.dateLabel };
+  const c1 = dataFor(chart1);
+  const c2 = dataFor(chart2);
 
   return (
     <>
@@ -110,10 +156,10 @@ export function ChartView({ model }: { model: ChartModel }) {
                 className="pp-pill"
                 data-kind="gandanta"
                 data-deep={chart.ascendant.gandantaDeep || undefined}
-                title={`Lagna ${chart.ascendant.gandantaDistance.toFixed(2)}° from the water→fire junction${chart.ascendant.gandantaDeep ? " — deep gandanta" : ""}`}
+                title={`Lagna ${chart.ascendant.gandantaDistance.toFixed(2)}° from the water→fire junction${chart.ascendant.gandantaDeep ? " — inside the 28°20′→1°40′ true gandanta zone" : ""}`}
                 onClick={() => openCard("gandanta")}
               >
-                {chart.ascendant.gandantaDeep ? "Gandanta · deep" : "Gandanta"}
+                {chart.ascendant.gandantaDeep ? "True Gandanta" : "Gandanta"}
               </button>
             )}
           </p>
@@ -128,6 +174,7 @@ export function ChartView({ model }: { model: ChartModel }) {
         <div className="chart-layout">
           <aside className="dasha-rail" aria-label="Vimśottarī daśā">
             <DashaRail dasha={chart.dasha} current={chart.currentDasha} />
+            <ElementBalance planets={panelPlanets} onOpenCard={openCard} />
           </aside>
 
           <div className="chart-main">
@@ -147,33 +194,51 @@ export function ChartView({ model }: { model: ChartModel }) {
             <div className="chart-top">
               <ChartCard
                 label="Chart 1"
-                value="natal"
-                options={[{ value: "natal", label: "Natal · Rāśi (D1)" }]}
-                caption={chart.birth.dateLabel}
-                frame={frame}
-                planets={chart.planets}
+                value={chart1}
+                options={VARGA_OPTIONS}
+                onChange={(v) => { if (v === "d1" || v === "d9") setChart1(v); }}
+                caption={c1.caption}
+                frame={c1.frame}
+                planets={c1.planets}
                 onSelectPlanet={selectPlanet}
               />
               <ChartCard
                 label="Chart 2"
-                value="transit"
-                options={[{ value: "transit", label: "Transit · Gochara" }]}
-                caption={transit ? fmtTransit(transit.computedUtcISO) : "transit unavailable"}
-                frame={frame}
-                planets={transit?.planets ?? []}
+                value={chart2}
+                options={CHART2_OPTIONS}
+                onChange={(v) => { if (v === "transit" || v === "d1" || v === "d9") setChart2(v); }}
+                caption={c2.caption}
+                frame={c2.frame}
+                planets={c2.planets}
                 onSelectPlanet={selectPlanet}
               />
             </div>
 
+            <ElementBalance planets={panelPlanets} onOpenCard={openCard} inline />
+
+            {/* The Chart Ruler (ascendant-lord) walkthrough is a natal-lagna
+                reading — D1 panel context only (owner-directed). */}
+            {!vargaMode && (
+              <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
+            )}
+
+            {vargaMode && (
+              <p className="pp-context">
+                Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
+                {d9Panels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
+                rāśi detail (nakshatra, gandanta, shadbala …)
+              </p>
+            )}
             <section className="pp-grid" aria-label="Planet details">
-              {chart.planets.map((p) => (
+              {panelPlanets.map((p) => (
                 <PlanetPanel
-                  key={p.key}
+                  key={`${chart1}-${p.key}`}
                   id={`panel-${p.key}`}
                   planet={p}
-                  ascendantSign={chart.ascendant.signName}
+                  ascendantSign={panelAscSign}
                   onOpenCard={openCard}
                   onOpenDasha={openDasha}
+                  vargaLabel={vargaLabel}
                 />
               ))}
             </section>

@@ -25,7 +25,8 @@ export const combustion: Deck = {
         "A combust planet can't fully protect or express its significations",
         "Its light is “burnt up” — the energy comes through muffled and weakened",
         "The Sun itself is never combust — it is the source of the glare",
-        "Rahu and Ketu (shadow planets) are not counted for combustion",
+        "Only five planets combust: Mars, Mercury, Jupiter, Venus, Saturn",
+        "The Moon and the shadow planets Rahu & Ketu are not counted for combustion",
       ],
     },
     {
