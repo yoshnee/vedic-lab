@@ -33,8 +33,25 @@ const FAQS: Faq[] = [
     a: (
       <>
         Usually a different ayanamsa or house system, or different conventions (e.g. combustion
-        orbs, node aspects). This site uses <em>Lahiri + whole-sign</em>. If you are convinced that there 
-        is a mistake, please feel free to reach out to get it fixed.
+        orbs, node aspects). This site uses <em>sidereal</em> calculations for the zodiac — not
+        tropical — with <em>Lahiri + whole-sign</em>. If you are convinced that there is a mistake,
+        please feel free to reach out to get it fixed.
+      </>
+    ),
+  },
+  {
+    q: "Why sidereal and not tropical?",
+    a: (
+      <>
+        Sidereal astrology anchors the zodiac to the actual fixed stars, so a chart reflects where
+        the planets truly sit against the constellations, while the tropical zodiac has drifted
+        about 24° off the real stars over the centuries. Jyotish itself is built on genuine stellar
+        positions (its nakshatras are named after real stars, its dasha timing seeded from the
+        Moon&apos;s place among them). For more on the debate, see{" "}
+        <a href="https://astrosight.ai/blog/sidereal-vs-tropical-zodiac" target="_blank" rel="noopener noreferrer">
+          this article
+        </a>
+        .
       </>
     ),
   },

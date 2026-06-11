@@ -19,7 +19,7 @@ export function AboutPage() {
 
       <article className="about">
         <p>
-          I&apos;ve been circling Vedic Astrology i.e. <J />{" "}for a few years now, picking up
+          I&apos;ve been circling sidereal Vedic Astrology i.e. <J />{" "}for a few years now, picking up
           pieces here and there through various forms, long before I&apos;d have called it
           &ldquo;studying.&rdquo; It&apos;s the kind of subject you can dabble in for years and
           still feel like you&apos;re standing at the very edge of it. <J /> is genuinely
