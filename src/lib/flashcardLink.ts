@@ -14,8 +14,6 @@
                    (id "baladi" | "jagradadi" | "lajjitadi")
    - "yoga"      → Yogas deck → the tapped yoga family's card
                    (id "pancha-mahapurusha" | "gaja-kesari"; the panel yoga pills)
-   - "karaka"    → Karakas deck → that designation's card
-                   (id "atmakaraka" | "amatyakaraka" | "darakaraka"; the karaka pills)
    - "deck"      → ANY whole deck, browsable from its first card
                    (id = deck id, e.g. "houses"; the reading-notes step links)
    Returns the deck, the card index, and the resolved card for the popover.
@@ -23,7 +21,7 @@
 import { DECKS } from "@/data/decks/registry";
 import type { Deck, Card } from "@/data/decks/types";
 
-export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet" | "element" | "shadbala" | "yoga" | "karaka" | "deck";
+export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet" | "element" | "shadbala" | "yoga" | "deck";
 
 export interface FlashcardTarget {
   deck: Deck;
@@ -148,18 +146,6 @@ export function resolveFlashcard(
     return deck && deck.cards.length
       ? { deck, index: 0, card: deck.cards[0], browse: true }
       : null;
-  }
-  if (type === "karaka") {
-    // a karaka pill opens its designation's card; fall back to the overview card
-    const KARAKA_CARDS: Record<string, string> = {
-      atmakaraka: "Atmakaraka",
-      amatyakaraka: "Amatyakaraka",
-      darakaraka: "Darakaraka",
-    };
-    const deck = DECKS.find((d) => d.id === "karakas");
-    if (!deck) return null;
-    const title = KARAKA_CARDS[String(id)];
-    return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };
   }
   if (type === "element") {
     // the chart's element-balance rows open the matching Elements deck card

@@ -1,16 +1,18 @@
 "use client";
 
 /* ============================================================
-   ReadingNotes.tsx — the guided reading checklist: five steps in reading
-   order (Lagna → Houses → Varga → Dashas → Synthesis) as an ACCORDION — only
+   ReadingNotes.tsx — the guided reading checklist: seven steps in reading
+   order (Ascendant → Planets → Rahu/Ketu Axis → Houses → Vargas (optional) →
+   Dashas → Synthesis) as an ACCORDION — only
    the active step is expanded (prompt + optional jump link + auto-growing
    notes field); the rest collapse to a number · title · checkbox row.
    Clicking a collapsed row expands it; checking a step collapses it and
    auto-expands the next unchecked step (the accordion resumes at the first
-   unchecked step on load). A dots + "n of 5" progress marker tops the panel.
+   unchecked step on load). A dots + "n of 7" progress marker tops the panel.
 
    Dictation always targets the EXPANDED step's notes. Steps with a study
-   deck (Houses, Dashas — Varga once its deck exists) carry a small card icon
+   deck (Planets → Planetary Groupings, Rahu/Ketu Axis → Rahu & Ketu, Houses,
+   Dashas — Vargas once its deck exists) carry a small card icon
    beside the title that opens the deck in the browsable flashcard popover —
    a refresher, owner-directed (no text links).
 

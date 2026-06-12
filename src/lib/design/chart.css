@@ -278,8 +278,6 @@
 .pp-pill[data-kind="lagna"] { color: var(--select); border-color: color-mix(in srgb, var(--select) 38%, transparent); background: color-mix(in srgb, var(--select) 11%, transparent); }
 /* gandanta — ember tone for the water→fire knot; "deep" (within ~1°) is brighter + ringed */
 .pp-pill[data-kind="gandanta"] { color: #E08A5A; border-color: color-mix(in srgb, #E08A5A 40%, transparent); background: color-mix(in srgb, #E08A5A 12%, transparent); }
-/* chara karaka — violet (Venus-palette base), distinct from dasha gold & maitri green/red */
-.pp-pill[data-kind="karaka"] { color: var(--karaka); border-color: color-mix(in srgb, var(--p-venus) 42%, transparent); background: color-mix(in srgb, var(--p-venus) 12%, transparent); }
 .pp-pill[data-kind="gandanta"][data-deep] { color: #F0A06E; border-color: color-mix(in srgb, #E08A5A 72%, transparent); background: color-mix(in srgb, #E08A5A 20%, transparent); font-weight: 700;
   box-shadow: 0 0 0 1px color-mix(in srgb, #E08A5A 28%, transparent), 0 0 9px color-mix(in srgb, #E08A5A 26%, transparent); }
 .chart-asc .pp-pill { margin-left: 8px; vertical-align: middle; }

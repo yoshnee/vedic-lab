@@ -137,8 +137,6 @@ export function Legend({ onClose }: { onClose: () => void }) {
             <div className="lg-grid">
               <Item label="Gandanta" hint="water→fire knot; “True Gandanta” within ±1°40′"
                 swatch={<span className="pp-pill" data-kind="gandanta">Gandanta</span>} />
-              <Item label="Chara karaka" hint="Jaimini: Atma · Amatya · Darakaraka, by degree in sign (natal D1 only)"
-                swatch={<span className="pp-pill" data-kind="karaka">Atmakaraka</span>} />
               <Item label="Combust (Asta)" hint="within the Sun's glare"
                 swatch={<Svg html={combust(34)} />} />
             </div>

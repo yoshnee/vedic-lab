@@ -15,7 +15,7 @@ import {
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
 } from "../vedic";
-import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa } from "../divisional";
+import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa, dasamsa, trimsamsa } from "../divisional";
 import { computeShadbala, SHADBALA_REQUIRED, tierOf } from "../shadbala";
 import type { ShadbalaBody } from "../shadbala";
 import type { PlanetKey } from "../types";
@@ -205,6 +205,61 @@ describe("saptavargaja vargas (reference spot checks)", () => {
     expect(shodasamsa(0.5).sign).toBe(1); // movable → Aries
     expect(shodasamsa(30.5).sign).toBe(5); // fixed → Leo
     expect(shodasamsa(60.5).sign).toBe(9); // dual → Sagittarius
+  });
+});
+
+describe("dasamsa (D10)", () => {
+  it("odd signs count from self, even from the 9th, +1 per 3° part", () => {
+    for (let s = 1; s <= 12; s++) {
+      for (let part = 0; part < 10; part++) {
+        const lon = (s - 1) * 30 + part * 3 + 0.1;
+        const seed = s % 2 === 0 ? (s - 1 + 8) % 12 : s - 1;
+        expect(dasamsa(lon).sign, `sign ${s} part ${part + 1}`).toBe(((seed + part) % 12) + 1);
+      }
+    }
+  });
+  it("expanded degree spans 0–30 within each 3° part", () => {
+    expect(dasamsa(1.5).degree).toBeCloseTo(15, 6); // middle of Aries' first dasamsa
+    for (let L = 0.05; L < 360; L += 2.3) {
+      const { degree } = dasamsa(L);
+      expect(degree).toBeGreaterThanOrEqual(0);
+      expect(degree).toBeLessThan(30);
+    }
+  });
+});
+
+describe("trimsamsa (D30) — UNEQUAL Parashari portions, per the reference", () => {
+  it("odd signs: 5/5/8/7/5° → Aries/Aquarius/Sagittarius/Gemini/Libra", () => {
+    for (const s of [1, 3, 5, 7, 9, 11]) {
+      const base = (s - 1) * 30;
+      expect(trimsamsa(base + 2).sign, `sign ${s} 0–5°`).toBe(1);
+      expect(trimsamsa(base + 7).sign, `sign ${s} 5–10°`).toBe(11);
+      expect(trimsamsa(base + 14).sign, `sign ${s} 10–18°`).toBe(9);
+      expect(trimsamsa(base + 21).sign, `sign ${s} 18–25°`).toBe(3);
+      expect(trimsamsa(base + 27).sign, `sign ${s} 25–30°`).toBe(7);
+    }
+  });
+  it("even signs: 5/7/8/5/5° → Taurus/Virgo/Pisces/Capricorn/Scorpio", () => {
+    for (const s of [2, 4, 6, 8, 10, 12]) {
+      const base = (s - 1) * 30;
+      expect(trimsamsa(base + 2).sign, `sign ${s} 0–5°`).toBe(2);
+      expect(trimsamsa(base + 9).sign, `sign ${s} 5–12°`).toBe(6);
+      expect(trimsamsa(base + 15).sign, `sign ${s} 12–20°`).toBe(12);
+      expect(trimsamsa(base + 22).sign, `sign ${s} 20–25°`).toBe(10);
+      expect(trimsamsa(base + 27).sign, `sign ${s} 25–30°`).toBe(8);
+    }
+  });
+  it("only the five non-luminary planetary signs ever appear (no Sun/Moon signs)", () => {
+    // Trimsamsa belongs to the five tara grahas — Leo (Sun) and Cancer (Moon)
+    // can never be a trimsamsa sign, the structural fingerprint of this varga.
+    for (let L = 0.05; L < 360; L += 0.7) {
+      const { sign } = trimsamsa(L);
+      expect([1, 2, 3, 6, 7, 8, 9, 10, 11, 12]).toContain(sign);
+    }
+  });
+  it("upper bounds are inclusive, per the reference (PyJHora convention)", () => {
+    expect(trimsamsa(5).sign).toBe(1); // exactly 5° in an odd sign → still Aries
+    expect(trimsamsa(30 + 12).sign).toBe(6); // exactly 12° in an even sign → still Virgo
   });
 });
 

@@ -19,12 +19,14 @@ import { aspects } from "./aspects";
 import { combustion } from "./combustion";
 import { conjunctions } from "./conjunctions";
 import { retrogression } from "./retrogression";
+import { rahuKetu } from "./rahuKetu";
 import { maitri } from "./maitri";
 import { avasthas } from "./avasthas";
 import { shadbala } from "./shadbala";
 import { karakas } from "./karakas";
 import { dashas } from "./dashas";
 import { yogas } from "./yogas";
+import { planetaryGroupings } from "./planetaryGroupings";
 
 export const DECKS: Deck[] = [
   // available
@@ -39,10 +41,14 @@ export const DECKS: Deck[] = [
   combustion,
   conjunctions,
   retrogression,
+  rahuKetu,
   maitri,
   avasthas,
   shadbala,
   yogas,
   karakas,
   dashas,
+  // hidden — never on the landing grid (deck.hidden); resolvable via
+  // flashcardLink for the /chart page later
+  planetaryGroupings,
 ];

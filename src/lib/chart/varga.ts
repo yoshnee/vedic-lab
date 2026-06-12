@@ -1,32 +1,65 @@
 /* ============================================================
    varga.ts — build a divisional chart's render datasets from the live
-   ChartData. Pure presentation over core/divisional.ts: the D9 frame is the
-   navamsa of the natal ascendant, houses are whole-sign from it, dignity is
-   read on the varga sign, retro carries over from the natal chart.
+   ChartData. Pure presentation over core/divisional.ts: a varga's frame is
+   that varga of the natal ascendant, houses are whole-sign from it, dignity
+   is read on the varga sign, retro carries over from the natal chart.
+
+   VARGAS is the registry both chart-type dropdowns read: D2 (Hora),
+   D7 (Saptamsa), D9 (Navamsa), D10 (Dasamsa), D30 (Trimsamsa) — every
+   mapping a verbatim port of the Hora-Prakash reference in core/divisional.ts.
 
    Two consumers:
-   - buildD9 → the diamond (frame + minimal ChartBody[]).
+   - buildVargaChart → the diamond (frame + minimal ChartBody[]).
    - buildVargaPanels → full PlanetData[] for the planet detail panels when
-     Chart 1 is toggled to a varga. Owner-directed "D9 == D1": the varga is
-     read as a full chart in its own right, so everything chart-derivable is
-     RECOMPUTED from the varga placements with the same validated functions —
-     sign/house/dignity/aspects/conjunctions/rulerships, panchadha maitri to
-     the varga dispositor, combustion from the varga pseudo-longitudes
-     ((sign−1)·30 + expanded degree), and avasthas (per Ryan Kurczak: Baladi
-     from the expanded degree + varga sign parity, Jagradadi from varga
-     dignity + natural relation to the varga sign's lord). The ASCENDANT-LORD identity is D1-only (pill suppressed
-     here; ChartView also hides the ChartRuler card in varga mode). Still
-     hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta,
-     tithi), rasi-only systems (shadbala, sade sati), and yogas (detection is
-     natal-D1-only for now; core/yoga.ts is pure over dignity + house, so
-     feeding it the varga frame later is one line) — no invented values.
+     Chart 1 is toggled to a varga (Chart 1 is the panel context; Chart 2 is
+     an independent secondary view and never drives the grid). Owner-directed
+     "varga == D1": the varga is read as a full chart in its own right, so
+     everything chart-derivable is RECOMPUTED from the varga placements with
+     the same validated functions — sign/house/dignity/aspects/conjunctions/
+     rulerships, panchadha maitri to the varga dispositor, and — all from the
+     VARGA LONGITUDES ((sign−1)·30 + expanded degree, the planet's position
+     within this frame; owner-directed) — combustion, gandanta, tithi (Moon),
+     and the full yoga detector set (core/yoga.ts fed the varga frame; NB the
+     degree-gated reads — Budhaditya's 6–14° window, Grahana's intensity
+     tiers — measure varga-longitude arcs, which expand real separations by
+     the divisor). Avasthas per Ryan Kurczak: Baladi from the expanded degree
+     + varga sign parity, Jagradadi from varga dignity + natural relation to
+     the varga sign's lord. Still hidden, deliberately: nakshatra/pada (a
+     real-sky coordinate, not re-read from varga longitudes) and the
+     rasi-only systems (shadbala, sade sati).
    ============================================================ */
-import { navamsa, type VargaPoint } from "@/core/divisional";
+import { hora, saptamsa, navamsa, dasamsa, trimsamsa, type VargaPoint } from "@/core/divisional";
 import * as v from "@/core/vedic";
 import { computeAvasthas } from "@/core/avastha";
+import { computeYogas } from "@/core/yoga";
 import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA, COMBUSTION_ORB } from "@/core/constants";
 import type { ChartData, PlanetData, PlanetKey } from "@/core/types";
 import type { ChartBody, ChartFrame } from "@/components/chart/NorthIndianChart";
+
+export type VargaKey = "d2" | "d7" | "d9" | "d10" | "d30";
+
+export interface VargaDef {
+  /** Dropdown label (Sanskrit name + Dn). */
+  label: string;
+  /** Short context label for the panel grid, e.g. "Navāṁśa · D9". */
+  short: string;
+  map: (lon: number) => VargaPoint;
+}
+
+/** The shipped varga set, in dropdown order. */
+export const VARGAS: Record<VargaKey, VargaDef> = {
+  d2: { label: "Horā (D2)", short: "Horā · D2", map: hora },
+  d7: { label: "Saptāṁśa (D7)", short: "Saptāṁśa · D7", map: saptamsa },
+  d9: { label: "Navāṁśa (D9)", short: "Navāṁśa · D9", map: navamsa },
+  d10: { label: "Daśāṁśa (D10)", short: "Daśāṁśa · D10", map: dasamsa },
+  d30: { label: "Triṁśāṁśa (D30)", short: "Triṁśāṁśa · D30", map: trimsamsa },
+};
+
+export const VARGA_KEYS = Object.keys(VARGAS) as VargaKey[];
+
+export function isVargaKey(s: string): s is VargaKey {
+  return s in VARGAS;
+}
 
 export interface VargaPanelSet {
   ascendant: { sign: number; signName: string; degree: string };
@@ -34,8 +67,8 @@ export interface VargaPanelSet {
   planets: PlanetData[];
 }
 
-/** Full panel dataset for a varga chart (generic over the mapping fn, so D10
-    etc. reuse it later). See the header note for what is and isn't computed. */
+/** Full panel dataset for a varga chart (generic over the mapping fn).
+    See the header note for what is and isn't computed. */
 export function buildVargaPanels(
   chart: ChartData,
   varga: (lon: number) => VargaPoint = navamsa,
@@ -56,6 +89,11 @@ export function buildVargaPanels(
     const dignity = v.dignityOf(p.key, d.sign);
     const maitri = v.maitriToDispositor(p.key, signs);
     const combOn = v.isCombust(p.key, pseudoLon[p.key], pseudoLon.sun);
+    // varga-longitude reads (owner-directed): the varga longitude IS the
+    // planet's position within this frame, so gandanta, tithi, and the yoga
+    // detectors all run on it — same validated functions as the rasi chart
+    const gand = v.gandantaOf(pseudoLon[p.key]);
+    const tithi = p.key === "moon" ? v.tithiOf(pseudoLon.moon, pseudoLon.sun) : null;
     return {
       ...p,
       sign: d.sign,
@@ -65,7 +103,7 @@ export function buildVargaPanels(
       degreeValue: d.degree,
       house: v.houseOf(d.sign, asc.sign),
       dignity,
-      // chart-level recomputes within the varga ("D9 == D1")
+      // chart-level recomputes within the varga ("varga == D1")
       lagnaLord: false, // the Ascendant-Lord identity is D1-only (owner-directed)
       rules: v.rulesOf(p.key, asc.sign),
       aspectedBy: v.aspectsOnto(d.sign, signs),
@@ -88,16 +126,21 @@ export function buildVargaPanels(
             inMooltrikona: MOOLTRIKONA[p.key] === d.sign,
             naturalToLord: v.naturalToDispositor(p.key, signs),
           }),
-      // real-longitude / rasi-only concepts — emptied so the panels hide them
-      gandanta: false,
-      gandantaDeep: false,
-      gandantaDistance: 0, // natal value would contradict gandanta:false
+      gandanta: gand.on,
+      gandantaDeep: gand.deep,
+      gandantaDistance: gand.distance,
+      tithiNumber: tithi?.number,
+      waxing: tithi?.waxing,
+      illumination: tithi?.illumination,
+      yogas: computeYogas(p.key, {
+        dignity,
+        house: v.houseOf(d.sign, asc.sign),
+        signs,
+        longitudes: pseudoLon,
+        lagnaSign: asc.sign,
+      }),
+      // rasi-only systems — still emptied so the panels hide them
       shadbala: null,
-      tithiNumber: undefined,
-      waxing: undefined,
-      illumination: undefined,
-      yogas: [], // detection is natal-D1-only for now (panel hides the row in varga mode)
-      karaka: null, // chara karakas are a natal-D1 designation, never per chart type
       extraRows: [],
     };
   });
@@ -109,11 +152,16 @@ export function buildVargaPanels(
   };
 }
 
-export function buildD9(chart: ChartData): { frame: ChartFrame; planets: ChartBody[] } {
-  const asc = navamsa(chart.ascendant.longitude);
+/** Minimal render dataset (frame + ChartBody[]) for any varga — what the
+    diamond needs and nothing more. */
+export function buildVargaChart(
+  chart: ChartData,
+  varga: (lon: number) => VargaPoint = navamsa,
+): { frame: ChartFrame; planets: ChartBody[] } {
+  const asc = varga(chart.ascendant.longitude);
   const frame: ChartFrame = { ascSign: asc.sign, ascDegree: v.formatDMS(asc.degree) };
   const planets: ChartBody[] = chart.planets.map((p) => {
-    const d = navamsa(p.longitude);
+    const d = varga(p.longitude);
     return {
       key: p.key,
       name: p.name,

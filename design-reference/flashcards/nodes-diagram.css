@@ -1,0 +1,61 @@
+/* ============================================================
+   nodes-diagram.css — styles for <NodesDiagram/> ("How Rahu &
+   Ketu Form"). Pairs with shared styles.css tokens.
+   ============================================================ */
+.rk-wrap{display:flex; flex-direction:column; border:1px solid var(--border); border-radius:22px; overflow:hidden;
+  background:linear-gradient(180deg,var(--surface),var(--bg-2));
+  box-shadow:0 24px 50px -26px #000, inset 0 1px 0 rgba(255,255,255,.04); position:relative;}
+.rk-wrap::before{content:""; position:absolute; inset:0 0 auto 0; height:3px;
+  background:linear-gradient(90deg, transparent, color-mix(in srgb,var(--accent) 85%, transparent), transparent); opacity:.7;}
+.rk-svg{display:block; width:100%; height:auto;}
+
+/* SVG text */
+.rk-lab{font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.08em; fill:var(--text-3);}
+.rk-lab--sun{fill:color-mix(in srgb,var(--accent) 75%, var(--text-3));}
+.rk-nlab{font-family:var(--font-display),sans-serif; font-weight:600; font-size:14.5px; fill:var(--text);}
+.rk-nsub{font-family:var(--font-mono),monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; fill:var(--text-3);}
+
+@keyframes rkPulse{0%{transform:scale(.55); opacity:.95;} 100%{transform:scale(1.9); opacity:0;}}
+.rk-pulse{transform-box:fill-box; transform-origin:center; animation:rkPulse 1.5s ease-out infinite;}
+
+/* status strip */
+.rk-status{display:flex; align-items:center; gap:11px; padding:13px 20px; border-top:1px solid var(--border-soft);}
+.rk-dot{flex:none; width:9px; height:9px; border-radius:50%; transition:background .3s;}
+.rk-status[data-state="season"] .rk-dot, .rk-status[data-state="eclipse"] .rk-dot{box-shadow:0 0 12px currentColor;}
+.rk-pill{font-size:13.5px; line-height:1.4; color:var(--text-2); transition:color .3s;}
+.rk-status[data-state="eclipse"] .rk-pill, .rk-status[data-state="season"] .rk-pill{color:var(--text);}
+.rk-gap{margin-left:auto; flex:none; font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.06em; color:var(--text-3);}
+
+/* controls */
+.rk-controls{display:flex; align-items:center; flex-wrap:wrap; gap:14px; padding:13px 20px 17px; border-top:1px solid var(--border-soft);}
+.rk-play{flex:none; width:42px; height:42px; border-radius:50%; border:1px solid var(--border); background:var(--surface);
+  color:var(--accent); font-size:13px; line-height:1; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center;}
+.rk-play:hover{border-color:var(--accent); background:var(--surface-2);}
+.rk-play:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.rk-range{appearance:none; -webkit-appearance:none; flex:1; min-width:150px; height:4px; border-radius:4px;
+  background:var(--surface-2); outline:none; cursor:pointer;}
+.rk-range::-webkit-slider-thumb{appearance:none; -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+  background:var(--accent); border:2px solid #15110a; box-shadow:0 2px 8px rgba(0,0,0,.5);}
+.rk-range::-moz-range-thumb{width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid #15110a;}
+.rk-range:focus-visible{outline:2px solid var(--accent); outline-offset:4px;}
+.rk-day{flex:none; font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.05em; color:var(--text-3); min-width:15ch;}
+.rk-toggle{flex:none; display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  font-family:var(--font-mono),monospace; font-size:10.5px; letter-spacing:.06em; color:var(--text-3); user-select:none;}
+.rk-toggle input{position:absolute; opacity:0; width:1px; height:1px;}
+.rk-toggle i{flex:none; width:30px; height:16px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); position:relative; transition:.2s;}
+.rk-toggle i::after{content:""; position:absolute; top:2px; left:2px; width:10px; height:10px; border-radius:50%; background:var(--text-3); transition:.2s;}
+.rk-toggle input:checked + i{background:color-mix(in srgb,var(--accent) 30%, var(--surface-2)); border-color:var(--accent);}
+.rk-toggle input:checked + i::after{left:16px; background:var(--accent);}
+.rk-toggle input:focus-visible + i{outline:2px solid var(--accent); outline-offset:2px;}
+.rk-toggle:hover{color:var(--text-2);}
+.rk-reset{flex:none; font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.06em; padding:8px 14px;
+  border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--text-3); cursor:pointer; transition:.2s;}
+.rk-reset:hover{color:var(--accent); border-color:var(--accent);}
+.rk-reset:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+@media (max-width:560px){
+  .rk-day{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .rk-pulse{animation:none; opacity:.5;}
+}

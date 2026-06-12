@@ -96,7 +96,9 @@ export function HomeApp() {
       <main className="home">
         <AnalyzerHero onOpen={onOpenAnalyzer} />
         <div id="flashcards">
-          <DeckGrid decks={DECKS} onOpen={onOpenDeck} />
+          {/* hidden decks stay registered (chart-page flashcard links) but
+              never tile on the landing grid */}
+          <DeckGrid decks={DECKS.filter((d) => !d.hidden)} onOpen={onOpenDeck} />
         </div>
       </main>
       {openDeck && <DeckModal deck={openDeck} onClose={onCloseDeck} />}

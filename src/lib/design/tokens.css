@@ -58,7 +58,6 @@
 
   /* chart feature accents */
   --select: #8fd6c4; /* teal — the user's daśā selection (vs the gold running chain) + lagna pill */
-  --karaka: #c9a2e0; /* the chara-karaka pill violet (Venus-palette base) */
 
   /* modal chrome */
   --scrim: rgba(4, 10, 7, 0.8);

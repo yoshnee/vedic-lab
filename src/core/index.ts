@@ -18,7 +18,6 @@ import { computeDasha } from "./dasha";
 import { computeAvasthas } from "./avastha";
 import { computeShadbala } from "./shadbala";
 import { computeYogas } from "./yoga";
-import { charaKarakas } from "./karaka";
 
 export type { ChartData, PlanetData, PlanetKey, BirthInput, PlacedBody, TransitSet } from "./types";
 
@@ -213,9 +212,6 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
     raw.ascendant,
   );
 
-  // Jaimini chara karakas — ranked ONCE from the natal longitudes (D1-only property)
-  const karakas = charaKarakas(raw.longitudes);
-
   const planets: PlanetData[] = PLANET_ORDER.map((key) => {
     const lon = raw.longitudes[key];
     const sign = signs[key];
@@ -281,7 +277,6 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       aspectedBy: v.aspectsOnto(sign, signs),
       conjunct: v.conjunctIn(key, sign, signs),
       yogas: computeYogas(key, { dignity, house, signs, longitudes: raw.longitudes, lagnaSign }), // natal D1 frame
-      karaka: karakas[key] ?? null,
       extraRows: key === "saturn" ? saturnExtra : [],
     };
   });
