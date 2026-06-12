@@ -11,14 +11,15 @@
      read as a full chart in its own right, so everything chart-derivable is
      RECOMPUTED from the varga placements with the same validated functions —
      sign/house/dignity/aspects/conjunctions/rulerships, panchadha maitri to
-     the varga dispositor, functional nature from the varga lagna, combustion
-     from the varga pseudo-longitudes ((sign−1)·30 + expanded degree), and
-     avasthas (per Ryan Kurczak: Baladi from the expanded degree + varga sign
-     parity, Jagradadi from varga dignity + natural relation to the varga
-     sign's lord). The ASCENDANT-LORD identity is D1-only (pill suppressed
+     the varga dispositor, combustion from the varga pseudo-longitudes
+     ((sign−1)·30 + expanded degree), and avasthas (per Ryan Kurczak: Baladi
+     from the expanded degree + varga sign parity, Jagradadi from varga
+     dignity + natural relation to the varga sign's lord). The ASCENDANT-LORD identity is D1-only (pill suppressed
      here; ChartView also hides the ChartRuler card in varga mode). Still
      hidden, deliberately: real-longitude concepts (nakshatra/pada, gandanta,
-     tithi) and rasi-only systems (shadbala, sade sati) — no invented values.
+     tithi), rasi-only systems (shadbala, sade sati), and yogas (detection is
+     natal-D1-only for now; core/yoga.ts is pure over dignity + house, so
+     feeding it the varga frame later is one line) — no invented values.
    ============================================================ */
 import { navamsa, type VargaPoint } from "@/core/divisional";
 import * as v from "@/core/vedic";
@@ -71,7 +72,6 @@ export function buildVargaPanels(
       conjunct: v.conjunctIn(p.key, d.sign, signs),
       dispositor: maitri.dispositor,
       maitriToDispositor: maitri.relation,
-      functionalNature: v.functionalNatureOf(p.key, asc.sign),
       combust: combOn
         ? {
             on: true as const,
@@ -95,7 +95,8 @@ export function buildVargaPanels(
       tithiNumber: undefined,
       waxing: undefined,
       illumination: undefined,
-      yogas: [],
+      yogas: [], // detection is natal-D1-only for now (panel hides the row in varga mode)
+      karaka: null, // chara karakas are a natal-D1 designation, never per chart type
       extraRows: [],
     };
   });

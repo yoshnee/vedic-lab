@@ -8,29 +8,41 @@
    - "pada"      → Nakshatra Padas concept deck → the "The Four Padas & the
                    Purusharthas" card, with the tapped pada's row highlighted
    - "gandanta"  → Gandanta concept deck → the "What Gandanta Is" card (no id)
-   - "maitri"    → Planetary Conditions deck → the Panchadha (compound) card
+   - "maitri"    → the WHOLE Planetary Conditions deck, browsable from card 1
+                   (owner-directed: a maitri pill opens all 4 cards, not one)
    - "avastha"   → Planetary States deck → the tapped system's card
                    (id "baladi" | "jagradadi" | "lajjitadi")
+   - "yoga"      → Yogas deck → the tapped yoga family's card
+                   (id "pancha-mahapurusha" | "gaja-kesari"; the panel yoga pills)
+   - "karaka"    → Karakas deck → that designation's card
+                   (id "atmakaraka" | "amatyakaraka" | "darakaraka"; the karaka pills)
+   - "deck"      → ANY whole deck, browsable from its first card
+                   (id = deck id, e.g. "houses"; the reading-notes step links)
    Returns the deck, the card index, and the resolved card for the popover.
    ============================================================ */
 import { DECKS } from "@/data/decks/registry";
 import type { Deck, Card } from "@/data/decks/types";
 
-export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet" | "element" | "shadbala";
+export type FlashcardType = "house" | "nakshatra" | "sign" | "ascendant" | "pada" | "gandanta" | "maitri" | "avastha" | "planet" | "element" | "shadbala" | "yoga" | "karaka" | "deck";
 
 export interface FlashcardTarget {
   deck: Deck;
   index: number;
   card: Card;
-  /** Optional fact-row label to emphasize on the card front (e.g. the tapped "Pada 2"). */
+  /** Optional emphasis target: a front fact-row label (exact match, e.g. "Pada 2")
+      or the prefix of a back point (e.g. "Major 3-4"). */
   highlightFact?: string;
+  /** Open the popover already flipped — for targets whose highlight lives on the back. */
+  flip?: boolean;
+  /** When set, the popover lets the user browse the whole deck (prev/next + ←/→)
+      starting at `index`, instead of pinning a single card. */
+  browse?: boolean;
 }
 
 /** Concept cards opened by a flag link, resolved by title (case-insensitive) so deck
     order can change freely. Must match the card titles in the respective deck files. */
 const PADA_CONCEPT_CARD = "The Four Padas & the Purusharthas";
 const GANDANTA_CONCEPT_CARD = "What Gandanta Is";
-const MAITRI_PANCHADHA_CARD = "Panchadha (Compound) Maitri — Combining the Two";
 /** Avastha system key → its card title in the "Planetary States" (avasthas) deck. */
 const AVASTHA_CARDS: Record<string, string> = {
   baladi: "The Five Ages",
@@ -76,8 +88,10 @@ export function resolveFlashcard(
     return byTitle(DECKS.find((d) => d.id === "gandanta"), GANDANTA_CONCEPT_CARD);
   }
   if (type === "maitri") {
-    // the dispositor badge opens the compound (panchadha) card (id reserved for future cards)
-    return byTitle(DECKS.find((d) => d.id === "maitri"), MAITRI_PANCHADHA_CARD);
+    // a maitri pill opens the whole Planetary Conditions deck, browsable from
+    // the first card (owner-directed — the concept needs all 4 cards, not one)
+    const deck = DECKS.find((d) => d.id === "maitri");
+    return deck ? { deck, index: 0, card: deck.cards[0], browse: true } : null;
   }
   if (type === "avastha") {
     // a panel avastha row opens that system's card; fall back to the overview card
@@ -96,6 +110,50 @@ export function resolveFlashcard(
     const deck = DECKS.find((d) => d.id === "shadbala");
     if (!deck) return null;
     const title = SHADBALA_CARDS[String(id)];
+    return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };
+  }
+  if (type === "yoga") {
+    // a planet-panel yoga pill opens its yoga family's card; fall back to the
+    // deck's first card (all five Mahapurusha yogas share one card)
+    const YOGA_CARDS: Record<string, string> = {
+      "pancha-mahapurusha": "Pancha Mahapurusha Yoga",
+      "gaja-kesari": "Gaja Kesari Yoga",
+      budhaditya: "Budhaditya Yoga",
+      "venus-mercury": "Venus & Mercury Conjunction",
+      "dhana-2-11": "Dhana Yoga (2nd & 11th Lords)",
+    };
+    const deck = DECKS.find((d) => d.id === "yogas");
+    if (!deck) return null;
+    // "neecha-bhanga-c<N>" → the Neecha Bhanga card, opened FLIPPED with that
+    // condition's back point highlighted (the conditions live on the scrollable
+    // back, grouped "Major 1-2" … "Minor 6-7")
+    const nb = /^neecha-bhanga-c([1-7])$/.exec(String(id));
+    if (nb) {
+      const n = Number(nb[1]);
+      const fact = n <= 2 ? "Major 1-2" : n <= 4 ? "Major 3-4" : n === 5 ? "Major 5" : "Minor 6-7";
+      const target = byTitle(deck, "Neecha Bhanga Raja Yoga");
+      return target ? { ...target, highlightFact: fact, flip: true } : null;
+    }
+    const title = YOGA_CARDS[String(id)];
+    return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };
+  }
+  if (type === "deck") {
+    // a whole deck, browsable from card 1 (e.g. the reading-notes step links)
+    const deck = DECKS.find((d) => d.id === String(id));
+    return deck && deck.cards.length
+      ? { deck, index: 0, card: deck.cards[0], browse: true }
+      : null;
+  }
+  if (type === "karaka") {
+    // a karaka pill opens its designation's card; fall back to the overview card
+    const KARAKA_CARDS: Record<string, string> = {
+      atmakaraka: "Atmakaraka",
+      amatyakaraka: "Amatyakaraka",
+      darakaraka: "Darakaraka",
+    };
+    const deck = DECKS.find((d) => d.id === "karakas");
+    if (!deck) return null;
+    const title = KARAKA_CARDS[String(id)];
     return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };
   }
   if (type === "element") {
