@@ -446,7 +446,9 @@ export function PlanetPanel({
                                 ? `${y.tier === "major" ? "Major" : "Minor"} condition ${y.condition} — tap for the rule`
                                 : y.mode
                                   ? `Formed by ${y.mode === "mutual-aspect" ? "mutual aspect" : y.mode === "exchange" ? "exchange (parivartana)" : "conjunction"} — tap for the rule`
-                                  : undefined
+                                  : y.intensity
+                                    ? `${y.intensity === "purna" ? "Purna (within 5°), the strongest" : y.intensity === "strong" ? "Strong (within 10°)" : "Mild (same sign)"} — tap for the card`
+                                    : undefined
                             }
                             onClick={(e) => { e.stopPropagation(); onOpenCard(y.flashcard.type, y.flashcard.id); }}
                           >

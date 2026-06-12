@@ -3,7 +3,8 @@
    Gaja Kesari (Moon frame), Budhaditya (degree separation), Neecha Bhanga
    (per-condition pills on a debilitated planet; Lagna OR Moon Kendras),
    Venus & Mercury Conjunction (house-gated whole-sign conjunction),
-   Dhana 2/11 (house-lord relationship: conjunction / mutual aspect / exchange).
+   Dhana 2/11 (house-lord relationship: conjunction / mutual aspect / exchange),
+   Grahana (luminary + node sharing a sign; orb grades intensity, never gates).
 
    Every detector is a PURE function of already-computed placement facts
    (dignity / whole-sign house / sign / longitude, in some reference frame) —
@@ -89,6 +90,32 @@ export function venusMercuryConjunction(
     name: "Venus & Mercury Conjunction",
     flashcard: { type: "yoga", id: "venus-mercury" },
   };
+}
+
+/** Grahana / Grahan Dosha (the Yogas deck's Grahana cards): a luminary (Sun
+    or Moon) afflicted by a node (Rahu or Ketu) in the SAME SIGN — the four
+    base pairs. Formation is sign-based; the longitudinal separation only
+    grades INTENSITY per the card's tiers: ≤5° Purna (complete, strongest),
+    ≤10° Strong, beyond that (same sign) Mild. The card's eight combinations
+    fall out of per-pair detection — a new moon with Rahu is simply Sun–Rahu
+    AND Moon–Rahu both firing (the node then carries two pills). Both
+    participants carry the entry — the nodes' first yoga pills (they're
+    excluded from Mahapurusha/Neecha Bhanga, but Grahana is THEIRS).
+    Future, deliberately not v1: the card's eclipse layer (Sun within ~18° /
+    Moon within ~12° of a node, degree-based across signs) as a separate,
+    stronger flag. */
+export function grahana(
+  luminary: "sun" | "moon",
+  node: "rahu" | "ketu",
+  signs: Record<PlanetKey, number>,
+  longitudes: Record<PlanetKey, number>,
+): YogaRef | null {
+  if (signs[luminary] !== signs[node]) return null;
+  let separation = Math.abs(longitudes[luminary] - longitudes[node]);
+  if (separation > 180) separation = 360 - separation; // defensive; same-sign pairs are always ≤30° apart
+  const intensity = separation <= 5 ? "purna" : separation <= 10 ? "strong" : "mild";
+  const key = `grahana-${luminary}-${node}`;
+  return { key, name: "Grahana", flashcard: { type: "yoga", id: key }, intensity };
 }
 
 /** Whole-sign sign occupying `house` counted from `lagnaSign`. */
@@ -261,6 +288,19 @@ export function computeYogas(planet: PlanetKey, inp: YogaInputs): YogaRef[] {
   }
   const dhana = dhana2and11(planet, inp.signs, inp.lagnaSign); // self-selects: only the 2nd/11th lords
   if (dhana) out.push(dhana);
+  if (planet === "sun" || planet === "moon") {
+    for (const node of ["rahu", "ketu"] as const) {
+      const g = grahana(planet, node, inp.signs, inp.longitudes);
+      if (g) out.push(g);
+    }
+  }
+  if (planet === "rahu" || planet === "ketu") {
+    // a node can eclipse BOTH luminaries at once (the card's new-moon triples)
+    for (const lum of ["sun", "moon"] as const) {
+      const g = grahana(lum, planet, inp.signs, inp.longitudes);
+      if (g) out.push(g);
+    }
+  }
   out.push(...neechaBhanga(planet, inp.dignity, inp.signs, inp.lagnaSign));
   return out;
 }

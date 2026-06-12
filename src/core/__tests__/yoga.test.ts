@@ -6,8 +6,8 @@
    module). */
 import { describe, it, expect } from "vitest";
 import {
-  panchaMahapurusha, gajaKesari, budhaditya, venusMercuryConjunction, dhana2and11, neechaBhanga,
-  computeYogas, MAHAPURUSHA,
+  panchaMahapurusha, gajaKesari, budhaditya, venusMercuryConjunction, dhana2and11, grahana,
+  neechaBhanga, computeYogas, MAHAPURUSHA,
 } from "../yoga";
 import { dignityOf } from "../vedic";
 import { EXALTATION, OWN_SIGNS, PLANET_ORDER } from "../constants";
@@ -213,6 +213,34 @@ describe("dhana2and11", () => {
   });
 });
 
+describe("grahana", () => {
+  it("forms on a shared sign with intensity graded by orb — never gated by it", () => {
+    // Leo (sign 5, 120°–150°)
+    const at = (lum: number, node: number) =>
+      grahana("sun", "rahu", signsWith({ sun: 5, rahu: 5 }), lonsWith({ sun: lum, rahu: node }));
+    expect(at(125, 130)?.intensity).toBe("purna"); // exactly 5°: within five
+    expect(at(125, 130.5)?.intensity).toBe("strong"); // 5.5°
+    expect(at(125, 135)?.intensity).toBe("strong"); // exactly 10°
+    expect(at(121, 149)?.intensity).toBe("mild"); // 28° apart, still the same sign — still forms
+    expect(at(125, 127)).toMatchObject({
+      key: "grahana-sun-rahu",
+      name: "Grahana",
+      flashcard: { type: "yoga", id: "grahana-sun-rahu" },
+    });
+  });
+
+  it("is sign-based — a tight orb across a sign boundary is NOT the yoga", () => {
+    // Sun 29° Leo, Ketu 1° Virgo: 2° apart, different signs
+    expect(grahana("sun", "ketu", signsWith({ sun: 5, ketu: 6 }), lonsWith({ sun: 149, ketu: 151 }))).toBeNull();
+  });
+
+  it("covers all four luminary–node pairs", () => {
+    const signs = signsWith({ moon: 9, ketu: 9 });
+    const lons = lonsWith({ moon: 245, ketu: 252 });
+    expect(grahana("moon", "ketu", signs, lons)?.key).toBe("grahana-moon-ketu");
+  });
+});
+
 describe("neechaBhanga", () => {
   const conditions = (yogas: ReturnType<typeof neechaBhanga>) => yogas.map((y) => y.condition);
 
@@ -291,8 +319,9 @@ describe("computeYogas", () => {
   });
 
   it("Gaja Kesari lands on BOTH participants, and only on them", () => {
-    // Jupiter 4th from the Moon; Saturn parked away from Mars (the 2/11 lords for a Pisces lagna)
-    const signs = signsWith({ jupiter: 1, moon: 10, saturn: 5 });
+    // Jupiter 4th from the Moon; Saturn parked away from Mars (the 2/11 lords for a
+    // Pisces lagna); the nodes parked off the luminaries so no Grahana noise
+    const signs = signsWith({ jupiter: 1, moon: 10, saturn: 5, rahu: 6, ketu: 12 });
     const neutral = { dignity: "neutral" as const, house: 2, signs, longitudes: quiet, lagnaSign: 12 };
     expect(computeYogas("jupiter", neutral).map((y) => y.key)).toEqual(["gaja-kesari"]);
     expect(computeYogas("moon", neutral).map((y) => y.key)).toEqual(["gaja-kesari"]);
@@ -329,7 +358,8 @@ describe("computeYogas", () => {
   it("Venus & Mercury Conjunction lands on BOTH participants, and stacks with Budhaditya", () => {
     // Venus, Mercury, and the Sun all in Taurus, the 2nd from an Aries lagna;
     // Sun 8° from Mercury → Mercury carries Budhaditya + the Dhana conjunction
-    const signs = signsWith({ venus: 2, mercury: 2, sun: 2, jupiter: 3 }); // Jupiter 3rd from the Moon: no Gaja Kesari noise
+    // Jupiter 3rd from the Moon (no Gaja Kesari noise); nodes off the luminaries (no Grahana noise)
+    const signs = signsWith({ venus: 2, mercury: 2, sun: 2, jupiter: 3, rahu: 5, ketu: 11 });
     const longitudes = lonsWith({ sun: 35, mercury: 43, venus: 50 });
     const inp = { dignity: "neutral" as const, house: 2, signs, longitudes, lagnaSign: 1 };
     expect(computeYogas("venus", inp).map((y) => y.key)).toEqual(["venus-mercury"]);
@@ -344,6 +374,17 @@ describe("computeYogas", () => {
     expect(computeYogas("venus", inp).map((y) => y.key)).toEqual(["dhana-2-11"]);
     expect(computeYogas("saturn", inp).map((y) => y.key)).toEqual(["dhana-2-11"]);
     expect(computeYogas("mars", inp)).toEqual([]);
+  });
+
+  it("Grahana lands on BOTH participants — and a new-moon triple gives the node two pills", () => {
+    // Sun, Moon, and Rahu all in Cancer (the card's combination 5); Ketu opposite in Capricorn
+    const signs = signsWith({ sun: 4, moon: 4, rahu: 4, ketu: 10, jupiter: 10 });
+    const longitudes = lonsWith({ sun: 95, moon: 99, rahu: 102, ketu: 282 });
+    const inp = { dignity: "neutral" as const, house: 2, signs, longitudes, lagnaSign: 3 };
+    expect(computeYogas("sun", inp).map((y) => y.key)).toEqual(["grahana-sun-rahu"]);
+    expect(computeYogas("moon", inp).map((y) => y.key)).toEqual(["gaja-kesari", "grahana-moon-rahu"]); // Jupiter 7th from the Moon
+    expect(computeYogas("rahu", inp).map((y) => y.key)).toEqual(["grahana-sun-rahu", "grahana-moon-rahu"]);
+    expect(computeYogas("ketu", inp)).toEqual([]); // the opposite node shares no luminary's sign
   });
 
   it("Neecha Bhanga rides alongside other yogas — debilitated Moon with Jupiter in a Moon-Kendra", () => {

@@ -131,7 +131,7 @@ src/
     divisional.ts         varga mapping (D9 chart-ready; D2/D3/D7/D12/D16 for shadbala's saptavargaja)
     shadbala.ts           six-fold strength (reference's simplified scheme; see engine bullet)
     dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
-    yoga.ts               yoga detection (Pancha Mahapurusha · Gaja Kesari · Budhaditya · Neecha Bhanga · Venus-Mercury · Dhana 2/11); pure over frame placements
+    yoga.ts               yoga detection (Pancha Mahapurusha · Gaja Kesari · Budhaditya · Neecha Bhanga · Venus-Mercury · Dhana 2/11 · Grahana); pure over frame placements
     karaka.ts             Jaimini chara karakas (Atma/Amatya/Darakaraka by degree-in-sign rank; natal D1 only)
     avastha.ts            Baladi (degree) + Jagradadi (dignity + natural maitri) "states"; no invented strength
     constants.ts          dignity tables, nakshatras, drishti, combustion orbs, dasha years
@@ -398,8 +398,8 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
 
 **Not yet wired:** reading `sessionStorage['vedic:birthDetails']` into a client-side `computeChart`
 on `/chart` (the popup persists the data; the live in-browser compute + navigation is the remaining
-seam). Out of scope: yoga detection beyond the six live detectors (Pancha Mahapurusha,
-Gaja Kesari, Budhaditya, Neecha Bhanga, Venus & Mercury Conjunction, Dhana 2/11),
+seam). Out of scope: yoga detection beyond the seven live detectors (Pancha Mahapurusha,
+Gaja Kesari, Budhaditya, Neecha Bhanga, Venus & Mercury Conjunction, Dhana 2/11, Grahana),
 divisional charts beyond D1.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)
@@ -616,7 +616,7 @@ Build in this order; everything from step 2 down reads from the engine.
 8. **Responsive + accessibility pass, then deploy** (COOP/COEP headers).
 
 ### Out of scope (for now)
-- **Automated yoga detection beyond the six live detectors** — `src/core/yoga.ts`, each
+- **Automated yoga detection beyond the seven live detectors** — `src/core/yoga.ts`, each
   pure over frame placements so transit/varga frames can feed them later (varga panels
   deliberately pass `yogas: []` and hide the row):
   **Pancha Mahapurusha** (a non-luminary own/exalted in a LAGNA Kendra → Ruchaka/Bhadra/
@@ -651,11 +651,16 @@ Build in this order; everything from step 2 down reads from the engine.
   house) / MUTUAL graha drishti (both directions) / exchange — one pill on BOTH lords,
   first matching mode stored as `YogaRef.mode` and shown in the pill tooltip, pill label
   "Dhana Yoga", id "dhana-2-11"; dual-lord lagnas skip it — Leo makes Mercury both lords,
-  Aquarius makes Jupiter both). Each formed yoga lands on `PlanetData.yogas[]` (`YogaRef` = key/name/flashcard + optional
+  Aquarius makes Jupiter both), and **Grahana** (a luminary + a node SHARING A SIGN — the four
+  base pairs; formation is sign-based, the orb only grades `YogaRef.intensity` per the deck card:
+  ≤5° purna · ≤10° strong · else mild (tooltip-surfaced); entry on BOTH participants — the nodes'
+  FIRST yoga pills; a new-moon triple gives the node two pills; each pill opens ITS pair's deck
+  card via id "grahana-<luminary>-<node>"; the card's eclipse layer (~18°/~12° degree-based) is a
+  documented future flag, not v1). Each formed yoga lands on `PlanetData.yogas[]` (`YogaRef` = key/name/flashcard + optional
   condition/tier; `computeYogas(planet, {dignity, house, signs, longitudes, lagnaSign})`)
   and renders as a gold pill on the panel's Yogas row opening its deck card via
   `flashcardLink.ts` type `"yoga"` (ids "pancha-mahapurusha" | "gaja-kesari" |
-  "budhaditya" | "neecha-bhanga-c<n>"). Further detectors (Raja, …) follow the same seam:
+  "budhaditya" | "neecha-bhanga-c<n>" | "grahana-<lum>-<node>"). Further detectors (Raja, …) follow the same seam:
   rule pinned to the owner's Yogas deck card (the Hora-Prakash reference has NO yoga
   module), detector in `yoga.ts`, tests in `__tests__/yoga.test.ts`.
 - **Divisional charts beyond D9** — D9 is live (`core/divisional.ts`); D10/D60/… are disabled

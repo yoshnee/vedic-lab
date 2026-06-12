@@ -89,6 +89,8 @@ export interface YogaRef {
   tier?: "major" | "minor"; // major = C1–C5 (conjunction/Kendra), minor = C6–C7 (aspect)
   /* Lord-relationship yogas (Dhana 2/11) only: which connection mode fired */
   mode?: "conjunction" | "mutual-aspect" | "exchange";
+  /* Grahana only: intensity by orb (the deck card's tiers — ≤5° / ≤10° / same sign) */
+  intensity?: "purna" | "strong" | "mild";
 }
 
 /* ---- chara karaka: the planet's Jaimini designation (core/karaka.ts), a

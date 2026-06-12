@@ -121,6 +121,11 @@ export function resolveFlashcard(
       budhaditya: "Budhaditya Yoga",
       "venus-mercury": "Venus & Mercury Conjunction",
       "dhana-2-11": "Dhana Yoga (2nd & 11th Lords)",
+      // each Grahana pair opens ITS OWN card (the deck also holds the overview)
+      "grahana-sun-rahu": "Grahana: Sun & Rahu",
+      "grahana-sun-ketu": "Grahana: Sun & Ketu",
+      "grahana-moon-rahu": "Grahana: Moon & Rahu",
+      "grahana-moon-ketu": "Grahana: Moon & Ketu",
     };
     const deck = DECKS.find((d) => d.id === "yogas");
     if (!deck) return null;
