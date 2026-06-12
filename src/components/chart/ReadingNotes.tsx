@@ -42,15 +42,24 @@ interface SpeechResultEvent {
   results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }>;
 }
 interface SpeechRecognitionLike {
+  lang: string;
   continuous: boolean;
   interimResults: boolean;
+  /** Chrome 139+: force the on-device recognizer (no cloud round-trip). */
+  processLocally?: boolean;
   onresult: ((e: SpeechResultEvent) => void) | null;
   onend: (() => void) | null;
   onerror: ((e: { error?: string }) => void) | null;
   start(): void;
   stop(): void;
 }
-type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
+/** The on-device statics (Chrome 139+/Edge): availability + language-pack
+    install for local recognition. Optional — older browsers lack them. */
+interface SpeechRecognitionStatics {
+  available?: (o: { langs: string[]; processLocally?: boolean }) => Promise<string>;
+  install?: (o: { langs: string[]; processLocally?: boolean }) => Promise<boolean>;
+}
+type SpeechRecognitionCtor = (new () => SpeechRecognitionLike) & SpeechRecognitionStatics;
 function speechCtor(): SpeechRecognitionCtor | undefined {
   if (typeof window === "undefined") return undefined;
   const w = window as unknown as {
@@ -59,6 +68,13 @@ function speechCtor(): SpeechRecognitionCtor | undefined {
   };
   return w.SpeechRecognition ?? w.webkitSpeechRecognition;
 }
+
+/** English-primary app → English dictation (also what the SODA pack ships). */
+const SPEECH_LANG = "en-US";
+
+/** Brave ships a `navigator.brave` marker — its builds strip the Google API
+    keys the cloud recognizer needs, so `network` errors there are by design. */
+const isBrave = () => typeof navigator !== "undefined" && "brave" in navigator;
 
 /** Auto-grow: keep the textarea exactly as tall as its content. */
 function autoGrow(el: HTMLTextAreaElement | null) {
@@ -87,9 +103,12 @@ export interface ReadingNotesApi {
 const MIC_ERRORS: Record<string, string> = {
   "not-allowed": "microphone access blocked — allow it in the address bar",
   "service-not-allowed": "speech service blocked by the browser",
-  network: "speech service unreachable (it needs a network connection)",
+  network: "the browser could not reach its cloud speech service (try Chrome, which can dictate on-device)",
   "audio-capture": "no microphone found",
+  "language-not-supported": "the on-device speech pack is missing, tap the mic to retry",
 };
+/** Brave can never reach the cloud recognizer (no Google API keys). */
+const BRAVE_NETWORK_ERROR = "Brave blocks the cloud speech service, dictation needs Chrome or Edge";
 
 /** The shared state + dictation engine — call once, render twice. */
 export function useReadingNotes(model: ChartModel): ReadingNotesApi {
@@ -108,7 +127,8 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   const [micError, setMicError] = useState<string | null>(null);
   const micErrTimer = useRef<number | undefined>(undefined);
   const flagMicError = useCallback((code?: string) => {
-    const msg = MIC_ERRORS[code ?? ""] ?? null; // "no-speech"/"aborted" are normal — stay quiet
+    let msg = MIC_ERRORS[code ?? ""] ?? null; // "no-speech"/"aborted" are normal — stay quiet
+    if (code === "network" && isBrave()) msg = BRAVE_NETWORK_ERROR;
     if (!msg) return;
     setMicError(msg);
     window.clearTimeout(micErrTimer.current);
@@ -151,16 +171,21 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
     });
   }, []);
 
-  const toggleRecording = useCallback(() => {
-    if (recRef.current) {
-      recRef.current.stop(); // onend clears the state
-      return;
-    }
-    const Ctor = speechCtor();
-    if (!Ctor || !activeRef.current) return; // no expanded step → nothing to dictate into
+  /** ON-DEVICE FIRST (Chrome 139+): when the local SODA language pack is
+      installed, recognition runs on the machine — no Google cloud round-trip,
+      so no `network` failures (Brave strips the cloud service's API keys; even
+      official Chrome's cloud path has outages). When the pack is merely
+      downloadable, kick its install off in the background (this attempt still
+      uses the cloud) so the NEXT dictation is local. Older browsers skip
+      straight to the cloud path, exactly as before. */
+  const startingRef = useRef(false); // guards the async availability probe
+
+  const startRecognition = useCallback((Ctor: SpeechRecognitionCtor, local: boolean) => {
     const rec = new Ctor();
+    rec.lang = SPEECH_LANG;
     rec.continuous = true;
     rec.interimResults = false; // final results only — keeps the text stable
+    if (local) rec.processLocally = true; // the validated on-device path
     rec.onresult = (e) => {
       let text = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -198,6 +223,37 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
       flagMicError("service-not-allowed");
     }
   }, [flagMicError]);
+
+  const toggleRecording = useCallback(() => {
+    if (recRef.current) {
+      recRef.current.stop(); // onend clears the state
+      return;
+    }
+    if (startingRef.current) return; // probe in flight — ignore the double-tap
+    const Ctor = speechCtor();
+    if (!Ctor || !activeRef.current) return; // no expanded step → nothing to dictate into
+    startingRef.current = true;
+    void (async () => {
+      let local = false;
+      try {
+        if (Ctor.available) {
+          const a = await Ctor.available({ langs: [SPEECH_LANG], processLocally: true });
+          if (a === "available") local = true;
+          else if (a === "downloadable" && Ctor.install) {
+            console.info("[reading-notes] downloading the on-device speech pack for next time");
+            void Ctor.install({ langs: [SPEECH_LANG], processLocally: true }).catch(() => {});
+          }
+        }
+      } catch {
+        /* probe failed → cloud path, as on older browsers */
+      }
+      try {
+        startRecognition(Ctor, local);
+      } finally {
+        startingRef.current = false;
+      }
+    })();
+  }, [startRecognition]);
 
   // stop listening if the chart page unmounts mid-dictation
   useEffect(() => () => recRef.current?.stop(), []);

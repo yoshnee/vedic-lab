@@ -294,9 +294,14 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   normalized on load (tested). Web Speech dictation: one mic button (sticky at the rail bottom),
   toggles start/stop with a pulsing recording state, appends FINAL transcripts to the EXPANDED
   step's notes (no target label — redundant with the accordion, owner-directed; disabled when all
-  steps are done/collapsed); failures SURFACE in the mic row (`micError`: permission blocked / no
-  mic / speech service unreachable — Chrome's recognizer needs network; Brave blocks it) and log
-  a console.warn; feature-detected, disabled with a tooltip where unsupported (Firefox). Pure UI +
+  steps are done/collapsed); **ON-DEVICE FIRST** — when `SpeechRecognition.available()` (Chrome
+  139+) reports the local `en-US` SODA pack installed, recognition runs with `processLocally`
+  (no Google cloud round-trip, so no `network` failures); a merely-downloadable pack triggers a
+  background `install()` (that attempt still uses the cloud, the next is local); older browsers
+  go straight to the cloud path; failures SURFACE in the mic row (`micError`: permission blocked /
+  no mic / cloud service unreachable — Brave gets its own message, it strips the Google API keys
+  so its cloud path can NEVER work and its SODA install hangs upstream) and log a console.warn;
+  feature-detected, disabled with a tooltip where unsupported (Firefox). Pure UI +
   storage — nothing astrological computed; the Dashas step just points at the Overlay Dashas
   toggle. One `useReadingNotes` state instance in ChartView feeds both the rail and the drawer),
   then **two charts**, each a `ChartCard` with a **live type `<select>`** — Chart 1 toggles
