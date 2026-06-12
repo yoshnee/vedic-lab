@@ -357,6 +357,25 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   color: var(--text);
 }
 
+/* ---------- SIGNIFICATIONS CLOUD ("wordsmith" house-card back) ----------
+   Ported from design-reference/flashcards (Significations Cloud.html +
+   significations.jsx). Pure flexbox wrap, big → medium → small ordering so
+   heavy terms band at the top/center; three size tiers with color stepping
+   down (text → text-2 → text-3) to reinforce weight. The back shows ONLY
+   the title + the words (owner-directed; the prototype's editorial footnote
+   was cut). */
+.fc-back--cloud { padding: 24px 22px 16px; gap: 10px; }
+.fc-back--cloud .fc-back-head { padding-bottom: 10px; }
+.sig-cloud { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; text-align: center; }
+.sig-terms {
+  flex: 1; min-height: 0; overflow: auto; display: flex; flex-wrap: wrap; justify-content: center;
+  align-content: center; align-items: center; column-gap: 14px; row-gap: 8px; padding: 2px 0;
+}
+.sig-term { white-space: nowrap; line-height: 1.15; }
+.sig-term--big { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -.01em; color: var(--text); }
+.sig-term--medium { font-size: 14px; font-weight: 500; color: var(--text-2); }
+.sig-term--small { font-size: 11.5px; font-weight: 400; color: var(--text-3); letter-spacing: .01em; }
+
 /* empty (not-yet-written) card body → tasteful "coming soon" */
 .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; flex: 1; text-align: center; }
 .fc-empty-mark { opacity: .5; display: flex; }

@@ -1,6 +1,8 @@
 /* Houses — the twelve Bhavas. Content from twelve_bhavas_flashcards_with_themes.md:
-   FRONT = theme + natural sign + karaka + type + purushartha (facts), BACK =
-   significations (points). Each card's front icon is the North Indian chart
+   FRONT = theme + natural sign + karaka + type + purushartha (facts) — never
+   changes. BACK = the "wordsmith" significations CLOUD (owner-provided weighted
+   terms, house by house; houses still waiting on their words keep the old
+   points list). Each card's front icon is the North Indian chart
    with that house highlighted, so flipping through walks the highlight 1 → 12.
    Type: Kendra (1,4,7,10) · Trikona (1,5,9) · Dusthana (6,8,12) ·
    Maraka (2,7) · Upachaya (3,6,10,11).
@@ -99,16 +101,26 @@ export const houses: Deck = {
         { label: "Type", value: "Kendra" },
         { label: "Purushartha", value: "Moksha (liberation)" },
       ],
-      points: [
-        "Mother and primary caregiver; nurturing",
-        "Home, emotional roots, sense of belonging",
-        "Emotional happiness and psychological wellbeing",
-        "Land, property, real estate, fixed assets",
-        "Vehicles and conveyances",
-        "Comfort, luxuries, contentment",
-        "The private inner self; need for safety",
-        "Formal education",
-      ],
+      cloud: {
+        terms: [
+          { label: "Mother", weight: "big" },
+          { label: "Home", weight: "big" },
+          { label: "Inner Peace", weight: "big" },
+          { label: "Happiness & Contentment", weight: "big" },
+          { label: "Emotional Strength", weight: "medium" },
+          { label: "Vehicles & Conveyances", weight: "medium" },
+          { label: "Land & Property", weight: "medium" },
+          { label: "Nurturing", weight: "medium" },
+          { label: "Comforts & Luxuries", weight: "medium" },
+          { label: "Vulnerability", weight: "small" },
+          { label: "Family Bonds", weight: "small" },
+          { label: "Ease & Belonging", weight: "small" },
+          { label: "Pets", weight: "small" },
+          { label: "Escapism", weight: "small" },
+          { label: "Fixed Assets", weight: "small" },
+          { label: "Academic Education", weight: "small" },
+        ],
+      },
     },
     {
       title: "5th House",
@@ -122,16 +134,24 @@ export const houses: Deck = {
         { label: "Type", value: "Trikona" },
         { label: "Purushartha", value: "Dharma (purpose)" },
       ],
-      points: [
-        "Children and creativity (“creation”)",
-        "Intelligence, creative intelligence, self-expression",
-        "Romance, love affairs, pleasure, joy, spontaneity",
-        "Speculation — gambling, investments, stock market",
-        "Purva punya — merit/rewards carried from past lives",
-        "Education, learning, grasp of knowledge",
-        "Visual and creative arts",
-        "Morals, good deeds, charity, generosity",
-      ],
+      cloud: {
+        terms: [
+          { label: "Children", weight: "big" },
+          { label: "Creativity", weight: "big" },
+          { label: "Intelligence", weight: "big" },
+          { label: "Romance & Love Affairs", weight: "big" },
+          { label: "Past-Life Merit", weight: "medium" },
+          { label: "Speculation & Gains", weight: "medium" },
+          { label: "Spiritual Practice & Mantra", weight: "medium" },
+          { label: "Dharma & Virtue", weight: "medium" },
+          { label: "Sense of Destiny", weight: "medium" },
+          { label: "Joy & Spontaneity", weight: "small" },
+          { label: "Discernment", weight: "small" },
+          { label: "Advising Others", weight: "small" },
+          { label: "Authority & Government", weight: "small" },
+          { label: "Sports", weight: "small" },
+        ],
+      },
     },
     {
       title: "6th House",

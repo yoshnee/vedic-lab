@@ -22,10 +22,24 @@ export interface CardFact {
   value: string;
 }
 
+/** A weighted term in a significations cloud (three visual size tiers). */
+export type CloudWeight = "big" | "medium" | "small";
+export interface CloudTerm {
+  label: string;
+  weight: CloudWeight;
+}
+/** The "wordsmith" word-cloud BACK face (houses; planets later). When present
+    it replaces the prose/points back ENTIRELY — the back shows only the card
+    title and the weighted words, nothing else (owner-directed). The front is
+    untouched. Sizing is editorial (a memorization aid), not canonical. */
+export interface CardCloud {
+  terms: CloudTerm[];
+}
+
 export interface Card {
   title: string;
   sanskrit?: string;
-  /** Prose meaning on the back. Empty AND no `points` → "coming soon" placeholder. */
+  /** Prose meaning on the back. Empty AND no `points`/`cloud` → "coming soon" placeholder. */
   body: string;
   badge?: string;
   /** Overrides the deck accent for this card (e.g. a planet's color). */
@@ -35,6 +49,8 @@ export interface Card {
   facts?: CardFact[];
   /** Characteristics shown on the card BACK as a bulleted list (used instead of `body`). */
   points?: string[];
+  /** Significations word-cloud BACK (used instead of `points`/`body`). */
+  cloud?: CardCloud;
 }
 
 export type DeckStatus = "available" | "coming-soon";

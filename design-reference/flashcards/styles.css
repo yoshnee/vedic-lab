@@ -171,6 +171,19 @@ h1,h2,h3{font-family:var(--font-display),sans-serif; margin:0; font-weight:600; 
 .fc-back .fc-body{font-size:16px; line-height:1.62; color:var(--text-2); margin:0; overflow:auto; text-wrap:pretty;}
 .fc-badge--back{top:auto; bottom:22px; right:24px;}
 
+/* ---------- SIGNIFICATIONS CLOUD (house card back) ---------- */
+.fc-back--cloud{padding:24px 22px 16px; gap:10px;}
+.fc-back--cloud .fc-back-head{padding-bottom:10px;}
+.sig-cloud{flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; text-align:center;}
+.sig-terms{flex:1; min-height:0; overflow:auto; display:flex; flex-wrap:wrap; justify-content:center;
+  align-content:center; align-items:center; column-gap:14px; row-gap:8px; padding:2px 0;}
+.sig-term{white-space:nowrap; line-height:1.15;}
+.sig-term--big{font-family:var(--font-display),sans-serif; font-weight:600; font-size:20px; letter-spacing:-.01em; color:var(--text);}
+.sig-term--medium{font-size:14px; font-weight:500; color:var(--text-2);}
+.sig-term--small{font-size:11.5px; font-weight:400; color:var(--text-3); letter-spacing:.01em;}
+.sig-note{flex:none; margin:0; padding-top:11px; border-top:1px solid var(--border-soft); font-family:var(--font-mono),monospace; font-size:9.5px; letter-spacing:.08em;
+  color:var(--text-3); opacity:.85; cursor:help;}
+
 .fc-foot{display:flex; align-items:center; justify-content:space-between; gap:12px;}
 .fc-mininav{font-family:var(--font-mono),monospace; font-size:12px; letter-spacing:.04em; padding:9px 16px;
   border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text-2); cursor:pointer; transition:.2s;}

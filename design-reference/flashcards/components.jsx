@@ -36,13 +36,15 @@ function Card({ card, deckAccent, flipped }) {
           {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
           <span className="fc-hint">Flip ↻</span>
         </div>
-        <div className="fc-face fc-back">
+        <div className={'fc-face fc-back' + (card.cloud ? ' fc-back--cloud' : '')}>
           <div className="fc-back-head">
             <span className="fc-back-term">{card.title}</span>
-            {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
+            {card.sanskrit && !card.cloud && <span className="fc-sk">{card.sanskrit}</span>}
           </div>
-          <p className="fc-body">{card.body}</p>
-          {card.badge && <span className="fc-badge fc-badge--back">{card.badge}</span>}
+          {card.cloud && window.SignificationsCloud
+            ? React.createElement(window.SignificationsCloud, { data: card.cloud })
+            : <p className="fc-body">{card.body}</p>}
+          {card.badge && !card.cloud && <span className="fc-badge fc-badge--back">{card.badge}</span>}
         </div>
       </div>
     </div>

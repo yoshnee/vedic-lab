@@ -35,7 +35,16 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 ## What the app is
 
 ### Study side
-- Data-driven **flashcard decks**. **Planets**, **Houses**, **Ascendants** (3 concept cards +
+- Data-driven **flashcard decks**. **Planets**, **Houses** (FRONTS unchanged; the BACKS are being
+  converted house-by-house to the **"wordsmith" Significations Cloud** — a weighted word-cloud,
+  owner-provided terms in three size tiers (big/medium/small), the back showing ONLY the house
+  title + the words, no Sanskrit/badge/footnote (owner-directed; the design's
+  `Significations Cloud.html` + `significations.jsx` in `design-reference/flashcards/` are the
+  visual source); houses 4–5 are live, the rest keep points backs until their words arrive;
+  the same treatment is planned for the Planets deck later. Data contract: `Card.cloud =
+  { terms: {label, weight}[] }` (`types.ts`), rendered by
+  `src/components/flashcards/SignificationsCloud.tsx` big→medium→small, flexbox wrap, no deps),
+  **Ascendants** (3 concept cards +
   the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership point on each card back), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
   (concept), **Gandanta** (concept), **The Four Elements** (Tattva, concept — backs the chart's

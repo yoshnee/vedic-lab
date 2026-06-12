@@ -13,6 +13,7 @@ import {
   conjunction,
 } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
+import { SignificationsCloud } from "./SignificationsCloud";
 import type { Card as CardData } from "@/data/decks/types";
 
 function CardIcon({
@@ -55,9 +56,10 @@ export function Card({
 }) {
   const accent = card.accentColor || deckAccent;
   const hasFacts = !!card.facts?.length;
+  const hasCloud = !!card.cloud?.terms.length;
   const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
-  const hasBackContent = hasPoints || hasBody;
+  const hasBackContent = hasCloud || hasPoints || hasBody;
   // Zodiac sign cards carry their Sanskrit name on the BACK only — the front
   // leads with the English sign + glyph; the Sanskrit name appears once you flip.
   const frontSanskrit = card.sanskrit && card.icon?.kind !== "zodiac";
@@ -92,12 +94,17 @@ export function Card({
               cards it's pinned to the corner (CSS) so it clears the facts. */}
           <span className="fc-hint" aria-hidden="true">Flip ↻</span>
         </div>
-        <div className="fc-face fc-back">
+        {/* Cloud backs ("wordsmith") show ONLY the title + the weighted words —
+            no Sanskrit, no badge, no prose (owner-directed). The front above
+            is identical either way. */}
+        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : "")}>
           <div className="fc-back-head">
             <span className="fc-back-term">{card.title}</span>
-            {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
+            {card.sanskrit && !hasCloud && <span className="fc-sk">{card.sanskrit}</span>}
           </div>
-          {hasPoints ? (
+          {hasCloud ? (
+            <SignificationsCloud data={card.cloud!} />
+          ) : hasPoints ? (
             <ul className="fc-points">
               {card.points!.map((p, idx) => (
                 <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
@@ -116,7 +123,7 @@ export function Card({
               </span>
             </div>
           )}
-          {card.badge && hasBackContent && (
+          {card.badge && hasBackContent && !hasCloud && (
             <span className="fc-badge fc-badge--back">{card.badge}</span>
           )}
         </div>

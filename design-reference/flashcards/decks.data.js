@@ -3,10 +3,14 @@
    To add a deck: append an object to DECKS. No component changes.
 
    Deck  : { id, title, subtitle?, motif, accent, cards:[] }
-   Card  : { title, sanskrit?, body, badge?, accentColor?, icon? }
+   Card  : { title, sanskrit?, body, badge?, accentColor?, icon?, cloud? }
            icon: { kind:'planet', id:'sun' }  -> celestial body
                  { kind:'house',  n:1 }        -> diamond medallion
                  (omit for no icon)
+           cloud: significations word-cloud back face (houses).
+                 { terms: [{ label, weight }] }-- weight: 'big'|'medium'|'small'
+                 When present it replaces `body` on the card back.
+                 body stays as fallback / plain-text summary.
    ============================================================ */
 (function () {
   var HOUSES = {
@@ -23,7 +27,27 @@
       { title: '3rd House', sanskrit: 'Sahaja Bhāva', badge: '03', icon: { kind: 'house', n: 3 },
         body: 'Courage, initiative and effort. Younger siblings, short journeys, skills of the hands, and communication.' },
       { title: '4th House', sanskrit: 'Sukha Bhāva', badge: '04', icon: { kind: 'house', n: 4 },
-        body: 'Inner happiness and the heart. Mother, home, land and property, vehicles, and emotional foundations.' },
+        body: 'Inner happiness and the heart. Mother, home, land and property, vehicles, and emotional foundations.',
+        cloud: {
+          terms: [
+            { label: 'Mother', weight: 'big' },
+            { label: 'Home', weight: 'big' },
+            { label: 'Inner Peace', weight: 'big' },
+            { label: 'Happiness & Contentment', weight: 'big' },
+            { label: 'Emotional Strength', weight: 'medium' },
+            { label: 'Vehicles & Conveyances', weight: 'medium' },
+            { label: 'Land & Property', weight: 'medium' },
+            { label: 'Nurturing', weight: 'medium' },
+            { label: 'Comforts & Luxuries', weight: 'medium' },
+            { label: 'Vulnerability', weight: 'small' },
+            { label: 'Family Bonds', weight: 'small' },
+            { label: 'Ease & Belonging', weight: 'small' },
+            { label: 'Pets', weight: 'small' },
+            { label: 'Escapism', weight: 'small' },
+            { label: 'Fixed Assets', weight: 'small' },
+            { label: 'Academic Education', weight: 'small' }
+          ]
+        } },
       { title: '5th House', sanskrit: 'Putra Bhāva', badge: '05', icon: { kind: 'house', n: 5 },
         body: 'Intelligence, creativity and children. Romance, speculation, and pūrva puṇya — merit carried from past lives.' },
       { title: '6th House', sanskrit: 'Ari Bhāva', badge: '06', icon: { kind: 'house', n: 6 },
