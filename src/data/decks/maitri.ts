@@ -6,10 +6,26 @@
    Tables follow the classics (BPHS Graha Maitri): Tatkalika (temporal) friend = a
    planet in the 2/3/4/10/11/12 from it, enemy = 1/5/6/7/8/9; Panchadha (compound)
    overlays natural + temporal into the five-step scale Adhi Mitra · Mitra · Sama ·
-   Shatru · Adhi Shatru. The naisargika (natural) table itself lives in the Planets
-   deck; this is also a Shadbala input (sthana bala) when that lands. */
+   Shatru · Adhi Shatru. The Naisargika card's back is the full per-planet
+   friend/neutral/enemy table, GENERATED from the engine's canonical
+   NAISARGIKA_FRIENDS/ENEMIES (constants.ts; neutral = the rest) so card and
+   chart can never disagree — note the table is asymmetric by design (e.g.
+   Mercury counts the Sun a friend; the Sun counts Mercury neutral). */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
+import { PLANET_NAMES, NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES } from "@/core/constants";
+import type { PlanetKey } from "@/core/types";
+
+/** One table row per planet: its own outlook on the other six. */
+const SEVEN: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
+const names = (arr: PlanetKey[]) =>
+  arr.length ? arr.map((k) => PLANET_NAMES[k]).join(", ") : "None";
+function naisargikaRow(p: PlanetKey): string {
+  const friends = NAISARGIKA_FRIENDS[p] ?? [];
+  const enemies = NAISARGIKA_ENEMIES[p] ?? [];
+  const neutrals = SEVEN.filter((o) => o !== p && !friends.includes(o) && !enemies.includes(o));
+  return `${PLANET_NAMES[p]} · Friends: ${names(friends)} · Neutral: ${names(neutrals)} · Enemies: ${names(enemies)}`;
+}
 
 export const maitri: Deck = {
   id: "maitri",
@@ -29,62 +45,58 @@ export const maitri: Deck = {
         { label: "The question", value: "Is a planet comfortable in the sign it sits in?" },
       ],
       points: [
-        "Naisargika (natural) — permanent, fixed friend / neutral / enemy (in the Nine Grahas deck)",
-        "Tatkalika (temporal) — temporary, depends on positions in this specific chart",
-        "Panchadha (compound) — natural + temporal combined into a five-step scale",
-        "Practical use: judge a planet against its dispositor — the lord of the sign it occupies, i.e. its “landlord”",
+        "Naisargika (natural): permanent, fixed friend / neutral / enemy (in the Nine Grahas deck)",
+        "Tatkalika (temporal): temporary, depends on positions in this specific chart",
+        "Panchadha (compound): natural + temporal combined into a five-step scale",
+        "Practical use: judge a planet against its dispositor, the lord of the sign it occupies, its “landlord”",
         "The compound relationship tells you whether the planet sits comfortably in its landlord's house",
-        "A planet in its own sign is its own landlord — automatically at home",
+        "A planet in its great friend's sign gains real strength; in its great enemy's sign it's strained",
+        "A planet in its own sign is its own landlord, automatically at home",
       ],
     },
     {
-      title: "Naisargika (Natural) Maitri — Recap",
+      title: "Naisargika (Natural) Maitri",
       icon: { kind: "diamond" },
       body: "",
       facts: [
         { label: "Type", value: "Fixed, permanent friendships set by each planet's nature" },
         { label: "Stability", value: "Never changes from chart to chart" },
       ],
-      points: [
-        "Each planet has a standing friend / neutral / enemy toward every other planet",
-        "This is the first of the two inputs to the compound relationship",
-        "Full friend / neutral / enemy table lives in the Nine Grahas deck",
-      ],
+      points: SEVEN.map(naisargikaRow),
     },
     {
-      title: "Tatkalika (Temporal) Maitri — the Positional Rule",
+      title: "Tatkalika (Temporal) Maitri",
       icon: { kind: "diamond" },
       body: "",
       facts: [
         { label: "Basis", value: "House position relative to the planet (chart-specific)" },
-        { label: "Scale", value: "Binary — only friend or enemy" },
+        { label: "Scale", value: "Binary: friend or enemy only" },
         { label: "Stability", value: "Changes every chart" },
       ],
       points: [
         "Counting from the planet's own house:",
-        "Temporary FRIEND — any planet in the 2nd, 3rd, 4th, 10th, 11th, or 12th from it",
-        "Temporary ENEMY — any planet in the 1st (same house), 5th, 6th, 7th, 8th, or 9th from it",
+        "Temporary FRIEND: any planet in the 2nd, 3rd, 4th, 10th, 11th, or 12th from it",
+        "Temporary ENEMY: any planet in the 1st (same house), 5th, 6th, 7th, 8th, or 9th from it",
         "This is the second input to the compound relationship",
       ],
     },
     {
-      title: "Panchadha (Compound) Maitri — Combining the Two",
+      title: "Panchadha (Compound) Maitri",
       icon: { kind: "diamond" },
       body: "",
       facts: [
-        { label: "Method", value: "Overlay natural + temporal → a five-step scale" },
+        { label: "Method", value: "Overlay natural + temporal into a five-step scale" },
         { label: "Used for", value: "The refined relationship in judgment" },
       ],
+      // the six combinations only, English results (owner-directed; these match
+      // the chart's maitri pill words exactly)
       points: [
-        "Natural friend + temporal friend → Adhi Mitra (great friend)",
-        "Natural friend + temporal enemy → Sama (neutral)",
-        "Natural neutral + temporal friend → Mitra (friend)",
-        "Natural neutral + temporal enemy → Shatru (enemy)",
-        "Natural enemy + temporal friend → Sama (neutral)",
-        "Natural enemy + temporal enemy → Adhi Shatru (great enemy)",
-        "Five results: Adhi Mitra, Mitra, Sama, Shatru, Adhi Shatru",
-        "A planet in its great friend's sign gains real strength; in its great enemy's sign it's strained",
-        "Also a component of Shadbala later",
+        "Natural friend + temporal friend = Great Friend",
+        "Natural friend + temporal enemy = Neutral",
+        "Natural neutral + temporal friend = Friend",
+        "Natural neutral + temporal enemy = Enemy",
+        "Natural enemy + temporal friend = Neutral",
+        "Natural enemy + temporal enemy = Great Enemy",
       ],
     },
   ],
