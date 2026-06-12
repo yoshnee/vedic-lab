@@ -5,13 +5,13 @@
    dignity (sign-number lookup), retrograde, combustion, drishti, conjunction,
    and house lordships.
    ============================================================ */
-import type { PlanetKey, Dignity, Nakshatra, AspectRef, Maitri, FunctionalNature } from "./types";
+import type { PlanetKey, Dignity, Nakshatra, AspectRef, Maitri } from "./types";
 import {
   SIGN_NAMES, SIGN_RULER, NAKSHATRAS, PLANET_NAMES,
   EXALTATION, DEBILITATION, OWN_SIGNS, DRISHTI, COMBUSTION_ORB,
   NAKSHATRA_ARC, PADA_ARC,
   GANDANTA_BOUNDARIES, GANDANTA_ORB, GANDANTA_DEEP_ORB,
-  NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES, ASCENDANT_FUNCTIONAL,
+  NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES,
 } from "./constants";
 import { norm360 } from "./swisseph";
 
@@ -190,18 +190,11 @@ export function gandantaOf(lon: number): { on: boolean; deep: boolean; distance:
   return { on: distance <= GANDANTA_ORB, deep: distance <= GANDANTA_DEEP_ORB, distance };
 }
 
-/** A planet's functional nature for the chart's ascendant, read from the single
-    canonical ASCENDANT_FUNCTIONAL table (the same table that backs the Ascendants
-    deck). Yogakaraka takes precedence over benefic. Nodes are unclassified → null. */
-export function functionalNatureOf(planet: PlanetKey, lagnaSign: number): FunctionalNature | null {
-  if (planet === "rahu" || planet === "ketu") return null;
-  const t = ASCENDANT_FUNCTIONAL[lagnaSign - 1];
-  if (t.yogakaraka === planet) return "yogakaraka"; // precedence over benefic
-  if (t.benefics.includes(planet)) return "benefic";
-  if (t.malefics.includes(planet)) return "malefic";
-  if (t.neutrals.includes(planet)) return "neutral";
-  return null;
-}
+/* (functionalNatureOf was removed with the panels' B/M/N/Y badge — owner-directed,
+   the symbols were visually distracting. The determination lives on in the
+   ASCENDANT_FUNCTIONAL table, which still generates the Ascendants deck's
+   Benefics/Neutral/Malefics facts — the rising-sign card remains the way to
+   see functional natures.) */
 
 /** Tithi (lunar day) from the Moon & Sun longitudes. The Moon–Sun elongation
     divides into 30 tithis of 12° each — `number` is the absolute 1–30 count

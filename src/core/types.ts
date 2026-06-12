@@ -16,10 +16,6 @@ export type Dignity = "exalted" | "debilitated" | "own" | "neutral";
     self-dispositing. (Nodes carry null — the reference defines no node friendships.) */
 export type Maitri = "adhi_mitra" | "mitra" | "sama" | "shatru" | "adhi_shatru" | "own_sign";
 
-/** A planet's functional nature for the chart's ascendant (from ASCENDANT_FUNCTIONAL).
-    "yogakaraka" takes precedence over "benefic". (Nodes carry null — unclassified.) */
-export type FunctionalNature = "benefic" | "malefic" | "neutral" | "yogakaraka";
-
 /** Header pill flags (the planet is the active MD / AD lord). */
 export type DashaPill = "maha" | "antar";
 
@@ -79,6 +75,32 @@ export interface Avastha {
   flashcard: { type: "avastha"; id: string }; // tap target → onOpenCard("avastha", id)
 }
 
+/* ---- yogas: formed planetary combinations, an open-ended family. One entry
+   per formed yoga; the panel renders each as a tappable pill (label = `name`)
+   that opens its Yogas-deck card. Detection lives in core/yoga.ts as pure
+   functions of already-computed placement facts, so it can be reused for
+   transit and divisional contexts later. */
+export interface YogaRef {
+  key: string; // stable detector key, e.g. "ruchaka", "neecha-bhanga-c2"
+  name: string; // pill label, e.g. "Ruchaka Mahapurusha Yoga", "Neecha Bhanga C2"
+  flashcard: { type: "yoga"; id: string }; // tap target → onOpenCard("yoga", id)
+  /* Neecha Bhanga only: which of the seven conditions fired, and its weight */
+  condition?: number; // 1–7
+  tier?: "major" | "minor"; // major = C1–C5 (conjunction/Kendra), minor = C6–C7 (aspect)
+  /* Lord-relationship yogas (Dhana 2/11) only: which connection mode fired */
+  mode?: "conjunction" | "mutual-aspect" | "exchange";
+}
+
+/* ---- chara karaka: the planet's Jaimini designation (core/karaka.ts), a
+   NATAL-D1 property by degree-within-sign ranking. Only the three surfaced
+   designations exist as pills; null for the other planets and the nodes,
+   and varga panels null it (never recomputed per chart type). */
+export interface KarakaRef {
+  key: "atmakaraka" | "amatyakaraka" | "darakaraka";
+  name: string; // pill label, e.g. "Atmakaraka"
+  flashcard: { type: "karaka"; id: string }; // tap target → onOpenCard("karaka", id)
+}
+
 /** Sub-components of Sthana and Kala Bala (virupas) — plumbed for the drawer's
     future progressive disclosure; not yet rendered. */
 export interface ShadbalaParts {
@@ -127,7 +149,8 @@ export interface PlanetData {
   combust: Combust;
   dispositor: PlanetKey | null; // lord of the occupied sign; null if own sign
   maitriToDispositor: Maitri | null; // occupant→dispositor panchadha; null = nodes (undefined)
-  functionalNature: FunctionalNature | null; // benefic/malefic/neutral/yogakaraka for the lagna; null = nodes
+  // (functionalNature was removed with the panels' B/M/N/Y badge — the determination
+  //  lives in ASCENDANT_FUNCTIONAL, surfaced on the Ascendants deck's rising-sign card)
   gandanta: boolean; // within one pada of a water→fire junction (0°/120°/240°)
   gandantaDeep: boolean; // within ~1° of the exact junction
   gandantaDistance: number; // ° to the nearest water→fire junction
@@ -142,7 +165,8 @@ export interface PlanetData {
   rules: number[]; // house numbers this planet lords
   aspectedBy: AspectRef[];
   conjunct: PlanetKey[];
-  yogas: string[]; // [] for now
+  yogas: YogaRef[]; // formed yogas (core/yoga.ts); [] when none detected
+  karaka: KarakaRef | null; // Jaimini chara karaka (natal D1 only; null in varga panels)
   extraRows: ExtraRow[];
 }
 

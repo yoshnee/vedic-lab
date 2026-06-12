@@ -10,7 +10,7 @@ import {
   PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
   DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA, COMBUSTION_ORB,
-  SIGN_ELEMENT,
+  SIGN_ELEMENT, ASCENDANT_FUNCTIONAL,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
@@ -373,5 +373,27 @@ describe("panchadha maitri", () => {
     const inLeo = allSignsAt(5); // everyone in Leo (ruled by the Sun)
     expect(maitriToDispositor("sun", inLeo)).toEqual({ dispositor: null, relation: "own_sign" });
     expect(maitriToDispositor("rahu", inLeo)).toEqual({ dispositor: "sun", relation: null });
+  });
+});
+
+describe("functional nature (ASCENDANT_FUNCTIONAL)", () => {
+  it("each lagna's benefics/neutrals/malefics exactly partition the seven grahas", () => {
+    for (const row of ASCENDANT_FUNCTIONAL) {
+      const all = [...row.benefics, ...row.neutrals, ...row.malefics];
+      expect(all).toHaveLength(7); // no omissions, no double-listing
+      expect([...all].sort()).toEqual([...SEVEN].sort());
+    }
+  });
+
+  it("a yogakaraka, when present, is listed among that lagna's benefics", () => {
+    for (const row of ASCENDANT_FUNCTIONAL) {
+      if (row.yogakaraka) expect(row.benefics).toContain(row.yogakaraka);
+    }
+  });
+
+  it("Taurus lagna: Sun is functionally NEUTRAL — owner-corrected, don't re-list as malefic", () => {
+    const taurus = ASCENDANT_FUNCTIONAL[1];
+    expect(taurus.neutrals).toContain("sun");
+    expect(taurus.malefics).not.toContain("sun");
   });
 });
