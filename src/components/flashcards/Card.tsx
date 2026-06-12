@@ -49,7 +49,8 @@ export function Card({
   card: CardData;
   deckAccent: string;
   flipped: boolean;
-  /** Emphasize the front fact-row with this exact label (e.g. the tapped "Pada 2"). */
+  /** Emphasize the front fact-row with this exact label (e.g. the tapped "Pada 2"),
+      or a BACK point that starts with it (e.g. "Major 3-4" → the condition line). */
   highlightFact?: string;
 }) {
   const accent = card.accentColor || deckAccent;
@@ -99,7 +100,9 @@ export function Card({
           {hasPoints ? (
             <ul className="fc-points">
               {card.points!.map((p, idx) => (
-                <li key={idx}>{p}</li>
+                <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
+                  {p}
+                </li>
               ))}
             </ul>
           ) : hasBody ? (

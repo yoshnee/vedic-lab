@@ -2,26 +2,23 @@
 
 /* ============================================================
    ChartRuler.tsx — the "start here" guided reading of the chart ruler
-   (lagneśa). A numbered chain that teaches the method itself: ascendant →
-   its ruling planet → the sign that planet occupies → the whole-sign house
-   that is → the ruler's own nakshatra/pada (NOT the Moon's). Every noun is
-   a flashcard link (same resolver as the planet panels); the maitri pill
-   echoes the ruler's panel pill. Pure presentation — every value is already
-   computed in ChartData (lagnaLord, planets[]). Sits full-width between the
-   two charts and the planet-panel grid.
+   (lagneśa). A numbered chain in the owner's exact phrasing: the ascendant →
+   who rules it → where that planet sits (sign, house) → its nakshatra/pada
+   (NOT the Moon's) → co-tenants in that sign. Every noun is a flashcard link
+   (same resolver as the planet panels). The maitri pill was removed
+   (owner-directed) — that relationship lives on the ruler's planet panel.
+   Pure presentation — every value is already computed in ChartData
+   (lagnaLord, planets[]). Sits full-width between the two charts and the
+   planet-panel grid.
    ============================================================ */
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
-import type { ChartData, Maitri, PlanetKey } from "@/core/types";
+import type { ChartData, PlanetKey } from "@/core/types";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
 const PNAME: Record<PlanetKey, string> = {
   sun: "Sun", moon: "Moon", mars: "Mars", mercury: "Mercury", jupiter: "Jupiter",
   venus: "Venus", saturn: "Saturn", rahu: "Rahu", ketu: "Ketu",
-};
-const MAITRI_LABEL: Record<Maitri, string> = {
-  adhi_mitra: "Great Friend", mitra: "Friend", sama: "Neutral",
-  shatru: "Enemy", adhi_shatru: "Great Enemy", own_sign: "Own Sign",
 };
 
 function ordinal(n: number): string {
@@ -54,22 +51,19 @@ export function ChartRuler({
   if (!ruler) return null;
 
   const conjuncts = ruler.conjunct;
+  // the chain copy is the owner's exact phrasing — don't embellish
   const steps: React.ReactNode[] = [
     <>
-      <FcLink onClick={() => onOpenCard("ascendant", ascSign)}>{ascSign}</FcLink> rises — your
-      ascendant (lagna).
+      <FcLink onClick={() => onOpenCard("ascendant", ascSign)}>{ascSign}</FcLink> is the ascendant.
     </>,
     <>
       {ascSign} is ruled by{" "}
-      <FcLink onClick={() => onOpenCard("planet", ruler.name)}>{ruler.name}</FcLink>, so {ruler.name}{" "}
-      is your <b>chart ruler</b>.
+      <FcLink onClick={() => onOpenCard("planet", ruler.name)}>{ruler.name}</FcLink>.
     </>,
     <>
       {ruler.name} sits in{" "}
-      <FcLink onClick={() => onOpenCard("sign", ruler.signName)}>{ruler.signName}</FcLink> at{" "}
-      <span className="cr-deg">{ruler.degree}</span> — your{" "}
-      <FcLink onClick={() => onOpenCard("house", ruler.house)}>{ordinal(ruler.house)} house</FcLink>{" "}
-      counted from {ascSign}.
+      <FcLink onClick={() => onOpenCard("sign", ruler.signName)}>{ruler.signName}</FcLink>, the{" "}
+      <FcLink onClick={() => onOpenCard("house", ruler.house)}>{ordinal(ruler.house)} house</FcLink>.
     </>,
     <>
       {ruler.name} occupies the nakshatra{" "}
@@ -77,19 +71,16 @@ export function ChartRuler({
         {ruler.nakshatra.name}
       </FcLink>
       ,{" "}
-      <FcLink onClick={() => onOpenCard("pada", ruler.pada)}>
-        pada {ruler.pada} ({ruler.purushartha})
-      </FcLink>
-      .
+      <FcLink onClick={() => onOpenCard("pada", ruler.pada)}>pada {ruler.pada}</FcLink>.
     </>,
   ];
   if (conjuncts.length > 0) {
     steps.push(
       <>
-        Sharing {ruler.signName}:{" "}
+        Also in {ruler.signName}:{" "}
         {conjuncts.map((c, i) => (
           <span key={c}>
-            {i > 0 && " · "}
+            {i > 0 && ", "}
             <FcLink onClick={() => onOpenCard("planet", PNAME[c])}>{PNAME[c]}</FcLink>
           </span>
         ))}
@@ -115,20 +106,7 @@ export function ChartRuler({
           ) : (
             <span className="cr-name">{ruler.name}</span>
           )}
-          {ruler.maitriToDispositor && (
-            <button
-              type="button"
-              className="pp-pill"
-              data-kind="maitri"
-              data-maitri={ruler.maitriToDispositor}
-              title={ruler.dispositor
-                ? `Toward its dispositor ${PNAME[ruler.dispositor]} (lord of ${ruler.signName})`
-                : "In its own sign — its own dispositor"}
-              onClick={() => onOpenCard("maitri", "panchadha")}
-            >
-              {MAITRI_LABEL[ruler.maitriToDispositor]}
-            </button>
-          )}
+          {/* (the maitri pill was removed, owner-directed — see the ruler's panel) */}
         </span>
       </header>
       <ol className="cr-steps">

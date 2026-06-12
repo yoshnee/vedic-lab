@@ -12,10 +12,17 @@
    ============================================================ */
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { DateTime } from "luxon";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
 import { buildD9, buildVargaPanels } from "@/lib/chart/varga";
+import { transitFor } from "@/lib/chart/generateChart";
+import { activatedHousesFor } from "@/lib/chart/activation";
+import { isValidZone } from "@/lib/time";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 import { ChartCard, type ChartOption } from "./ChartCard";
+import { type DashaSelection } from "./DashaRail";
+import { ReadingNotes, useReadingNotes } from "./ReadingNotes";
 import { ChartRuler } from "./ChartRuler";
 import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
@@ -24,9 +31,8 @@ import { Legend } from "./Legend";
 import { FlashcardPopover } from "./FlashcardPopover";
 import { resolveFlashcard, type FlashcardType, type FlashcardTarget } from "@/lib/flashcardLink";
 import type { ChartModel } from "@/lib/chart/types";
-import type { PlanetKey } from "@/core/types";
+import type { PlanetKey, TransitSet } from "@/core/types";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const PNAME: Record<PlanetKey, string> = {
   sun: "Sun", moon: "Moon", mars: "Mars", mercury: "Mercury", jupiter: "Jupiter",
   venus: "Venus", saturn: "Saturn", rahu: "Rahu", ketu: "Ketu",
@@ -35,14 +41,6 @@ const PNAME: Record<PlanetKey, string> = {
 function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"], v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-/** Transit caption — when the present-moment positions were computed (UT). */
-function fmtTransit(iso: string): string {
-  const d = new Date(iso);
-  const hh = String(d.getUTCHours()).padStart(2, "0");
-  const mm = String(d.getUTCMinutes()).padStart(2, "0");
-  return `as of ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()} · ${hh}:${mm} UT`;
 }
 
 /** Small crescent — opens one way for waxing, mirrored for waning (matches the panel). */
@@ -76,15 +74,72 @@ export function ChartView({ model }: { model: ChartModel }) {
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
+  const [notesOpen, setNotesOpen] = useState(false); // mobile reading-notes drawer
+  // guided reading checklist — ONE state instance feeding the desktop rail
+  // and the mobile drawer (they can never diverge)
+  const notesApi = useReadingNotes(model);
   const [chart1, setChart1] = useState<Chart1Type>("d1");
   const [chart2, setChart2] = useState<Chart2Type>("transit");
 
+  /* ---- Activated-houses overlay (dasha rail toggle, off by default) ----
+     The selected (MD, AD) lord pair defaults to the RUNNING chain; tapping a
+     daśā row retargets it (state lives here so the rail, the mobile drawer,
+     and the chart stay in sync). Houses = rules-or-occupies per lord
+     (lib/chart/activation.ts — aspects deliberately excluded), deduped into
+     one accent wash on the NATAL D1 chart only. */
+  const [overlayOn, setOverlayOn] = useState(false);
+  const [dashaSel, setDashaSel] = useState<DashaSelection | null>(null);
+  const sel: DashaSelection = dashaSel ?? { maha: chart.currentDasha.maha, antar: chart.currentDasha.antar };
+  const activated = useMemo(
+    () => (overlayOn ? activatedHousesFor([sel.maha, sel.antar], chart) : undefined),
+    [overlayOn, sel.maha, sel.antar, chart],
+  );
+
+  /* ---- Gochar (transit) date-time scrubber ----
+     The picker speaks the NATAL location's timezone (UTC when the zone is
+     missing/invalid) so transits line up with the natal frame — NOT the
+     browser's local zone. Luxon converts the wall-clock pick to the UTC
+     instant the engine wants, the same DST-aware path as the birth input.
+     Only the transit longitudes move with the chosen moment; the lagna and
+     houses stay natal (transitFor is pure over (natal chart, instant)).
+     null = "now", the present default behavior. */
+  const tz = isValidZone(meta.ianaTz) ? meta.ianaTz : "UTC";
+  const [transitWhen, setTransitWhen] = useState<string | null>(null); // "yyyy-MM-ddTHH:mm" wall clock in tz
+  const [customTransit, setCustomTransit] = useState<{ when: string; set: TransitSet | null } | null>(null);
+  const debouncedWhen = useDebounce(transitWhen, 300); // scrubbing recomputes once per pause
+  useEffect(() => {
+    // null = "now": activeTransit ignores customTransit then, so no clearing needed
+    if (!debouncedWhen) return;
+    const dt = DateTime.fromISO(debouncedWhen, { zone: tz });
+    if (!dt.isValid) return;
+    let alive = true;
+    transitFor(chart, dt.toJSDate()).then((set) => {
+      if (alive) setCustomTransit({ when: debouncedWhen, set });
+    });
+    return () => { alive = false; };
+  }, [debouncedWhen, tz, chart]);
+  // the picker's "now" face: the instant the default transit was computed for
+  const transitNowValue = useMemo(
+    () =>
+      DateTime.fromISO(transit?.computedUtcISO ?? new Date().toISOString())
+        .setZone(tz)
+        .toFormat("yyyy-MM-dd'T'HH:mm"),
+    [transit, tz],
+  );
+  const transitPending = !!transitWhen && customTransit?.when !== transitWhen;
+  const activeTransit = transitWhen ? (customTransit?.set ?? transit) : transit;
+  // picker + zone + Now all live in the header row beside the dropdown
+  // (owner-placed); the caption line carries only status (computing / failure)
+  const transitCaption = transitWhen
+    ? transitPending ? "computing …" : customTransit?.set ? "" : "transit unavailable for that moment"
+    : transit ? "" : "transit unavailable";
+
   // Lock body scroll while any overlay is open.
   useEffect(() => {
-    const anyOverlay = fc || legendOpen || dashaOpen;
+    const anyOverlay = fc || legendOpen || dashaOpen || notesOpen;
     document.body.style.overflow = anyOverlay ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [fc, legendOpen, dashaOpen]);
+  }, [fc, legendOpen, dashaOpen, notesOpen]);
 
   const openCard = (type: FlashcardType, id?: string | number) => {
     const target = resolveFlashcard(type, id);
@@ -111,7 +166,6 @@ export function ChartView({ model }: { model: ChartModel }) {
   const d9Panels = useMemo(() => buildVargaPanels(chart), [chart]);
   const vargaMode = chart1 !== "d1";
   const panelPlanets = vargaMode ? d9Panels.planets : chart.planets;
-  const panelAscSign = vargaMode ? d9Panels.ascendant.signName : chart.ascendant.signName;
   const vargaLabel = vargaMode ? "Navāṁśa · D9" : undefined;
 
   /** Dataset for a selected chart type — toggling is non-destructive; every
@@ -119,12 +173,12 @@ export function ChartView({ model }: { model: ChartModel }) {
   const dataFor = (t: Chart1Type | Chart2Type) =>
     t === "transit"
       ? {
-          frame,
-          planets: transit?.planets ?? [],
-          caption: transit ? fmtTransit(transit.computedUtcISO) : "transit unavailable",
+          frame, // ALWAYS the natal lagna frame — scrubbing moves only the planets
+          planets: activeTransit?.planets ?? [],
+          caption: transitCaption,
         }
       : t === "d9"
-        ? { frame: d9.frame, planets: d9.planets, caption: "spouse · dharma · inner nature" }
+        ? { frame: d9.frame, planets: d9.planets, caption: "" } // no varga subtitle (owner-trimmed)
         : { frame, planets: chart.planets, caption: chart.birth.dateLabel };
   const c1 = dataFor(chart1);
   const c2 = dataFor(chart2);
@@ -173,7 +227,12 @@ export function ChartView({ model }: { model: ChartModel }) {
 
         <div className="chart-layout">
           <aside className="dasha-rail" aria-label="Vimśottarī daśā">
-            <DashaRail dasha={chart.dasha} current={chart.currentDasha} />
+            <DashaRail
+              dasha={chart.dasha}
+              current={chart.currentDasha}
+              selected={sel}
+              onSelect={setDashaSel}
+            />
             <ElementBalance planets={panelPlanets} onOpenCard={openCard} />
           </aside>
 
@@ -191,6 +250,12 @@ export function ChartView({ model }: { model: ChartModel }) {
               </span>
             </button>
 
+            {/* mobile reading-notes trigger — the right rail collapses to a drawer */}
+            <button type="button" className="dasha-trigger notes-trigger" onClick={() => setNotesOpen(true)}>
+              <span className="dt-lbl">Reading Notes</span>
+              <span className="nt-sum">{notesApi.doneCount}/5 steps</span>
+            </button>
+
             <div className="chart-top">
               <ChartCard
                 label="Chart 1"
@@ -200,7 +265,26 @@ export function ChartView({ model }: { model: ChartModel }) {
                 caption={c1.caption}
                 frame={c1.frame}
                 planets={c1.planets}
+                highlightHouses={chart1 === "d1" ? activated : undefined} // natal D1 only, never a varga
                 onSelectPlanet={selectPlanet}
+                controls={
+                  // the overlay's home (owner-placed): under the type selection,
+                  // above the chart — the only chart the wash applies to.
+                  // Selection happens in the rail; no helper text, owner-trimmed.
+                  chart1 === "d1" ? (
+                    <div className="overlay-box">
+                      <label className="overlay-toggle">
+                        <input
+                          type="checkbox"
+                          className="dia-check"
+                          checked={overlayOn}
+                          onChange={() => setOverlayOn((o) => !o)}
+                        />
+                        <span className="overlay-title">Overlay Dashas</span>
+                      </label>
+                    </div>
+                  ) : undefined
+                }
               />
               <ChartCard
                 label="Chart 2"
@@ -211,6 +295,30 @@ export function ChartView({ model }: { model: ChartModel }) {
                 frame={c2.frame}
                 planets={c2.planets}
                 onSelectPlanet={selectPlanet}
+                headExtra={
+                  // the gochar scrubber: picker · zone · Now, all in line
+                  // beside the dropdown (owner-placed)
+                  chart2 === "transit" ? (
+                    <span className="cc-dt-group">
+                      <input
+                        type="datetime-local"
+                        className="cc-dt"
+                        value={transitWhen ?? transitNowValue}
+                        onChange={(e) => setTransitWhen(e.target.value || null)}
+                        aria-label={`Transit date and time, in ${tz === "UTC" ? "UTC" : `the birth timezone (${tz})`}`}
+                      />
+                      <span className="ctl-tz" title="Picked in the birth location's timezone">{tz}</span>
+                      <button
+                        type="button"
+                        className="ctl-now"
+                        onClick={() => setTransitWhen(null)}
+                        disabled={!transitWhen}
+                      >
+                        Now
+                      </button>
+                    </span>
+                  ) : undefined
+                }
               />
             </div>
 
@@ -235,7 +343,6 @@ export function ChartView({ model }: { model: ChartModel }) {
                   key={`${chart1}-${p.key}`}
                   id={`panel-${p.key}`}
                   planet={p}
-                  ascendantSign={panelAscSign}
                   onOpenCard={openCard}
                   onOpenDasha={openDasha}
                   vargaLabel={vargaLabel}
@@ -243,6 +350,14 @@ export function ChartView({ model }: { model: ChartModel }) {
               ))}
             </section>
           </div>
+
+          {/* guided reading checklist — a sticky right rail mirroring the daśā
+              rail (owner-directed); collapses to a drawer on mobile */}
+          <aside className="notes-rail" aria-label="Reading notes">
+            <div className="notes-rail-in">
+              <ReadingNotes api={notesApi} onOpenDeck={(d) => openCard("deck", d)} />
+            </div>
+          </aside>
         </div>
       </main>
 
@@ -253,7 +368,28 @@ export function ChartView({ model }: { model: ChartModel }) {
               <span>Vimśottarī Daśā</span>
               <button type="button" className="legend-close" onClick={() => setDashaOpen(false)} aria-label="Close">✕</button>
             </header>
-            <DashaRail dasha={chart.dasha} current={chart.currentDasha} />
+            <DashaRail
+              dasha={chart.dasha}
+              current={chart.currentDasha}
+              selected={sel}
+              onSelect={setDashaSel}
+            />
+          </aside>
+        </div>
+      )}
+
+      {notesOpen && (
+        <div className="notes-drawer-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) setNotesOpen(false); }}>
+          <aside className="notes-drawer" role="dialog" aria-modal="true" aria-label="Reading notes">
+            <header className="dasha-drawer-head">
+              <span>Reading Notes</span>
+              <button type="button" className="legend-close" onClick={() => setNotesOpen(false)} aria-label="Close">✕</button>
+            </header>
+            <ReadingNotes
+              api={notesApi}
+              heading={false}
+              onOpenDeck={(d) => { setNotesOpen(false); openCard("deck", d); }}
+            />
           </aside>
         </div>
       )}
