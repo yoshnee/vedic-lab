@@ -126,6 +126,7 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   const [recording, setRecording] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const micErrTimer = useRef<number | undefined>(undefined);
+  const mountedRef = useRef(true); // guards the async probe's continuation
   const flagMicError = useCallback((code?: string) => {
     let msg = MIC_ERRORS[code ?? ""] ?? null; // "no-speech"/"aborted" are normal — stay quiet
     if (code === "network" && isBrave()) msg = BRAVE_NETWORK_ERROR;
@@ -239,7 +240,9 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
         if (Ctor.available) {
           const a = await Ctor.available({ langs: [SPEECH_LANG], processLocally: true });
           if (a === "available") local = true;
-          else if (a === "downloadable" && Ctor.install) {
+          // Brave excluded: its SODA install hangs upstream (brave-browser#55414),
+          // so kicking it off would only spawn never-settling downloads per tap.
+          else if (a === "downloadable" && Ctor.install && mountedRef.current && !isBrave()) {
             console.info("[reading-notes] downloading the on-device speech pack for next time");
             void Ctor.install({ langs: [SPEECH_LANG], processLocally: true }).catch(() => {});
           }
@@ -248,15 +251,26 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
         /* probe failed → cloud path, as on older browsers */
       }
       try {
-        startRecognition(Ctor, local);
+        // the page may have unmounted while the probe awaited (recRef is still
+        // null then, so the unmount cleanup had nothing to stop) — don't start
+        // a mic on a dead page or fire state setters after unmount
+        if (mountedRef.current) startRecognition(Ctor, local);
       } finally {
         startingRef.current = false;
       }
     })();
   }, [startRecognition]);
 
-  // stop listening if the chart page unmounts mid-dictation
-  useEffect(() => () => recRef.current?.stop(), []);
+  // on unmount: cancel any pending probe continuation, the micError auto-clear
+  // timer, and stop listening if mid-dictation
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      window.clearTimeout(micErrTimer.current);
+      recRef.current?.stop();
+    };
+  }, []);
 
   const doneCount = READING_STEPS.reduce((n, s) => n + (state[s.id]?.done ? 1 : 0), 0);
 
