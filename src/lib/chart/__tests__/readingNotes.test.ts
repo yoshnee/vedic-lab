@@ -28,10 +28,17 @@ function fakeStorage() {
 describe("READING_STEPS", () => {
   it("is the five steps in reading order", () => {
     expect(READING_STEPS.map((s) => s.id)).toEqual(["lagna", "houses", "varga", "dashas", "synthesis"]);
-    for (const s of READING_STEPS) {
-      expect(s.title.length).toBeGreaterThan(0);
-      expect(s.prompt.length).toBeGreaterThan(0);
-    }
+    expect(READING_STEPS.map((s) => s.title)).toEqual(["Lagna", "Houses", "Varga", "Dashas", "Synthesis"]);
+  });
+
+  it("keeps the owner's prompts verbatim (canonical wording — don't rephrase)", () => {
+    expect(READING_STEPS.map((s) => s.prompt)).toEqual([
+      "Inspect the Chart Ruler panel. It lays out the ascendant and information about its lord. Determine the lord's dignity, and where it sits. Note what stands out as the foundation of the chart.",
+      "Walk the houses one by one. For each, note the occupants, the house lord, and their dignity.",
+      "Peek at the relevant varga when you want more depth on a specific area. D2 for finances, D9 for marriage and dharma, D10 for career.",
+      "Toggle the mahadasha antardasha overlay to see which houses are activated in the running period. These are the areas of life likely at the forefront now.",
+      "Bring it all together and note the confluences, the themes that more than one factor points to.",
+    ]);
   });
 
   it("carries the owner-specified deck refreshers (and only those)", () => {

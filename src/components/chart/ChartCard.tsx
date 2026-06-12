@@ -71,8 +71,9 @@ export function ChartCard({
           </label>
           {headExtra}
         </div>
-        {/* reserved on both cards (see .chart-card-cap min-height) so the two grids align */}
-        <span className="chart-card-cap">{caption}{controls}</span>
+        {/* reserved on both cards (see .chart-card-cap min-height) so the two grids align;
+            a div, since caption/controls may be block nodes (e.g. the overlay pill) */}
+        <div className="chart-card-cap">{caption}{controls}</div>
       </header>
       <NorthIndianChart frame={frame} planets={planets} highlightHouses={highlightHouses} onSelectPlanet={onSelectPlanet} />
     </section>

@@ -10,8 +10,9 @@
    NB the owner's cards call the third level "Antara" (the chart rail labels
    it Pratyantar — same layer, both names are classical). */
 import type { Deck, Card } from "./types";
-import { ACCENT, PLANET_COLORS, type PlanetKey } from "@/lib/design/colors";
+import { ACCENT, PLANET_COLORS } from "@/lib/design/colors";
 import { DASHA_SEQUENCE, PLANET_NAMES } from "@/core/constants";
+import type { PlanetKey } from "@/core/types";
 
 /** The fixed cycle rows, straight from the engine's table. */
 const CYCLE_FACTS = [
@@ -19,13 +20,13 @@ const CYCLE_FACTS = [
     label: PLANET_NAMES[lord],
     value: `${years} years`,
   })),
-  { label: "Total", value: "120 years, then back to Ketu" },
+  { label: "Total", value: `120 years, then back to ${PLANET_NAMES[DASHA_SEQUENCE[0].lord]}` },
 ];
 
 /** A Mahadasha card: planet icon + identity accent, facts front, points back. */
 function mahadasha(id: PlanetKey, years: number, facts: Card["facts"], points: string[]): Card {
   return {
-    title: `${PLANET_NAMES[id as keyof typeof PLANET_NAMES]} Mahadasha`,
+    title: `${PLANET_NAMES[id]} Mahadasha`,
     sanskrit: `${years} years`,
     accentColor: PLANET_COLORS[id],
     icon: { kind: "planet", id },

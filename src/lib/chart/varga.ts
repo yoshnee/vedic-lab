@@ -91,6 +91,7 @@ export function buildVargaPanels(
       // real-longitude / rasi-only concepts — emptied so the panels hide them
       gandanta: false,
       gandantaDeep: false,
+      gandantaDistance: 0, // natal value would contradict gandanta:false
       shadbala: null,
       tithiNumber: undefined,
       waxing: undefined,

@@ -174,9 +174,9 @@
 .dnode > .drow[data-static="true"]:hover { background: transparent; }
 /* the (MD, AD) pair feeding the activated-houses overlay — TEAL, deliberately
    distinct from the gold data-running chain (owner-directed two-color scheme) */
-.dnode > .drow[data-selected] { border-color: color-mix(in srgb, #8FD6C4 62%, transparent);
-  background: color-mix(in srgb, #8FD6C4 11%, transparent); }
-.dnode > .drow[data-selected] .ddate { color: #8FD6C4; }
+.dnode > .drow[data-selected] { border-color: color-mix(in srgb, var(--select) 62%, transparent);
+  background: color-mix(in srgb, var(--select) 11%, transparent); }
+.dnode > .drow[data-selected] .ddate { color: var(--select); }
 .drow .dico { flex: none; display: flex; }
 .drow .dname { flex: none; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14px; color: var(--text); }
 .drow .dsk { flex: none; font-family: var(--font-mono), monospace; font-size: 10.5px; color: var(--text-3); letter-spacing: .04em; }
@@ -275,11 +275,11 @@
 .pp-pill:hover { filter: brightness(1.12); }
 .pp-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pp-pill[data-kind="antar"] { color: #CFE0D2; border-color: color-mix(in srgb, #CFE0D2 30%, transparent); background: color-mix(in srgb, #CFE0D2 8%, transparent); }
-.pp-pill[data-kind="lagna"] { color: #8FD6C4; border-color: color-mix(in srgb, #8FD6C4 38%, transparent); background: color-mix(in srgb, #8FD6C4 11%, transparent); }
+.pp-pill[data-kind="lagna"] { color: var(--select); border-color: color-mix(in srgb, var(--select) 38%, transparent); background: color-mix(in srgb, var(--select) 11%, transparent); }
 /* gandanta — ember tone for the water→fire knot; "deep" (within ~1°) is brighter + ringed */
 .pp-pill[data-kind="gandanta"] { color: #E08A5A; border-color: color-mix(in srgb, #E08A5A 40%, transparent); background: color-mix(in srgb, #E08A5A 12%, transparent); }
 /* chara karaka — violet (Venus-palette base), distinct from dasha gold & maitri green/red */
-.pp-pill[data-kind="karaka"] { color: #C9A2E0; border-color: color-mix(in srgb, #B97FD6 42%, transparent); background: color-mix(in srgb, #B97FD6 12%, transparent); }
+.pp-pill[data-kind="karaka"] { color: var(--karaka); border-color: color-mix(in srgb, var(--p-venus) 42%, transparent); background: color-mix(in srgb, var(--p-venus) 12%, transparent); }
 .pp-pill[data-kind="gandanta"][data-deep] { color: #F0A06E; border-color: color-mix(in srgb, #E08A5A 72%, transparent); background: color-mix(in srgb, #E08A5A 20%, transparent); font-weight: 700;
   box-shadow: 0 0 0 1px color-mix(in srgb, #E08A5A 28%, transparent), 0 0 9px color-mix(in srgb, #E08A5A 26%, transparent); }
 .chart-asc .pp-pill { margin-left: 8px; vertical-align: middle; }
@@ -590,10 +590,10 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
 .rn-mic:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .rn-mic:disabled { opacity: .45; cursor: default; }
 .rn-mic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; transition: background .2s; }
-.rn-mic[data-recording] { color: #F0A6A0; border-color: color-mix(in srgb, #E2503C 55%, transparent);
-  background: color-mix(in srgb, #E2503C 10%, transparent); }
-.rn-mic[data-recording] .rn-mic-dot { background: #E2503C; animation: rn-pulse 1.2s ease-in-out infinite; }
+.rn-mic[data-recording] { color: var(--bad-text-bright); border-color: color-mix(in srgb, var(--bad) 55%, transparent);
+  background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.rn-mic[data-recording] .rn-mic-dot { background: var(--bad); animation: rn-pulse 1.2s ease-in-out infinite; }
 @keyframes rn-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
 @media (prefers-reduced-motion: reduce) { .rn-mic[data-recording] .rn-mic-dot { animation: none; } }
 .rn-mic-err { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .03em;
-  color: #E58A78; line-height: 1.4; }
+  color: var(--bad-text); line-height: 1.4; }

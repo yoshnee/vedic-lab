@@ -47,8 +47,8 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   **Yogas (16)** has full content (owner-provided `yogas-flashcards.md`: Raja ×2, Parivartana +
   Maha Parivartana, Pancha Mahapurusha, Gaja Kesari / Venus–Mercury / Dhana 2-11 / Lakshmi,
   Budhaditya, Neecha Bhanga with its numbered conditions 1–7 kept verbatim, and the Grahana family —
-  overview + the four luminary–node pair cards; the cards double as the rule spec for the planned
-  yoga computation engine, no em-dashes);
+  overview + the four luminary–node pair cards; the cards double as the rule documentation the
+  live yoga engine (`src/core/yoga.ts` `computeYogas` + its detectors) is pinned to, no em-dashes);
   **Karakas (8)** has full content (owner-provided `karakas-flashcards.md`: the Jaimini
   **Chara Karakas** — an overview card (degree-ranking method, Rahu/Ketu excluded, ties broken
   by minutes then seconds) + the seven karakas in rank order with badges 01–07; all diamond
@@ -396,11 +396,11 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   and the panchanga Moon line. Renders from the **live `ChartModel`** (the engine runs in-browser on
   submit; Chart 2's transit set is computed alongside it — see the chart-flow note above).
 
-**Not yet wired:** reading `sessionStorage['vedic:birthDetails']` into a client-side `computeChart`
-on `/chart` (the popup persists the data; the live in-browser compute + navigation is the remaining
-seam). Out of scope: yoga detection beyond the seven live detectors (Pancha Mahapurusha,
-Gaja Kesari, Budhaditya, Neecha Bhanga, Venus & Mercury Conjunction, Dhana 2/11, Grahana),
-divisional charts beyond D1.
+**The flow is fully wired:** the popup persists `sessionStorage['vedic:birthDetails']` and the live
+in-browser compute + navigation to `/chart` run on submit; a hard refresh / deep link makes
+`ChartRoute` read that key and recompute via `generateChart` on-device. Out of scope: yoga
+detection beyond the seven live detectors (Pancha Mahapurusha, Gaja Kesari, Budhaditya,
+Neecha Bhanga, Venus & Mercury Conjunction, Dhana 2/11, Grahana), divisional charts beyond D9.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)
 The original design-tool exports (HTML/CSS/JS) live in [`design-reference/`](design-reference/):
@@ -601,8 +601,8 @@ Build in this order; everything from step 2 down reads from the engine.
 1. **Birth-data input modal** — ✅ **Done.** `BirthDetailsModal` opened from the analyzer hero;
    place via **Open-Meteo** geocoding (returns coords + IANA zone in one call), DST offset via
    **Luxon**, manual lat/lon/timezone fallback. Persists the engine-ready civil shape to
-   `sessionStorage['vedic:birthDetails']`. **Remaining:** on `/chart`, read that key → `birthFromCivil`
-   → client-side `computeChart` (live in-browser, shipping the WASM), and navigate there from the CTA.
+   `sessionStorage['vedic:birthDetails']`. The CTA navigates to `/chart` after the live in-browser
+   compute; `ChartRoute` recomputes from that key on a hard refresh / deep link. Nothing remains.
 2. **Calculation engine (D1)** — the core. Wrap `swisseph-wasm` (Lahiri, Ketu = Rahu+180) and build
    the Vedic derivation layer. **Everything below reads from this.** Longitude-based; validate against
    the reference repo's JHora fixtures.

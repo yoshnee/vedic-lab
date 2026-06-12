@@ -10,7 +10,7 @@
    drawer, the daśā drawer, and the Chart-2 type. Natal + transit render through
    the same NorthIndianChart on the SAME natal lagna frame.
    ============================================================ */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { Svg } from "@/components/Svg";
@@ -50,6 +50,57 @@ function MoonGlyph({ waxing }: { waxing: boolean }) {
       style={waxing ? undefined : { transform: "scaleX(-1)", transformOrigin: "center" }}>
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" />
     </svg>
+  );
+}
+
+/** A real modal slide-in drawer (the daśā + reading-notes drawers): focus
+    moves in on open, Tab is trapped, Esc closes, and focus returns to the
+    opener on close — the Legend's a11y bar, widened to form fields (the
+    notes drawer holds textareas). Backdrop click still closes. */
+function Drawer({ overlayClass, drawerClass, label, title, onClose, children }: {
+  overlayClass: string;
+  drawerClass: string;
+  label: string;
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  // latest onClose without re-running the focus effect (it must run once per open)
+  const closeRef = useRef(onClose);
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const el = ref.current;
+    el?.focus();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") { closeRef.current(); return; }
+      if (e.key === "Tab" && el) {
+        const f = el.querySelectorAll<HTMLElement>(
+          'button:not(:disabled),[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]',
+        );
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("keydown", onKey); opener?.focus(); };
+  }, []);
+  return (
+    <div className={overlayClass} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <aside className={drawerClass} role="dialog" aria-modal="true" aria-label={label} ref={ref} tabIndex={-1}>
+        <header className="dasha-drawer-head">
+          <span>{title}</span>
+          <button type="button" className="legend-close" onClick={onClose} aria-label="Close">✕</button>
+        </header>
+        {children}
+      </aside>
+    </div>
   );
 }
 
@@ -126,12 +177,17 @@ export function ChartView({ model }: { model: ChartModel }) {
         .toFormat("yyyy-MM-dd'T'HH:mm"),
     [transit, tz],
   );
-  const transitPending = !!transitWhen && customTransit?.when !== transitWhen;
-  const activeTransit = transitWhen ? (customTransit?.set ?? transit) : transit;
+  // resolved = the compute for the CURRENT pick has landed (success or failure).
+  // While pending the previous planets stay up (caption says "computing …");
+  // once a pick resolves to failure the chart goes empty — never a stale "now"
+  // set contradicting the failure caption.
+  const resolved = transitWhen && customTransit?.when === transitWhen ? customTransit : null;
+  const transitPending = !!transitWhen && !resolved;
+  const activeTransit = transitWhen ? (resolved ? resolved.set : transit) : transit;
   // picker + zone + Now all live in the header row beside the dropdown
   // (owner-placed); the caption line carries only status (computing / failure)
   const transitCaption = transitWhen
-    ? transitPending ? "computing …" : customTransit?.set ? "" : "transit unavailable for that moment"
+    ? transitPending ? "computing …" : resolved?.set ? "" : "transit unavailable for that moment"
     : transit ? "" : "transit unavailable";
 
   // Lock body scroll while any overlay is open.
@@ -362,36 +418,36 @@ export function ChartView({ model }: { model: ChartModel }) {
       </main>
 
       {dashaOpen && (
-        <div className="dasha-drawer-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) setDashaOpen(false); }}>
-          <aside className="dasha-drawer" role="dialog" aria-modal="true" aria-label="Vimśottarī daśā">
-            <header className="dasha-drawer-head">
-              <span>Vimśottarī Daśā</span>
-              <button type="button" className="legend-close" onClick={() => setDashaOpen(false)} aria-label="Close">✕</button>
-            </header>
-            <DashaRail
-              dasha={chart.dasha}
-              current={chart.currentDasha}
-              selected={sel}
-              onSelect={setDashaSel}
-            />
-          </aside>
-        </div>
+        <Drawer
+          overlayClass="dasha-drawer-overlay"
+          drawerClass="dasha-drawer"
+          label="Vimśottarī daśā"
+          title="Vimśottarī Daśā"
+          onClose={() => setDashaOpen(false)}
+        >
+          <DashaRail
+            dasha={chart.dasha}
+            current={chart.currentDasha}
+            selected={sel}
+            onSelect={setDashaSel}
+          />
+        </Drawer>
       )}
 
       {notesOpen && (
-        <div className="notes-drawer-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) setNotesOpen(false); }}>
-          <aside className="notes-drawer" role="dialog" aria-modal="true" aria-label="Reading notes">
-            <header className="dasha-drawer-head">
-              <span>Reading Notes</span>
-              <button type="button" className="legend-close" onClick={() => setNotesOpen(false)} aria-label="Close">✕</button>
-            </header>
-            <ReadingNotes
-              api={notesApi}
-              heading={false}
-              onOpenDeck={(d) => { setNotesOpen(false); openCard("deck", d); }}
-            />
-          </aside>
-        </div>
+        <Drawer
+          overlayClass="notes-drawer-overlay"
+          drawerClass="notes-drawer"
+          label="Reading notes"
+          title="Reading Notes"
+          onClose={() => setNotesOpen(false)}
+        >
+          <ReadingNotes
+            api={notesApi}
+            heading={false}
+            onOpenDeck={(d) => { setNotesOpen(false); openCard("deck", d); }}
+          />
+        </Drawer>
       )}
 
       {legendOpen && (

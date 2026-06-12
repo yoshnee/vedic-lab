@@ -57,16 +57,16 @@ export function ChartRuler({
       <FcLink onClick={() => onOpenCard("ascendant", ascSign)}>{ascSign}</FcLink> is the ascendant.
     </>,
     <>
-      {ascSign} is ruled by{" "}
+      <FcLink onClick={() => onOpenCard("ascendant", ascSign)}>{ascSign}</FcLink> is ruled by{" "}
       <FcLink onClick={() => onOpenCard("planet", ruler.name)}>{ruler.name}</FcLink>.
     </>,
     <>
-      {ruler.name} sits in{" "}
+      <FcLink onClick={() => onOpenCard("planet", ruler.name)}>{ruler.name}</FcLink> sits in{" "}
       <FcLink onClick={() => onOpenCard("sign", ruler.signName)}>{ruler.signName}</FcLink>, the{" "}
       <FcLink onClick={() => onOpenCard("house", ruler.house)}>{ordinal(ruler.house)} house</FcLink>.
     </>,
     <>
-      {ruler.name} occupies the nakshatra{" "}
+      <FcLink onClick={() => onOpenCard("planet", ruler.name)}>{ruler.name}</FcLink> occupies the nakshatra{" "}
       <FcLink onClick={() => onOpenCard("nakshatra", ruler.nakshatra.name)}>
         {ruler.nakshatra.name}
       </FcLink>
@@ -77,7 +77,7 @@ export function ChartRuler({
   if (conjuncts.length > 0) {
     steps.push(
       <>
-        Also in {ruler.signName}:{" "}
+        Also in <FcLink onClick={() => onOpenCard("sign", ruler.signName)}>{ruler.signName}</FcLink>:{" "}
         {conjuncts.map((c, i) => (
           <span key={c}>
             {i > 0 && ", "}
