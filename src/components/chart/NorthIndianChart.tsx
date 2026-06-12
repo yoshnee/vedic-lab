@@ -11,6 +11,7 @@
    transiting bodies on the natal frame). Whole-sign: house 1 holds the frame's
    ascendant sign and each house steps one sign on.
    ============================================================ */
+import { useId } from "react";
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
 import { PLANET_COLORS } from "@/lib/design/colors";
@@ -72,8 +73,9 @@ function rulerColor(sign: number): string {
   return PLANET_COLORS[SIGN_RULER[sign - 1]];
 }
 
-/** The full chart SVG: ruler-tinted house polygons, then the structural grid on top. */
-function buildGrid(ascSign: number): string {
+/** The full chart SVG: ruler-tinted house polygons, an optional single-color
+    highlight wash (the activated-houses overlay), then the structural grid. */
+function buildGrid(ascSign: number, glowId: string, highlight?: number[]): string {
   let s =
     '<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block">';
   for (let h = 1; h <= 12; h++) {
@@ -82,6 +84,27 @@ function buildGrid(ascSign: number): string {
       '<polygon points="' + POLY[h] + '" fill="' + col +
       '" fill-opacity="0.3" stroke="' + col +
       '" stroke-opacity="0.75" stroke-width="1.2" stroke-linejoin="round"/>';
+  }
+  // activated houses: ONE color for every source (maha/antar, rules/occupies),
+  // one wash per house (the dedupe upstream guarantees no doubling). Drawn as
+  // a blurred halo layer + a crisp bright layer, so the highlight reads glowy
+  // rather than a faint tint (owner-tuned for visibility).
+  if (highlight?.length) {
+    s +=
+      '<defs><filter id="' + glowId + '" x="-30%" y="-30%" width="160%" height="160%">' +
+      '<feGaussianBlur stdDeviation="3.2"/></filter></defs>';
+    for (const h of highlight) {
+      s +=
+        '<polygon points="' + POLY[h] +
+        '" fill="var(--accent)" fill-opacity="0.34" stroke="var(--accent)"' +
+        ' stroke-opacity="0.72" stroke-width="5" stroke-linejoin="round" filter="url(#' + glowId + ')"/>';
+    }
+    for (const h of highlight) {
+      s +=
+        '<polygon points="' + POLY[h] +
+        '" fill="var(--accent)" fill-opacity="0.17" stroke="var(--accent)"' +
+        ' stroke-opacity="0.85" stroke-width="2.2" stroke-linejoin="round"/>';
+    }
   }
   s +=
     '<g fill="none" stroke="var(--border)" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">' +
@@ -95,13 +118,19 @@ function buildGrid(ascSign: number): string {
 export function NorthIndianChart({
   frame,
   planets,
+  highlightHouses,
   onSelectPlanet,
 }: {
   frame: ChartFrame;
   planets: ChartBody[];
+  /** Houses to wash in the accent color (the activated-houses overlay). */
+  highlightHouses?: number[];
   onSelectPlanet?: (key: PlanetKey) => void;
 }) {
   const ascSign = frame.ascSign;
+  // per-instance filter id — two highlighted charts on one page must not
+  // resolve url(#…) against each other's <filter>
+  const glowId = "nicGlow-" + useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const byHouse = new Map<number, ChartBody[]>();
   for (const p of planets) {
     const arr = byHouse.get(p.house) ?? [];
@@ -111,7 +140,7 @@ export function NorthIndianChart({
 
   return (
     <div className="nic" role="img" aria-label="North Indian chart, houses colored by sign ruler">
-      <Svg className="nic-grid" html={buildGrid(ascSign)} />
+      <Svg className="nic-grid" html={buildGrid(ascSign, glowId, highlightHouses)} />
       {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => {
         const [cx, cy] = CENTROID[h];
         const sign = signOfHouse(ascSign, h);

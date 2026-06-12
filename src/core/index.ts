@@ -17,6 +17,8 @@ import * as v from "./vedic";
 import { computeDasha } from "./dasha";
 import { computeAvasthas } from "./avastha";
 import { computeShadbala } from "./shadbala";
+import { computeYogas } from "./yoga";
+import { charaKarakas } from "./karaka";
 
 export type { ChartData, PlanetData, PlanetKey, BirthInput, PlacedBody, TransitSet } from "./types";
 
@@ -211,6 +213,9 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
     raw.ascendant,
   );
 
+  // Jaimini chara karakas — ranked ONCE from the natal longitudes (D1-only property)
+  const karakas = charaKarakas(raw.longitudes);
+
   const planets: PlanetData[] = PLANET_ORDER.map((key) => {
     const lon = raw.longitudes[key];
     const sign = signs[key];
@@ -219,8 +224,8 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
     const gand = v.gandantaOf(lon);
     const tithi = key === "moon" ? v.tithiOf(lon, sunLon) : null; // tithi is a Moon–Sun relationship
     const maitri = v.maitriToDispositor(key, signs); // occupant → dispositor (asymmetric)
-    const fnNature = v.functionalNatureOf(key, lagnaSign); // benefic/malefic/neutral/yogakaraka for the lagna
     const dignity = v.dignityOf(key, sign);
+    const house = v.houseOf(sign, lagnaSign);
     const isNode = key === "rahu" || key === "ketu";
     const retro = isNode || key === "sun" || key === "moon" ? false : raw.speeds[key] < 0;
 
@@ -244,7 +249,7 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       signAbbr: SIGN_ABBR[sign - 1],
       degree: v.formatDMS(degVal),
       degreeValue: degVal,
-      house: v.houseOf(sign, lagnaSign),
+      house,
       nakshatra: nak,
       pada: nak.pada,
       // life-aim of the pada — per-nakshatra cycle (Sutton table), NOT fixed by pada number
@@ -254,7 +259,6 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       combust,
       dispositor: maitri.dispositor,
       maitriToDispositor: maitri.relation,
-      functionalNature: fnNature,
       gandanta: gand.on,
       gandantaDeep: gand.deep,
       gandantaDistance: gand.distance,
@@ -276,7 +280,8 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       rules: v.rulesOf(key, lagnaSign),
       aspectedBy: v.aspectsOnto(sign, signs),
       conjunct: v.conjunctIn(key, sign, signs),
-      yogas: [],
+      yogas: computeYogas(key, { dignity, house, signs, longitudes: raw.longitudes, lagnaSign }), // natal D1 frame
+      karaka: karakas[key] ?? null,
       extraRows: key === "saturn" ? saturnExtra : [],
     };
   });

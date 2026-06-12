@@ -3,15 +3,17 @@
 /* ============================================================
    PlanetPanel.tsx — one collapsible detail panel per planet, matching the
    Claude Design handoff (planet-panel/). The header icon carries dignity +
-   retrograde (same art as the chart). Header pills flag MD/AD-lord and the
-   Ascendant Lord (which opens the rising-sign card). Body: placement prose →
-   aspect/conjunct chips → combust → yogas → open-ended extraRows (Sade Sati
-   timeline). Conjunct/combust rows are hidden when empty.
+   retrograde (same art as the chart). Header pills flag MD/AD-lord, Gandanta,
+   and maitri. (The B/M/N/Y functional-nature badge was removed, owner-directed
+   — visually distracting; the rising-sign flashcard still lists who the
+   functional benefics/malefics are.) Body: placement prose → aspect/conjunct
+   chips → combust → yogas → open-ended extraRows (Sade Sati timeline).
+   Conjunct/combust rows are hidden when empty.
    ============================================================ */
 import { useState } from "react";
 import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
-import type { PlanetData, PlanetKey, SadePeriod, Maitri, FunctionalNature, Avastha, ShadbalaScore } from "@/core/types";
+import type { PlanetData, PlanetKey, SadePeriod, Maitri, Avastha, ShadbalaScore } from "@/core/types";
 import { tierOf, type ShadbalaTier } from "@/core/shadbala";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
@@ -23,14 +25,6 @@ const PNAME: Record<PlanetKey, string> = {
 const MAITRI_LABEL: Record<Maitri, string> = {
   adhi_mitra: "Great Friend", mitra: "Friend", sama: "Neutral",
   shatru: "Enemy", adhi_shatru: "Great Enemy", own_sign: "Own Sign",
-};
-
-const FN_LETTER: Record<FunctionalNature, string> = {
-  benefic: "B", malefic: "M", neutral: "N", yogakaraka: "Y",
-};
-const FN_TITLE: Record<FunctionalNature, string> = {
-  benefic: "Functional benefic", malefic: "Functional malefic",
-  neutral: "Functional neutral", yogakaraka: "Yogakaraka",
 };
 
 function ordinal(n: number): string {
@@ -267,7 +261,6 @@ function ShadbalaDrawer({
 
 export function PlanetPanel({
   planet,
-  ascendantSign,
   defaultOpen = false,
   id,
   onOpenCard,
@@ -275,7 +268,6 @@ export function PlanetPanel({
   vargaLabel,
 }: {
   planet: PlanetData;
-  ascendantSign: string;
   defaultOpen?: boolean;
   id?: string;
   onOpenCard: OpenCard;
@@ -306,14 +298,13 @@ export function PlanetPanel({
           <span className="pp-name">
             <span className="nm">{p.name}</span>
           </span>
-          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor || p.functionalNature) && (
+          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor || p.karaka) && (
             <span className="pp-pills">
-              {p.functionalNature && (
-                <button type="button" className="pp-fn" data-fn={p.functionalNature}
-                  title={`${FN_TITLE[p.functionalNature]} for ${ascendantSign} ascendant`}
-                  aria-label={`${FN_TITLE[p.functionalNature]} for ${ascendantSign} ascendant`}
-                  onClick={(e) => { e.stopPropagation(); onOpenCard("ascendant", ascendantSign); }}>
-                  {FN_LETTER[p.functionalNature]}
+              {p.karaka && (
+                <button type="button" className="pp-pill" data-kind="karaka"
+                  title="Jaimini chara karaka, ranked by degree within sign — tap for the card"
+                  onClick={(e) => { e.stopPropagation(); onOpenCard(p.karaka!.flashcard.type, p.karaka!.flashcard.id); }}>
+                  {p.karaka.name}
                 </button>
               )}
               {p.dasha.includes("maha") && (
@@ -436,20 +427,41 @@ export function PlanetPanel({
                 </div>
               )}
 
-              <div className="pp-row">
-                <div className="pp-row-label">Yogas</div>
-                <div className="pp-row-val">
-                  {p.yogas.length ? (
-                    <span className="pchips">
-                      {p.yogas.map((y, i) => (
-                        <span key={i} className="pchip" style={{ "--pc": "var(--accent)" } as React.CSSProperties}>{y}</span>
-                      ))}
-                    </span>
-                  ) : (
-                    <span className="pp-placeholder"><i />Not yet computed</span>
-                  )}
+              {/* Yogas — computed for the natal D1 frame only (core/yoga.ts);
+                  hidden in varga context, like nakshatra/gandanta/shadbala. */}
+              {!vargaLabel && (
+                <div className="pp-row">
+                  <div className="pp-row-label">Yogas</div>
+                  <div className="pp-row-val">
+                    {p.yogas.length ? (
+                      <span className="pchips">
+                        {p.yogas.map((y) => (
+                          <button
+                            key={y.key}
+                            type="button"
+                            className="pchip pchip--yoga"
+                            style={{ "--pc": "var(--accent)" } as React.CSSProperties}
+                            title={
+                              y.condition
+                                ? `${y.tier === "major" ? "Major" : "Minor"} condition ${y.condition} — tap for the rule`
+                                : y.mode
+                                  ? `Formed by ${y.mode === "mutual-aspect" ? "mutual aspect" : y.mode === "exchange" ? "exchange (parivartana)" : "conjunction"} — tap for the rule`
+                                  : y.intensity
+                                    ? `${y.intensity === "purna" ? "Purna (within 5°), the strongest" : y.intensity === "strong" ? "Strong (within 10°)" : "Mild (same sign)"} — tap for the card`
+                                    : undefined
+                            }
+                            onClick={(e) => { e.stopPropagation(); onOpenCard(y.flashcard.type, y.flashcard.id); }}
+                          >
+                            {y.name}
+                          </button>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="none">None detected</span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <ShadbalaDrawer sb={p.shadbala ?? null} pkey={p.key} onOpenCard={onOpenCard} />
               <AvasthaDrawer items={p.avasthas ?? []} pkey={p.key} onOpenCard={onOpenCard} />

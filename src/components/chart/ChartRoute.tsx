@@ -53,7 +53,13 @@ export function ChartRoute() {
       });
   }, [model, router, setModel]);
 
-  if (model) return <ChartView model={model} />;
+  // Keyed per natal chart: replacing the store model (a new birth) must reset
+  // ALL per-chart UI state (daśā selection, gochar scrub, chart-type toggles)
+  // rather than leak the previous chart's into the new one.
+  if (model) {
+    const chartKey = `${model.meta.computedUtcISO}|${model.chart.birth.lat}|${model.chart.birth.lon}`;
+    return <ChartView key={chartKey} model={model} />;
+  }
 
   return (
     <>

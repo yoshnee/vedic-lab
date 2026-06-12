@@ -187,12 +187,13 @@ export const NAISARGIKA_ENEMIES: Partial<Record<PlanetKey, PlanetKey[]>> = {
 /* ============================================================
    Functional nature per ascendant — THE single canonical table.
    Keyed by lagna sign (1=Aries … 12=Pisces); planet lists are in natural order.
-   This is the one source of truth for both the panel's functional-nature badge
-   (engine: `vedic.functionalNatureOf`) AND the Zodiac Ascendants deck, which
-   generates its Yogakaraka/Benefics/Neutral/Malefics facts from it — so the two
-   can never disagree. Yogakaraka = the planet ruling both a kendra and a trikona
-   (it is also listed among the benefics; the badge gives it precedence). The
-   `*Note` fields carry the deck's editorial parentheticals. Nodes are unclassified.
+   The source of truth for the Zodiac Ascendants deck, which generates its
+   Yogakaraka/Benefics/Neutral/Malefics facts from it — the rising-sign card is
+   where users see who the functional benefics/malefics are. (The panels' per-
+   planet B/M/N/Y badge and its `vedic.functionalNatureOf` mapping were removed,
+   owner-directed — visually distracting.) Yogakaraka = the planet ruling both
+   a kendra and a trikona (also listed among the benefics). The `*Note` fields
+   carry the deck's editorial parentheticals. Nodes are unclassified.
    ============================================================ */
 export interface AscendantFunctional {
   benefics: PlanetKey[];
@@ -208,8 +209,9 @@ export const ASCENDANT_FUNCTIONAL: AscendantFunctional[] = [
   // 1 Aries
   { benefics: ["sun", "moon", "mars", "jupiter"], neutrals: [], malefics: ["mercury", "venus", "saturn"],
     yogakaraka: null, yogakarakaNote: "Sun strongest" },
-  // 2 Taurus
-  { benefics: ["mercury", "venus", "saturn"], neutrals: [], malefics: ["sun", "moon", "mars", "jupiter"],
+  // 2 Taurus — Sun (4th lord, a lone kendra) is functionally NEUTRAL, not malefic
+  // (owner-corrected 2026-06; an earlier dictation error listed it malefic)
+  { benefics: ["mercury", "venus", "saturn"], neutrals: ["sun"], malefics: ["moon", "mars", "jupiter"],
     yogakaraka: "saturn", yogakarakaNote: "9+10", beneficNote: "Saturn especially auspicious" },
   // 3 Gemini
   { benefics: ["mercury", "venus", "saturn"], neutrals: ["moon"], malefics: ["sun", "mars", "jupiter"],

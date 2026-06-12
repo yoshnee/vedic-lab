@@ -4,7 +4,7 @@
    Legend.tsx — the global symbol key for the chart page, in a slide-in drawer
    (full-screen on mobile) opened from the chart header. Zero layout footprint
    when closed. EVERY symbol is rendered from the same tokens/components the
-   charts + panels use (body() glyphs, .pp-fn / .pp-pill badges, .nic-sign,
+   charts + panels use (body() glyphs, .pp-pill badges, .nic-sign,
    combust()), so the legend can never drift from the live UI. It is a purely
    read-only visual key — nothing here is interactive and no row opens a
    flashcard.
@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 import { Svg } from "@/components/Svg";
 import { body, combust } from "@/celestial/celestial";
 import { PLANET_COLORS } from "@/lib/design/colors";
-import type { Dignity, PlanetKey, Maitri, FunctionalNature } from "@/core/types";
+import type { Dignity, PlanetKey, Maitri } from "@/core/types";
 
 const PLANETS: { key: PlanetKey; name: string }[] = [
   { key: "sun", name: "Sun" }, { key: "moon", name: "Moon" }, { key: "mars", name: "Mars" },
@@ -26,13 +26,6 @@ const DIGNITIES: { state: Dignity; label: string }[] = [
   { state: "debilitated", label: "Debilitated (Nīcha)" },
   { state: "own", label: "Own sign (Svakṣetra)" },
   { state: "neutral", label: "Neutral" },
-];
-
-const FUNCTIONAL: { fn: FunctionalNature; letter: string; label: string }[] = [
-  { fn: "benefic", letter: "B", label: "Functional benefic" },
-  { fn: "malefic", letter: "M", label: "Functional malefic" },
-  { fn: "neutral", letter: "N", label: "Functional neutral" },
-  { fn: "yogakaraka", letter: "Y", label: "Yogakāraka" },
 ];
 
 const MAITRI: { key: Maitri; label: string }[] = [
@@ -112,16 +105,6 @@ export function Legend({ onClose }: { onClose: () => void }) {
           </section>
 
           <section className="lg-sec">
-            <h3>Functional nature <span className="lg-sec-sub">badge, for this lagna</span></h3>
-            <div className="lg-grid">
-              {FUNCTIONAL.map((f) => (
-                <Item key={f.fn} label={f.label}
-                  swatch={<span className="pp-fn" data-fn={f.fn}>{f.letter}</span>} />
-              ))}
-            </div>
-          </section>
-
-          <section className="lg-sec">
             <h3>Friendship <span className="lg-sec-sub">to the dispositor</span></h3>
             <div className="lg-grid">
               {MAITRI.map((m) => (
@@ -154,6 +137,8 @@ export function Legend({ onClose }: { onClose: () => void }) {
             <div className="lg-grid">
               <Item label="Gandanta" hint="water→fire knot; “True Gandanta” within ±1°40′"
                 swatch={<span className="pp-pill" data-kind="gandanta">Gandanta</span>} />
+              <Item label="Chara karaka" hint="Jaimini: Atma · Amatya · Darakaraka, by degree in sign (natal D1 only)"
+                swatch={<span className="pp-pill" data-kind="karaka">Atmakaraka</span>} />
               <Item label="Combust (Asta)" hint="within the Sun's glare"
                 swatch={<Svg html={combust(34)} />} />
             </div>

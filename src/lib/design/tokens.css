@@ -53,6 +53,12 @@
   --good-soft: rgba(54, 185, 122, 0.14);
   --bad: var(--p-mars);
   --bad-soft: rgba(226, 80, 60, 0.13);
+  --bad-text: #e58a78; /* softened mars red — inline error text */
+  --bad-text-bright: #f0a6a0; /* brighter tint — the live recording state */
+
+  /* chart feature accents */
+  --select: #8fd6c4; /* teal — the user's daśā selection (vs the gold running chain) + lagna pill */
+  --karaka: #c9a2e0; /* the chara-karaka pill violet (Venus-palette base) */
 
   /* modal chrome */
   --scrim: rgba(4, 10, 7, 0.8);

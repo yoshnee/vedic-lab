@@ -3,8 +3,9 @@
 
    The flashcards grid renders whatever this ordered array holds, so
    adding a deck = create its data file + add one import + one array
-   entry here. No component changes. Available decks come first;
-   "coming soon" roadmap tiles trail at the end.
+   entry here. No component changes. (Every deck is now available —
+   future roadmap tiles would trail at the end with status
+   "coming-soon".)
    ============================================================ */
 import type { Deck } from "./types";
 import { planets } from "./planets";
@@ -41,8 +42,7 @@ export const DECKS: Deck[] = [
   maitri,
   avasthas,
   shadbala,
-  // coming soon
+  yogas,
   karakas,
   dashas,
-  yogas,
 ];
