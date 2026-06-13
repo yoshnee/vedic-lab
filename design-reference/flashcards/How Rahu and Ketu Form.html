@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How Rahu &amp; Ketu Form — Component</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="nodes-diagram.css" />
+<style>
+  .rkdemo{max-width:920px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+    gap:26px; padding:48px clamp(18px,4vw,40px) 56px;}
+  .rkdemo-head{text-align:center;}
+  .rkdemo-kicker{margin:0; font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--accent);}
+  .rkdemo-head h1{font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:8px 0 10px;}
+  .rkdemo-sub{margin:0 auto; color:var(--text-2); font-size:14.5px; max-width:56ch;}
+  .rk-legend{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .rk-li{display:flex; flex-direction:column; gap:7px; padding:16px 17px; border:1px solid var(--border-soft);
+    border-radius:16px; background:color-mix(in srgb,var(--surface) 55%, transparent);}
+  .rk-li > span{font-family:var(--font-mono),monospace; font-size:10px; letter-spacing:.2em; color:var(--accent);}
+  .rk-li h3{font-size:14.5px; font-weight:600; letter-spacing:-.01em;}
+  .rk-li p{margin:0; font-size:12.5px; line-height:1.55; color:var(--text-2); text-wrap:pretty;}
+  .rkdemo-note{margin:0; text-align:center; font-family:var(--font-mono),monospace; font-size:10.5px;
+    letter-spacing:.05em; line-height:1.7; color:var(--text-3); max-width:72ch; align-self:center;}
+  .rkdemo-foot{margin:0; text-align:center; font-family:var(--font-mono),monospace; font-size:11.5px; color:var(--text-3); letter-spacing:.04em;}
+  .rkdemo-foot a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 45%, transparent);}
+  .rkdemo-foot a:hover{border-bottom-color:var(--accent);}
+  @media (max-width:860px){ .rk-legend{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .rk-legend{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="rk-root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="celestial.js"></script>
+<script type="text/babel" src="nodes-diagram.jsx"></script>
+
+<script type="text/babel">
+function RKDemo() {
+  return (
+    <main className="rkdemo" data-screen-label="How Rahu and Ketu Form">
+      <header className="rkdemo-head">
+        <p className="rkdemo-kicker">{'Component \u00B7 Rahu & Ketu deck'}</p>
+        <h1>{'How Rahu & Ketu Form'}</h1>
+        <p className="rkdemo-sub">{'Two paths cross the sky at two opposite points \u2014 the nodes. Press play to run a year: the shadow line sweeps with the Sun, and only when it lands on the nodal axis can an eclipse happen.'}</p>
+      </header>
+
+      {React.createElement(window.NodesDiagram)}
+
+      <section className="rk-legend" aria-label="Four ideas this diagram teaches">
+        <div className="rk-li">
+          <span>01</span>
+          <h3>Crossings, not bodies</h3>
+          <p>{'Rahu and Ketu are the two points where the Lunar Path crosses the Solar Path \u2014 pure geometry, no mass. Hence \u201Cshadow planets.\u201D'}</p>
+        </div>
+        <div className="rk-li">
+          <span>02</span>
+          <h3>Always opposite</h3>
+          <p>{'The nodes are the two ends of one axis through Earth, exactly 180\u00B0 apart \u2014 Rahu crossing north, Ketu crossing south.'}</p>
+        </div>
+        <div className="rk-li">
+          <span>03</span>
+          <h3>Crossings are routine</h3>
+          <p>{'The Moon crosses a node about every 13.6 days. On its own, a crossing causes nothing \u2014 watch it happen all year.'}</p>
+        </div>
+        <div className="rk-li">
+          <span>04</span>
+          <h3>The eclipse rule</h3>
+          <p>{'Eclipses occur only when the Earth-shadow line swings onto the nodal axis \u2014 two eclipse seasons a year.'}</p>
+        </div>
+      </section>
+
+      <p className="rkdemo-note">{'Tilt drawn at \u224814\u00B0 for legibility; the true inclination is \u22485.1\u00B0. The nodal axis itself drifts slowly backward \u2014 a full circle every 18.6 years \u2014 which is why Rahu & Ketu are always retrograde. Toggle \u201Cnodal regression\u201D to watch it.'}</p>
+
+      <p className="rkdemo-foot">Part of the lab: <a href="Flashcards.html">Flashcards</a> · <a href="Significations Cloud.html">Significations Cloud</a></p>
+    </main>
+  );
+}
+ReactDOM.createRoot(document.getElementById('rk-root')).render(<RKDemo />);
+</script>
+</body>
+</html>

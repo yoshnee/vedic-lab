@@ -298,15 +298,8 @@ export function PlanetPanel({
           <span className="pp-name">
             <span className="nm">{p.name}</span>
           </span>
-          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor || p.karaka) && (
+          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor) && (
             <span className="pp-pills">
-              {p.karaka && (
-                <button type="button" className="pp-pill" data-kind="karaka"
-                  title="Jaimini chara karaka, ranked by degree within sign — tap for the card"
-                  onClick={(e) => { e.stopPropagation(); onOpenCard(p.karaka!.flashcard.type, p.karaka!.flashcard.id); }}>
-                  {p.karaka.name}
-                </button>
-              )}
               {p.dasha.includes("maha") && (
                 <button type="button" className="pp-pill" data-kind="maha"
                   onClick={(e) => { e.stopPropagation(); onOpenDasha?.(); }}>Mahādaśā lord</button>
@@ -427,10 +420,10 @@ export function PlanetPanel({
                 </div>
               )}
 
-              {/* Yogas — computed for the natal D1 frame only (core/yoga.ts);
-                  hidden in varga context, like nakshatra/gandanta/shadbala. */}
-              {!vargaLabel && (
-                <div className="pp-row">
+              {/* Yogas — computed per frame (core/yoga.ts): natal D1 from real
+                  longitudes, varga panels from the varga longitudes
+                  (owner-directed; see buildVargaPanels). */}
+              <div className="pp-row">
                   <div className="pp-row-label">Yogas</div>
                   <div className="pp-row-val">
                     {p.yogas.length ? (
@@ -461,7 +454,6 @@ export function PlanetPanel({
                     )}
                   </div>
                 </div>
-              )}
 
               <ShadbalaDrawer sb={p.shadbala ?? null} pkey={p.key} onOpenCard={onOpenCard} />
               <AvasthaDrawer items={p.avasthas ?? []} pkey={p.key} onOpenCard={onOpenCard} />

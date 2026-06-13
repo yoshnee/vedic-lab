@@ -9,7 +9,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { diamond } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
 import { Card } from "./Card";
-import type { Deck as DeckData } from "@/data/decks/types";
+import { DiagramCard } from "./DiagramCard";
+import type { Deck as DeckData, CardDiagramLink } from "@/data/decks/types";
 
 export function Deck({
   deck,
@@ -23,26 +24,34 @@ export function Deck({
   const n = deck.cards.length;
   const [i, setI] = useState(() => Math.max(0, Math.min(n - 1, initialCard)));
   const [flipped, setFlipped] = useState(false);
+  // the in-deck diagram view (opened from a card back's diagramLink button);
+  // navigating away or Esc returns to the cards
+  const [diagramView, setDiagramView] = useState<CardDiagramLink | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const liveRef = useRef<HTMLDivElement>(null);
   const touch = useRef({ x: 0, y: 0 });
   const swiped = useRef(false); // set on a swipe so the trailing click doesn't also flip
+  const diagramRef = useRef(diagramView); // for the keydown handler
+  useEffect(() => { diagramRef.current = diagramView; }, [diagramView]);
 
   const go = useCallback(
     (d: number) => {
       setI((p) => Math.max(0, Math.min(n - 1, p + d)));
       setFlipped(false);
+      setDiagramView(null);
     },
     [n],
   );
   const flip = useCallback(() => setFlipped((f) => !f), []);
 
-  /* keyboard: arrows nav, space/enter flip (unless on a real button), esc close, tab trap */
+  /* keyboard: arrows nav, space/enter flip (unless on a real button), esc
+     closes the diagram view first, then the deck; tab trap */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        onClose();
+        if (diagramRef.current) setDiagramView(null);
+        else onClose();
         return;
       }
       if (e.key === "ArrowRight") {
@@ -57,7 +66,9 @@ export function Deck({
       }
       if (e.key === " " || e.key === "Spacebar" || e.key === "Enter") {
         const target = e.target as HTMLElement;
-        if (target.closest && target.closest("button")) return; // let buttons activate natively
+        // let real controls (buttons, the diagram's slider/toggle) activate natively
+        if (target.closest && target.closest("button,input,label")) return;
+        if (diagramRef.current) return; // the diagram view has no card to flip
         e.preventDefault();
         flip();
         return;
@@ -66,7 +77,7 @@ export function Deck({
         const dialog = dialogRef.current;
         if (!dialog) return;
         const f = dialog.querySelectorAll<HTMLElement>(
-          'button:not([disabled]),[tabindex="0"]',
+          'button:not([disabled]),input:not([disabled]),[tabindex="0"]',
         );
         if (!f.length) return;
         const first = f[0];
@@ -84,25 +95,28 @@ export function Deck({
     return () => document.removeEventListener("keydown", onKey);
   }, [go, flip, onClose]);
 
-  /* focus the card on open */
+  /* focus the card on open; re-focus when the diagram view toggles (the
+     clicked button unmounts, so focus would fall to the body) */
   useEffect(() => {
     if (cardRef.current) cardRef.current.focus();
-  }, []);
+    else dialogRef.current?.focus();
+  }, [diagramView]);
 
   /* announce position + face */
   useEffect(() => {
     if (liveRef.current)
-      liveRef.current.textContent =
-        "Card " +
-        (i + 1) +
-        " of " +
-        n +
-        ". " +
-        (flipped ? "Meaning" : "Term") +
-        ": " +
-        deck.cards[i].title +
-        ".";
-  }, [i, flipped, n, deck]);
+      liveRef.current.textContent = diagramView
+        ? "Diagram: How Rahu and Ketu Form."
+        : "Card " +
+          (i + 1) +
+          " of " +
+          n +
+          ". " +
+          (flipped ? "Meaning" : "Term") +
+          ": " +
+          deck.cards[i].title +
+          ".";
+  }, [i, flipped, n, deck, diagramView]);
 
   function onTouchStart(e: React.TouchEvent) {
     const t = e.touches[0];
@@ -135,11 +149,12 @@ export function Deck({
       }}
     >
       <div
-        className="fc-dialog"
+        className={"fc-dialog" + (diagramView ? " fc-dialog--wide" : "")}
         role="dialog"
         aria-modal="true"
         aria-label={deck.title + " flashcards"}
         ref={dialogRef}
+        tabIndex={-1}
       >
         <header className="fc-bar">
           <span className="fc-bar-title">
@@ -167,35 +182,47 @@ export function Deck({
             ‹
           </button>
 
-          <div
-            className="fc-stack"
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-          >
-            <span className="fc-ghost fc-ghost--2" aria-hidden="true" />
-            <span className="fc-ghost fc-ghost--1" aria-hidden="true" />
+          {diagramView ? (
+            /* the diagram view (a card-back button, with a preset frame):
+               wide, non-flipping — no swipe nav (the day slider IS a
+               horizontal drag); arrows + side buttons navigate (and close it) */
+            <DiagramCard link={diagramView} onBack={() => setDiagramView(null)} />
+          ) : (
             <div
-              className="fc-cardbtn"
-              role="button"
-              tabIndex={0}
-              ref={cardRef}
-              aria-pressed={flipped}
-              aria-label={
-                card.title +
-                (card.sanskrit ? ", " + card.sanskrit : "") +
-                ". " +
-                (flipped ? "Showing meaning." : "Showing term.") +
-                " Activate to flip."
-              }
-              onClick={() => {
-                // a swipe just navigated; don't let its trailing click also flip
-                if (swiped.current) { swiped.current = false; return; }
-                flip();
-              }}
+              className="fc-stack"
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
             >
-              <Card card={card} deckAccent={deck.accent} flipped={flipped} />
+              <span className="fc-ghost fc-ghost--2" aria-hidden="true" />
+              <span className="fc-ghost fc-ghost--1" aria-hidden="true" />
+              <div
+                className="fc-cardbtn"
+                role="button"
+                tabIndex={0}
+                ref={cardRef}
+                aria-pressed={flipped}
+                aria-label={
+                  card.title +
+                  (card.sanskrit ? ", " + card.sanskrit : "") +
+                  ". " +
+                  (flipped ? "Showing meaning." : "Showing term.") +
+                  " Activate to flip."
+                }
+                onClick={() => {
+                  // a swipe just navigated; don't let its trailing click also flip
+                  if (swiped.current) { swiped.current = false; return; }
+                  flip();
+                }}
+              >
+                <Card
+                  card={card}
+                  deckAccent={deck.accent}
+                  flipped={flipped}
+                  onOpenDiagram={setDiagramView}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             className="fc-nav"

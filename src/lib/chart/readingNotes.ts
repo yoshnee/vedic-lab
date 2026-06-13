@@ -1,6 +1,6 @@
 /* ============================================================
    readingNotes.ts — the guided "reading notes" rail's data + storage.
-   Five steps in classical reading order, each a checkbox + teacherly prompt
+   Seven steps in classical reading order, each a checkbox + teacherly prompt
    (owner's wording, verbatim — don't rephrase) + a notes field. Notes persist
    in LOCALSTORAGE (they must survive refresh and browser restarts, unlike the
    sessionStorage birth details), keyed per natal chart by the resolved birth
@@ -21,13 +21,30 @@ export interface ReadingStep {
   deck?: { deckId: string; label: string };
 }
 
-/** The reading order. Prompts are the owner's cleaned wording — canonical. */
+/** The reading order (owner-directed 2026-06: Ascendant → Planets →
+    Rahu/Ketu Axis → Houses → Vargas (optional) → Dashas → Synthesis).
+    Prompts are the owner's wording — canonical, don't rephrase — EXCEPT the
+    Rahu/Ketu prompt, still a draft awaiting the owner's copy. The
+    "lagna"/"varga" ids are kept for the retitled steps so saved
+    localStorage notes survive the rename. */
 export const READING_STEPS: ReadingStep[] = [
   {
     id: "lagna",
-    title: "Lagna",
+    title: "Ascendant",
+    prompt: "Inspect the Chart Ruler panel.",
+  },
+  {
+    id: "planets",
+    title: "Planets",
+    prompt: "Go through the planet panels in order. For each, assess its dignity.",
+    deck: { deckId: "planetary-groupings", label: "Open the Planetary Groupings deck" },
+  },
+  {
+    id: "nodes",
+    title: "Rahu/Ketu Axis",
     prompt:
-      "Inspect the Chart Ruler panel. It lays out the ascendant and information about its lord. Determine the lord's dignity, and where it sits. Note what stands out as the foundation of the chart.",
+      "Find the nodal axis. Note the houses Rahu and Ketu occupy, the signs and their lords, and any planets joined with them. Read both ends together as one axis.",
+    deck: { deckId: "rahu-ketu", label: "Open the Rahu & Ketu deck" },
   },
   {
     id: "houses",
@@ -38,7 +55,7 @@ export const READING_STEPS: ReadingStep[] = [
   },
   {
     id: "varga",
-    title: "Varga",
+    title: "Vargas (optional)",
     prompt:
       "Peek at the relevant varga when you want more depth on a specific area. D2 for finances, D9 for marriage and dharma, D10 for career.",
     // no deck icon yet — the varga deck doesn't exist

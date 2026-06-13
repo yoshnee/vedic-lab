@@ -9,7 +9,15 @@
    - Degrees are "expanded" per the spec: divDegree = (lon % (30/n)) * n, so a
      planet mid-part reads 15° — full 0–30 range in every varga.
    Validated against the vendored JHora fixtures' navamsa_sign (all 23 charts).
-   D10/D60 etc. drop in here later as further functions of the same shape.
+   - D10 dasamsa: odd signs count from self, even from the 9th (+8) — equal 3° parts.
+   - D30 trimsamsa: the ONE unequal varga — no 1°-part formula. Parashari
+     planet-portions: odd signs 5/5/8/7/5° → Aries/Aquarius/Sagittarius/Gemini/
+     Libra; even signs 5/7/8/5/5° → Taurus/Virgo/Pisces/Capricorn/Scorpio.
+     Inclusive upper bounds and the uniform (deg×30)%30 degree expansion both
+     ported verbatim from the reference (per PyJHora; the spec exempts D30 from
+     the equal-division scaling note but the reference applies it — we follow
+     the working code, not an improvised proportional expansion).
+   Further vargas (D60, …) drop in here later as functions of the same shape.
    ============================================================ */
 
 export interface VargaPoint {
@@ -63,6 +71,37 @@ export function saptamsa(lon: number): VargaPoint {
   const sign = signOf(lon);
   const offset = sign % 2 === 0 ? 6 : 0;
   return { sign: ((sign - 1 + offset + part(lon, 7)) % 12) + 1, degree: divDeg(lon, 7) };
+}
+
+/** D10 — dasamsa: odd signs start from self, even from the 9th (+8). */
+export function dasamsa(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  const offset = sign % 2 === 0 ? 8 : 0;
+  return { sign: ((sign - 1 + offset + part(lon, 10)) % 12) + 1, degree: divDeg(lon, 10) };
+}
+
+/** D30 — trimsamsa: unequal Parashari planet-portions (see the header note).
+    Odd signs: 0–5° Aries · 5–10° Aquarius · 10–18° Sagittarius · 18–25° Gemini ·
+    25–30° Libra. Even signs: 0–5° Taurus · 5–12° Virgo · 12–20° Pisces ·
+    20–25° Capricorn · 25–30° Scorpio. Bounds inclusive per the reference. */
+export function trimsamsa(lon: number): VargaPoint {
+  const sign = signOf(lon);
+  const d = degInSign(lon);
+  let dSign: number;
+  if (sign % 2 === 1) {
+    if (d <= 5) dSign = 1;
+    else if (d <= 10) dSign = 11;
+    else if (d <= 18) dSign = 9;
+    else if (d <= 25) dSign = 3;
+    else dSign = 7;
+  } else {
+    if (d <= 5) dSign = 2;
+    else if (d <= 12) dSign = 6;
+    else if (d <= 20) dSign = 12;
+    else if (d <= 25) dSign = 10;
+    else dSign = 8;
+  }
+  return { sign: dSign, degree: divDeg(lon, 30) };
 }
 
 /** D12 — dwadasamsa: starts from the sign itself, +1 per part. */

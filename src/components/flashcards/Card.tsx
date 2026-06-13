@@ -13,7 +13,8 @@ import {
   conjunction,
 } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
-import type { Card as CardData } from "@/data/decks/types";
+import { SignificationsCloud } from "./SignificationsCloud";
+import type { Card as CardData, CardDiagramLink } from "@/data/decks/types";
 
 function CardIcon({
   icon,
@@ -36,6 +37,11 @@ function CardIcon({
   } else if (icon.kind === "zodiac") html = zodiac(icon.symbol, size, accent);
   else if (icon.kind === "combust") html = combust(size, icon.planet);
   else if (icon.kind === "conjunction") html = conjunction(size, icon.a, icon.b);
+  else if (icon.kind === "planets") {
+    // a row of the shared planet-sphere art (CSS lays the row out + sizes it)
+    html = icon.ids.map((id) => body(id, size)).join("");
+    cls = "fc-icon fc-icon--planets";
+  }
   if (!html) return null;
   return <Svg className={cls} html={html} />;
 }
@@ -45,6 +51,7 @@ export function Card({
   deckAccent,
   flipped,
   highlightFact,
+  onOpenDiagram,
 }: {
   card: CardData;
   deckAccent: string;
@@ -52,12 +59,16 @@ export function Card({
   /** Emphasize the front fact-row with this exact label (e.g. the tapped "Pada 2"),
       or a BACK point that starts with it (e.g. "Major 3-4" → the condition line). */
   highlightFact?: string;
+  /** Handler for the back's diagramLink button (the Deck's in-deck diagram
+      view). Omitted (e.g. in the chart popover) → the button hides. */
+  onOpenDiagram?: (link: CardDiagramLink) => void;
 }) {
   const accent = card.accentColor || deckAccent;
   const hasFacts = !!card.facts?.length;
+  const hasCloud = !!card.cloud?.terms.length;
   const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
-  const hasBackContent = hasPoints || hasBody;
+  const hasBackContent = hasCloud || hasPoints || hasBody;
   // Zodiac sign cards carry their Sanskrit name on the BACK only — the front
   // leads with the English sign + glyph; the Sanskrit name appears once you flip.
   const frontSanskrit = card.sanskrit && card.icon?.kind !== "zodiac";
@@ -92,19 +103,36 @@ export function Card({
               cards it's pinned to the corner (CSS) so it clears the facts. */}
           <span className="fc-hint" aria-hidden="true">Flip ↻</span>
         </div>
-        <div className="fc-face fc-back">
+        {/* Cloud backs ("wordsmith") show ONLY the title + the weighted words —
+            no Sanskrit, no badge, no prose (owner-directed). The front above
+            is identical either way. */}
+        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : "")}>
           <div className="fc-back-head">
-            <span className="fc-back-term">{card.title}</span>
-            {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
+            {card.backIcon && <CardIcon icon={card.backIcon} accent={accent} size={26} />}
+            <span className="fc-back-term">{card.backTitle ?? card.title}</span>
+            {card.sanskrit && !hasCloud && <span className="fc-sk">{card.sanskrit}</span>}
           </div>
-          {hasPoints ? (
-            <ul className="fc-points">
-              {card.points!.map((p, idx) => (
-                <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
-                  {p}
-                </li>
-              ))}
-            </ul>
+          {hasCloud ? (
+            <SignificationsCloud data={card.cloud!} />
+          ) : hasPoints ? (
+            <>
+              <ul className="fc-points">
+                {card.points!.map((p, idx) => (
+                  <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              {card.diagramLink && onOpenDiagram && (
+                <button
+                  type="button"
+                  className="fcd-open"
+                  onClick={(e) => { e.stopPropagation(); onOpenDiagram(card.diagramLink!); }}
+                >
+                  {card.diagramLink.label} ↗
+                </button>
+              )}
+            </>
           ) : hasBody ? (
             <p className="fc-body">{card.body}</p>
           ) : (
@@ -116,7 +144,7 @@ export function Card({
               </span>
             </div>
           )}
-          {card.badge && hasBackContent && (
+          {card.badge && hasBackContent && !hasCloud && (
             <span className="fc-badge fc-badge--back">{card.badge}</span>
           )}
         </div>

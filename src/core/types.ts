@@ -93,16 +93,6 @@ export interface YogaRef {
   intensity?: "purna" | "strong" | "mild";
 }
 
-/* ---- chara karaka: the planet's Jaimini designation (core/karaka.ts), a
-   NATAL-D1 property by degree-within-sign ranking. Only the three surfaced
-   designations exist as pills; null for the other planets and the nodes,
-   and varga panels null it (never recomputed per chart type). */
-export interface KarakaRef {
-  key: "atmakaraka" | "amatyakaraka" | "darakaraka";
-  name: string; // pill label, e.g. "Atmakaraka"
-  flashcard: { type: "karaka"; id: string }; // tap target → onOpenCard("karaka", id)
-}
-
 /** Sub-components of Sthana and Kala Bala (virupas) — plumbed for the drawer's
     future progressive disclosure; not yet rendered. */
 export interface ShadbalaParts {
@@ -168,7 +158,6 @@ export interface PlanetData {
   aspectedBy: AspectRef[];
   conjunct: PlanetKey[];
   yogas: YogaRef[]; // formed yogas (core/yoga.ts); [] when none detected
-  karaka: KarakaRef | null; // Jaimini chara karaka (natal D1 only; null in varga panels)
   extraRows: ExtraRow[];
 }
 

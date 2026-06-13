@@ -4,8 +4,8 @@
    ChartCard.tsx — a titled card around the generic NorthIndianChart. Both
    charts use the SAME header (a chart-type <select> + a caption line) so they
    line up: the caption line reserves its height on both cards. The selects are
-   live: Chart 1 toggles D1/D9, Chart 2 Transit/D1/D9 (unbuilt vargas ship as
-   disabled options). `headExtra` renders beside the select (the gochar
+   live: Chart 1 toggles D1 + the varga set (D2/D7/D9/D10/D30), Chart 2 the
+   same plus Transit. `headExtra` renders beside the select (the gochar
    date-time picker, owner-placed); transit's tz + Now reset live on the
    caption line under it. The card is the seam where natal / transit /
    divisionals all reuse one renderer — only frame + planets differ.

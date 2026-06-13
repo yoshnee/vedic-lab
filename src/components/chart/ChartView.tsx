@@ -3,19 +3,20 @@
 /* ============================================================
    ChartView.tsx — the birth-chart page body. Layout: a chart header (back-link +
    Legend), the hero meta, then a desktop 3-up region — a sticky Vimśottarī daśā
-   rail | the natal chart | a second chart driven by a type selector (Transit
-   now; divisionals later) — and below it the nine planet panels in a 2-column
-   grid (an open panel spans full width). On mobile everything stacks and the
-   daśā rail becomes a slide-in drawer. Owns the flashcard popover, the legend
-   drawer, the daśā drawer, and the Chart-2 type. Natal + transit render through
-   the same NorthIndianChart on the SAME natal lagna frame.
+   rail | two charts, each with a live type selector (Chart 1: D1 + the varga
+   set, the DRIVER of the planet grid; Chart 2: Transit + the same set, an
+   independent secondary view) — and below it the nine planet panels in a
+   2-column grid (an open panel spans full width). On mobile everything stacks
+   and the daśā rail becomes a slide-in drawer. Owns the flashcard popover, the
+   legend drawer, the daśā drawer, and both chart types. Natal + transit render
+   through the same NorthIndianChart on the SAME natal lagna frame.
    ============================================================ */
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { Svg } from "@/components/Svg";
 import { diamond, body } from "@/celestial/celestial";
-import { buildD9, buildVargaPanels } from "@/lib/chart/varga";
+import { VARGAS, VARGA_KEYS, isVargaKey, buildVargaChart, buildVargaPanels, type VargaKey } from "@/lib/chart/varga";
 import { transitFor } from "@/lib/chart/generateChart";
 import { activatedHousesFor } from "@/lib/chart/activation";
 import { isValidZone } from "@/lib/time";
@@ -104,20 +105,20 @@ function Drawer({ overlayClass, drawerClass, label, title, onClose, children }: 
   );
 }
 
-/* The chart-type selectors. Vargas can show on either side; Transit is
-   right-only (the natal-vs-X reading layout, and its "as of" caption belongs
-   there). Unbuilt vargas are visible-but-disabled "soon" stubs on both sides. */
-type Chart1Type = "d1" | "d9";
-type Chart2Type = "transit" | "d1" | "d9";
-const VARGA_OPTIONS: ChartOption[] = [
+/* The chart-type selectors. The full varga set (VARGAS registry) shows on
+   either side; Transit is right-only (the natal-vs-X reading layout, and its
+   "as of" caption belongs there). Chart 1 is the DRIVER: the planet grid,
+   per-planet computations, and the dasha overlay all read from it. Chart 2
+   is an independent secondary view. */
+type Chart1Type = "d1" | VargaKey;
+type Chart2Type = "transit" | Chart1Type;
+const CHART1_OPTIONS: ChartOption[] = [
   { value: "d1", label: "Natal · Rāśi (D1)" },
-  { value: "d9", label: "Navāṁśa (D9)" },
-  { value: "d10", label: "Daśāṁśa (D10) · soon", disabled: true },
-  { value: "d60", label: "Ṣaṣṭyāṁśa (D60) · soon", disabled: true },
+  ...VARGA_KEYS.map((k) => ({ value: k, label: VARGAS[k].label })),
 ];
 const CHART2_OPTIONS: ChartOption[] = [
   { value: "transit", label: "Transit · Gochara" },
-  ...VARGA_OPTIONS,
+  ...CHART1_OPTIONS,
 ];
 
 export function ChartView({ model }: { model: ChartModel }) {
@@ -214,30 +215,36 @@ export function ChartView({ model }: { model: ChartModel }) {
     document.getElementById(`panel-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   const frame = { ascSign: chart.ascendant.sign, ascDegree: chart.ascendant.degree };
-  const d9 = useMemo(() => buildD9(chart), [chart]);
 
-  /* Chart 1 is the PANEL CONTEXT: toggling it re-derives the planet panels for
-     that varga (sign-level facts only — see buildVargaPanels); toggling back
-     restores the natal detail. Chart 2 never affects the panels. */
-  const d9Panels = useMemo(() => buildVargaPanels(chart), [chart]);
-  const vargaMode = chart1 !== "d1";
-  const panelPlanets = vargaMode ? d9Panels.planets : chart.planets;
-  const vargaLabel = vargaMode ? "Navāṁśa · D9" : undefined;
+  /* Chart 1 is the DRIVER: toggling it re-derives the planet panels for that
+     varga (avasthas, maitri, dignity … recomputed — see buildVargaPanels);
+     toggling back restores the natal detail. Chart 2 never affects the grid. */
+  const varga1: VargaKey | null = chart1 === "d1" ? null : chart1;
+  const varga2: VargaKey | null = chart2 === "transit" || chart2 === "d1" ? null : chart2;
+  const v1 = useMemo(() => (varga1 ? buildVargaChart(chart, VARGAS[varga1].map) : null), [chart, varga1]);
+  const v2 = useMemo(() => (varga2 ? buildVargaChart(chart, VARGAS[varga2].map) : null), [chart, varga2]);
+  const vargaPanels = useMemo(
+    () => (varga1 ? buildVargaPanels(chart, VARGAS[varga1].map) : null),
+    [chart, varga1],
+  );
+  const vargaMode = !!vargaPanels;
+  const panelPlanets = vargaPanels ? vargaPanels.planets : chart.planets;
+  const vargaLabel = varga1 ? VARGAS[varga1].short : undefined;
 
-  /** Dataset for a selected chart type — toggling is non-destructive; every
-      set derives from the model already in memory, so switching back restores. */
-  const dataFor = (t: Chart1Type | Chart2Type) =>
-    t === "transit"
+  /* Toggling is non-destructive; every set derives from the model already in
+     memory, so switching back restores. No varga subtitle (owner-trimmed). */
+  const natalData = { frame, planets: chart.planets, caption: chart.birth.dateLabel };
+  const c1 = v1 ? { frame: v1.frame, planets: v1.planets, caption: "" } : natalData;
+  const c2 =
+    chart2 === "transit"
       ? {
           frame, // ALWAYS the natal lagna frame — scrubbing moves only the planets
           planets: activeTransit?.planets ?? [],
           caption: transitCaption,
         }
-      : t === "d9"
-        ? { frame: d9.frame, planets: d9.planets, caption: "" } // no varga subtitle (owner-trimmed)
-        : { frame, planets: chart.planets, caption: chart.birth.dateLabel };
-  const c1 = dataFor(chart1);
-  const c2 = dataFor(chart2);
+      : v2
+        ? { frame: v2.frame, planets: v2.planets, caption: "" }
+        : natalData;
 
   return (
     <>
@@ -316,8 +323,8 @@ export function ChartView({ model }: { model: ChartModel }) {
               <ChartCard
                 label="Chart 1"
                 value={chart1}
-                options={VARGA_OPTIONS}
-                onChange={(v) => { if (v === "d1" || v === "d9") setChart1(v); }}
+                options={CHART1_OPTIONS}
+                onChange={(v) => { if (v === "d1" || isVargaKey(v)) setChart1(v); }}
                 caption={c1.caption}
                 frame={c1.frame}
                 planets={c1.planets}
@@ -346,7 +353,7 @@ export function ChartView({ model }: { model: ChartModel }) {
                 label="Chart 2"
                 value={chart2}
                 options={CHART2_OPTIONS}
-                onChange={(v) => { if (v === "transit" || v === "d1" || v === "d9") setChart2(v); }}
+                onChange={(v) => { if (v === "transit" || v === "d1" || isVargaKey(v)) setChart2(v); }}
                 caption={c2.caption}
                 frame={c2.frame}
                 planets={c2.planets}
@@ -386,11 +393,11 @@ export function ChartView({ model }: { model: ChartModel }) {
               <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
             )}
 
-            {vargaMode && (
+            {vargaMode && vargaPanels && (
               <p className="pp-context">
                 Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
-                {d9Panels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
-                rāśi detail (nakshatra, gandanta, shadbala …)
+                {vargaPanels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
+                rāśi detail (nakshatra, shadbala, sade sati …)
               </p>
             )}
             <section className="pp-grid" aria-label="Planet details">

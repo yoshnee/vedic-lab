@@ -7,7 +7,7 @@
    element's flag — text from ELEMENT_INFO (the Elements deck's lookup form),
    so the readout and the flashcards can't diverge. Each element name opens its
    deck card. Rendered twice by ChartView: in the sticky rail (desktop) and
-   inline above the ChartRuler (mobile) — CSS shows exactly one.
+   inline above the planet panels (mobile) — CSS shows exactly one.
    ============================================================ */
 import { SIGN_ELEMENT, type Element } from "@/core/constants";
 import { ELEMENT_INFO } from "@/data/decks/elements";

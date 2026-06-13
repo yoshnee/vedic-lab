@@ -25,6 +25,9 @@ function CardIcon({ icon, accent, size }) {
 /* -------- a single flashcard (front + back faces) -------- */
 function Card({ card, deckAccent, flipped }) {
   const accent = card.accentColor || deckAccent;
+  // an empty terms list is NOT a cloud back — fall through to the body
+  // (matches the shipped Card.tsx guard: !!card.cloud?.terms.length)
+  const hasCloud = !!(card.cloud && card.cloud.terms && card.cloud.terms.length);
   return (
     <div className="fc-card">
       <div className={'fc-inner' + (flipped ? ' is-flipped' : '')} style={{ '--accent': accent }}>
@@ -36,13 +39,15 @@ function Card({ card, deckAccent, flipped }) {
           {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
           <span className="fc-hint">Flip ↻</span>
         </div>
-        <div className="fc-face fc-back">
+        <div className={'fc-face fc-back' + (hasCloud ? ' fc-back--cloud' : '')}>
           <div className="fc-back-head">
             <span className="fc-back-term">{card.title}</span>
-            {card.sanskrit && <span className="fc-sk">{card.sanskrit}</span>}
+            {card.sanskrit && !hasCloud && <span className="fc-sk">{card.sanskrit}</span>}
           </div>
-          <p className="fc-body">{card.body}</p>
-          {card.badge && <span className="fc-badge fc-badge--back">{card.badge}</span>}
+          {hasCloud && window.SignificationsCloud
+            ? React.createElement(window.SignificationsCloud, { data: card.cloud })
+            : <p className="fc-body">{card.body}</p>}
+          {card.badge && !hasCloud && <span className="fc-badge fc-badge--back">{card.badge}</span>}
         </div>
       </div>
     </div>
