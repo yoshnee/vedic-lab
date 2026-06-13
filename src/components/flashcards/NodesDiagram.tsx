@@ -76,11 +76,15 @@ const STARS: [number, number][] = [[60,40],[150,95],[250,32],[370,60],[520,28],[
 
 interface Saved { day?: number; years?: number; regress?: boolean; }
 
+function loadSaved(): Saved {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "") || {}; } catch { return {}; }
+}
+
 export function NodesDiagram({ presetDay }: { presetDay?: number }) {
   const g: Geom = { cx: 440, cy: 250, R: 315, SQ: 0.34, ZS: 0.78 };
-  const saved = useMemo<Saved>(() => {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY) || "") || {}; } catch { return {}; }
-  }, []);
+  // lazy state initializer (not useMemo) — a one-time mount read of a
+  // side-effecting source, which the React Compiler can't memoize
+  const [saved] = useState<Saved>(loadSaved);
   // a preset frame (the deck cards' teaching states) wins over the saved
   // playback state — deterministic on open; interaction takes over from there
   const [day, setDay] = useState(presetDay ?? (typeof saved.day === "number" ? saved.day : 0));

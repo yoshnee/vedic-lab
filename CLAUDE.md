@@ -55,22 +55,27 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   reading-the-numbers; owner-provided, no em-dashes by request);
   **Rahu & Ketu (9)** has full content (owner-provided `rahu_ketu_flashcards.md`: how the nodes
   form (card 1 — owner-retitled "In depth on Rahu and Ketu", 2026-06) · the eclipse rule · the
-  six house AXES (1/7 … 6/12, each with both node placements +
-  any "Shared" line) · assessing nodal dignity through the dispositor chain; the nodes' NATURE
+  six house AXES (1/7 … 6/12: statement fronts, no question marks, that FLIP TO THEIR THEME via
+  `Card.backTitle` — "Self ↔ Other" etc. (owner-directed); both node placements + any "Shared"
+  line as points; axis icons highlight BOTH houses via `chart` icon `house: number[]`) ·
+  assessing nodal dignity through the dispositor chain; the nodes' NATURE
   stays in the Planets deck, deliberately not duplicated. **Cards 1–2 PULL UP the interactive
-  "How Rahu & Ketu Form" diagram** — a `Card.diagramLink` button on their backs opens an
-  in-deck WIDE view (`DiagramCard` + `NodesDiagram`, ported from the design handoff's
+  "How Rahu & Ketu Form" diagram** via `Card.diagramLink` back buttons opening an in-deck WIDE
+  view — owner-SETTLED 2026-06 after trying both: BUTTON-ONLY, never an in-stack card of its
+  own (a `Card.diagram` in-stack variant was built and then removed the same day — don't
+  re-add) — (`DiagramCard` + `NodesDiagram`, ported from the design handoff's
   `nodes-diagram.jsx`, archived in `design-reference/flashcards/`): an oblique-projected
   orbital model (ecliptic + inclined lunar path, tilt exaggerated 14° for legibility), a
   play/scrub year with eclipse-season detection (status strip: idle/crossing/season/
   lunar/solar eclipse), and a nodal-regression toggle (~18.6yr cycle → why the nodes are
   always retrograde); node markers are the shared celestial body art, NO ☊/☋ glyphs
-  (owner-directed). Card 1 opens the "formation" frame (day 0, no eclipse), card 2 the
+  (owner-directed). Card 1's button opens the "formation" frame (day 0, no eclipse), card 2's the
   "eclipse" frame (day 127 — the seeded longitudes put the full Moon on the shadow line:
   a lunar-eclipse state, verified). Playback persists in localStorage (`rk-nodes-v1`);
   presets win over saved state on open. Esc closes the view before the deck; arrows/side
-  buttons navigate out of it; no swipe nav in the view (the day slider is a horizontal
-  drag). The diagram screen's copy (sub + 4-idea legend + tilt note) lives in
+  buttons navigate; no swipe nav in the view (the day slider is a horizontal
+  drag). The diagram screen's copy (sub + 4-idea legend; the tilt/regression footnote was
+  REMOVED, owner-directed) lives in
   `NODES_DIAGRAM` in `rahuKetu.ts`; styles in `src/lib/design/nodes.css`);
   **Yogas (16)** has full content (owner-provided `yogas-flashcards.md`: Raja ×2, Parivartana +
   Maha Parivartana, Pancha Mahapurusha, Gaja Kesari / Venus–Mercury / Dhana 2-11 / Lakshmi,
@@ -479,8 +484,9 @@ the reference when building new UI; `HANDOFF-README.md` is the original handoff 
 
 ### Ported module APIs (reuse these; don't reinvent)
 - **`src/celestial/celestial.ts`** — `body(key, size, retro?)`, `diamond(size, {glow, stroke})`,
-  `glyph(label, color, size)`, `chart(size, {highlight, fill, stroke})` (North Indian chart with one
-  house highlighted — Houses deck), `zodiac(symbol, size, color)` (zodiac glyph in a colored disc —
+  `glyph(label, color, size)`, `chart(size, {highlight, fill, stroke})` (North Indian chart;
+  `highlight` takes one house or an array — Houses deck walks 1→12, the Rahu & Ketu axis cards
+  fill both ends, e.g. [1, 7]), `zodiac(symbol, size, color)` (zodiac glyph in a colored disc —
   Ascendants deck), `combust(size, planet?)` (Sun engulfing a dimmed planet — Combustion deck),
   `conjunction(size, a, b)` (two planet spheres merging — Conjunctions deck), `colors`. Returns SVG
   **markup strings**; render via `<Svg/>`.
@@ -491,7 +497,7 @@ the reference when building new UI; `HANDOFF-README.md` is the original handoff 
 - **`src/data/decks/types.ts`** — `Deck = {id,title,subtitle?,motif,accent,status?,hidden?,cards[]}`
   (`hidden: true` = registered + flashcardLink-resolvable but never tiled on the landing grid);
   `Card = {title,sanskrit?,body,badge?,accentColor?,icon?,backIcon?,facts?,points?,cloud?,diagramLink?}`; `icon = {kind:'planet',id,retro?}
-  | {kind:'house',n} | {kind:'diamond'} | {kind:'chart',house} | {kind:'zodiac',symbol} |
+  | {kind:'house',n} | {kind:'diamond'} | {kind:'chart',house: n | n[]} | {kind:'zodiac',symbol} |
   {kind:'combust',planet?} | {kind:'conjunction',a,b} | {kind:'planets',ids[]}` (a row of planet
   spheres — the groupings couples/throuples); `backIcon` repeats a small icon on the BACK's head
   (the Planetary Groupings deck shows its planets on both faces); `status?: 'available' | 'coming-soon'`. `facts` (label/value

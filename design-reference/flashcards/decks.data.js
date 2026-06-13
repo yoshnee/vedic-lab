@@ -49,7 +49,25 @@
           ]
         } },
       { title: '5th House', sanskrit: 'Putra Bhāva', badge: '05', icon: { kind: 'house', n: 5 },
-        body: 'Intelligence, creativity and children. Romance, speculation, and pūrva puṇya — merit carried from past lives.' },
+        body: 'Intelligence, creativity and children. Romance, speculation, and pūrva puṇya — merit carried from past lives.',
+        cloud: {
+          terms: [
+            { label: 'Children', weight: 'big' },
+            { label: 'Creativity', weight: 'big' },
+            { label: 'Intelligence', weight: 'big' },
+            { label: 'Romance & Love Affairs', weight: 'big' },
+            { label: 'Past-Life Merit', weight: 'medium' },
+            { label: 'Speculation & Gains', weight: 'medium' },
+            { label: 'Spiritual Practice & Mantra', weight: 'medium' },
+            { label: 'Dharma & Virtue', weight: 'medium' },
+            { label: 'Sense of Destiny', weight: 'medium' },
+            { label: 'Joy & Spontaneity', weight: 'small' },
+            { label: 'Discernment', weight: 'small' },
+            { label: 'Advising Others', weight: 'small' },
+            { label: 'Authority & Government', weight: 'small' },
+            { label: 'Sports', weight: 'small' }
+          ]
+        } },
       { title: '6th House', sanskrit: 'Ari Bhāva', badge: '06', icon: { kind: 'house', n: 6 },
         body: 'Obstacles overcome — enemies, debts, disease and daily service. A house of effort and resilience.' },
       { title: '7th House', sanskrit: 'Kalatra Bhāva', badge: '07', icon: { kind: 'house', n: 7 },

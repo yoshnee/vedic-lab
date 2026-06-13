@@ -111,6 +111,9 @@ const MIC_ERRORS: Record<string, string> = {
 };
 /** Brave can never reach the cloud recognizer (no Google API keys). */
 const BRAVE_NETWORK_ERROR = "Brave blocks the cloud speech service, dictation needs Chrome or Edge";
+/** The cloud failed but we already kicked off the on-device pack download. */
+const DOWNLOADING_NETWORK_ERROR =
+  "cloud speech unreachable — the on-device speech pack is downloading in the background, try the mic again in a minute";
 
 /** The shared state + dictation engine — call once, render twice. */
 export function useReadingNotes(model: ChartModel): ReadingNotesApi {
@@ -129,9 +132,11 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   const [micError, setMicError] = useState<string | null>(null);
   const micErrTimer = useRef<number | undefined>(undefined);
   const mountedRef = useRef(true); // guards the async probe's continuation
+  const installKickedRef = useRef(false); // an on-device pack download is in flight
   const flagMicError = useCallback((code?: string) => {
     let msg = MIC_ERRORS[code ?? ""] ?? null; // "no-speech"/"aborted" are normal — stay quiet
     if (code === "network" && isBrave()) msg = BRAVE_NETWORK_ERROR;
+    else if (code === "network" && installKickedRef.current) msg = DOWNLOADING_NETWORK_ERROR;
     if (!msg) return;
     setMicError(msg);
     window.clearTimeout(micErrTimer.current);
@@ -246,6 +251,7 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
           // so kicking it off would only spawn never-settling downloads per tap.
           else if (a === "downloadable" && Ctor.install && mountedRef.current && !isBrave()) {
             console.info("[reading-notes] downloading the on-device speech pack for next time");
+            installKickedRef.current = true; // a network failure now gets the "downloading" message
             void Ctor.install({ langs: [SPEECH_LANG], processLocally: true }).catch(() => {});
           }
         }

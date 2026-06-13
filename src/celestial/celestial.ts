@@ -253,21 +253,23 @@ const HOUSE_POLY: Record<number, string> = {
   12: "300,0 225,75 150,0",
 };
 
-/* The North Indian birth-chart mark (the logo grid) with one house filled.
-   Grid lines are gold (the logo); the highlighted bhava is washed in a dark
-   design-system surface color. Both pull from CSS tokens so they stay on-system.
-   Used by the Houses deck so flipping through walks the highlight 1 → 12. */
+/* The North Indian birth-chart mark (the logo grid) with one or more houses
+   filled. Grid lines are gold (the logo); a highlighted bhava is washed in a
+   dark design-system surface color. Both pull from CSS tokens so they stay
+   on-system. Used by the Houses deck (one house, walking 1 → 12) and the
+   Rahu & Ketu axis cards (both houses of the axis, e.g. 1 + 7). */
 export function chart(
   size: number,
-  opts?: { highlight?: number; fill?: string; stroke?: string },
+  opts?: { highlight?: number | number[]; fill?: string; stroke?: string },
 ): string {
   const fill = opts?.fill || "var(--border)";
   const line = opts?.stroke || "var(--accent)";
   const hl = opts?.highlight;
+  const houses = (Array.isArray(hl) ? hl : hl ? [hl] : []).filter((h) => HOUSE_POLY[h]);
   let s =
     '<svg viewBox="-6 -6 312 312" width="' + size + '" height="' + size + '" style="display:block">';
-  if (hl && HOUSE_POLY[hl]) {
-    s += '<polygon points="' + HOUSE_POLY[hl] + '" fill="' + fill + '"/>';
+  for (const h of houses) {
+    s += '<polygon points="' + HOUSE_POLY[h] + '" fill="' + fill + '"/>';
   }
   s +=
     '<g fill="none" stroke="' + line + '" stroke-linejoin="round" stroke-linecap="round">' +

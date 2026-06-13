@@ -1,11 +1,12 @@
 "use client";
 
-/* The deck's interactive diagram view — pulled up from a card back via
-   Card.diagramLink (the Rahu & Ketu deck's cards 1–2). Lays out the design's
-   screen: title + lede, <NodesDiagram/>, the numbered idea tiles, and the
-   footnote (copy from NODES_DIAGRAM in the deck's data file). `frame` presets
-   the diagram: "formation" opens at day 0 (plain geometry, no eclipse),
-   "eclipse" at day 127 — where the seeded longitudes put the shadow line on
+/* The deck's interactive diagram view — pulled up from a card back's
+   `diagramLink` button (owner-settled: button-only, never an in-stack card).
+   Lays out the design's screen: title + lede, <NodesDiagram/>, and the
+   numbered idea tiles (copy from NODES_DIAGRAM in the deck's data file; the
+   tilt/regression footnote was removed, owner-directed). `frame` presets the
+   diagram: "formation" opens at day 0 (plain geometry, no eclipse),
+   "eclipse" at day 127, where the seeded longitudes put the shadow line on
    the node with the full Moon there (a lunar-eclipse state). A back button
    returns to the card. */
 import { NodesDiagram } from "./NodesDiagram";
@@ -38,7 +39,7 @@ export function DiagramCard({ link, onBack }: { link: CardDiagramLink; onBack: (
           </div>
         ))}
       </section>
-      <p className="fcd-note">{NODES_DIAGRAM.note}</p>
+      {/* (the tilt/regression footnote was removed, owner-directed) */}
     </div>
   );
 }

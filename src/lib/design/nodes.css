@@ -18,13 +18,13 @@
 .rk-nlab { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14.5px; fill: var(--text); }
 .rk-nsub { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; fill: var(--text-3); }
 
-@keyframes rkPulse { 0% { transform: scale(.55); opacity: .95; } 100% { transform: scale(1.9); opacity: 0; } }
-.rk-pulse { transform-box: fill-box; transform-origin: center; animation: rkPulse 1.5s ease-out infinite; }
+@keyframes rk-pulse-anim { 0% { transform: scale(.55); opacity: .95; } 100% { transform: scale(1.9); opacity: 0; } }
+.rk-pulse { transform-box: fill-box; transform-origin: center; animation: rk-pulse-anim 1.5s ease-out infinite; }
 
 /* status strip */
 .rk-status { display: flex; align-items: center; gap: 11px; padding: 13px 20px; border-top: 1px solid var(--border-soft); }
 .rk-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; transition: background .3s; }
-.rk-status[data-state="season"] .rk-dot, .rk-status[data-state="eclipse"] .rk-dot { box-shadow: 0 0 12px currentColor; }
+.rk-status[data-state="season"] .rk-dot, .rk-status[data-state="eclipse"] .rk-dot { box-shadow: 0 0 12px currentcolor; }
 .rk-pill { font-size: 13.5px; line-height: 1.4; color: var(--text-2); transition: color .3s; }
 .rk-status[data-state="eclipse"] .rk-pill, .rk-status[data-state="season"] .rk-pill { color: var(--text); }
 .rk-gap { margin-left: auto; flex: none; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .06em; color: var(--text-3); }
@@ -58,6 +58,7 @@
 
 /* ── the diagram VIEW around it (wide; pulled up from a card back) ── */
 .fc-dialog--wide { width: min(960px, 100%); }
+.fcpop-dialog--wide { width: min(960px, 100%); max-width: min(960px, 100%); }
 .fcd-card { display: flex; flex-direction: column; gap: 22px; width: 100%; max-height: 78vh; overflow-y: auto;
   padding: 4px 2px 8px; }
 .fcd-back { align-self: flex-start; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .06em;
@@ -82,8 +83,6 @@
 .rk-li > span { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .2em; color: var(--accent); }
 .rk-li h3 { margin: 0; font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
 .rk-li p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
-.fcd-note { margin: 0; text-align: center; font-family: var(--font-mono), monospace; font-size: 10.5px;
-  letter-spacing: .05em; line-height: 1.7; color: var(--text-3); max-width: 72ch; align-self: center; }
 
 @media (max-width: 860px) { .rk-legend { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .rk-day { display: none; } }

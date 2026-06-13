@@ -11,7 +11,7 @@ export type CardIcon =
   | { kind: "planet"; id: string; retro?: boolean } // celestial body, e.g. id:'sun'; retro adds the "R"
   | { kind: "house"; n: number } // diamond medallion with the house number
   | { kind: "diamond" } // the chart-diamond mark (default deck motif)
-  | { kind: "chart"; house: number } // North Indian chart with one house highlighted
+  | { kind: "chart"; house: number | number[] } // North Indian chart with one or more houses highlighted (an array for the nodal axes)
   | { kind: "zodiac"; symbol: string } // zodiac sign glyph (colored by the card's accent)
   | { kind: "combust"; planet?: string } // Sun with a dimmed planet (combustion / asta)
   | { kind: "conjunction"; a: string; b: string } // two planet spheres merging (yuti)

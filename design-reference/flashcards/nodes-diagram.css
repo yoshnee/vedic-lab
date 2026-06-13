@@ -15,13 +15,13 @@
 .rk-nlab{font-family:var(--font-display),sans-serif; font-weight:600; font-size:14.5px; fill:var(--text);}
 .rk-nsub{font-family:var(--font-mono),monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; fill:var(--text-3);}
 
-@keyframes rkPulse{0%{transform:scale(.55); opacity:.95;} 100%{transform:scale(1.9); opacity:0;}}
-.rk-pulse{transform-box:fill-box; transform-origin:center; animation:rkPulse 1.5s ease-out infinite;}
+@keyframes rk-pulse-anim{0%{transform:scale(.55); opacity:.95;} 100%{transform:scale(1.9); opacity:0;}}
+.rk-pulse{transform-box:fill-box; transform-origin:center; animation:rk-pulse-anim 1.5s ease-out infinite;}
 
 /* status strip */
 .rk-status{display:flex; align-items:center; gap:11px; padding:13px 20px; border-top:1px solid var(--border-soft);}
 .rk-dot{flex:none; width:9px; height:9px; border-radius:50%; transition:background .3s;}
-.rk-status[data-state="season"] .rk-dot, .rk-status[data-state="eclipse"] .rk-dot{box-shadow:0 0 12px currentColor;}
+.rk-status[data-state="season"] .rk-dot, .rk-status[data-state="eclipse"] .rk-dot{box-shadow:0 0 12px currentcolor;}
 .rk-pill{font-size:13.5px; line-height:1.4; color:var(--text-2); transition:color .3s;}
 .rk-status[data-state="eclipse"] .rk-pill, .rk-status[data-state="season"] .rk-pill{color:var(--text);}
 .rk-gap{margin-left:auto; flex:none; font-family:var(--font-mono),monospace; font-size:11px; letter-spacing:.06em; color:var(--text-3);}

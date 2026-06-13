@@ -5,10 +5,12 @@
    duplicated here (owner-directed). BACK = points. The six AXIS cards carry
    a statement front (no question mark) and FLIP TO THEIR THEME — backTitle
    "Self ↔ Other" etc. — instead of repeating the front (owner-directed).
-   Cards 1 and 2 PULL UP the interactive "How Rahu & Ketu Form"
-   component (NodesDiagram, the design handoff) via `diagramLink` — card 1
-   opens the formation frame, card 2 the eclipse-aligned frame. Em-dashes
-   converted per the owner's no-em-dash rule. */
+   The interactive "How Rahu & Ketu Form" component (NodesDiagram, the
+   design handoff) opens via the `diagramLink` back buttons on the
+   formation card (1, day-0 frame) and the eclipse card (2, day-127
+   lunar-eclipse frame) — owner-settled 2026-06: button-only, NOT an
+   in-stack card of its own. Em-dashes converted per the owner's
+   no-em-dash rule. */
 import type { Deck } from "./types";
 import { ACCENT, PLANET_COLORS } from "@/lib/design/colors";
 
@@ -35,7 +37,7 @@ export const NODES_DIAGRAM = {
       text: "Eclipses occur only when the Earth-shadow line swings onto the nodal axis: two eclipse seasons a year.",
     },
   ],
-  note: "Tilt drawn at ≈14° for legibility; the true inclination is ≈5.1°. The nodal axis itself drifts slowly backward, a full circle every 18.6 years, which is why Rahu & Ketu are always retrograde. Toggle “nodal regression” to watch it.",
+  // (the tilt/regression footnote was removed, owner-directed 2026-06)
 };
 
 export const rahuKetu: Deck = {
@@ -79,7 +81,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 1/7 axis",
       backTitle: "Self ↔ Other",
       body: "",
-      icon: { kind: "chart", house: 1 },
+      icon: { kind: "chart", house: [1, 7] }, // both ends of the axis
       points: [
         "Identity vs partnership, autonomy vs union, my desire vs our compromise",
         "Rahu 1st / Ketu 7th: intense self-focus; genuine partnership gets neglected or avoided",
@@ -90,7 +92,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 2/8 axis",
       backTitle: "Security ↔ Transformation",
       body: "",
-      icon: { kind: "chart", house: 2 },
+      icon: { kind: "chart", house: [2, 8] }, // both ends of the axis
       points: [
         "My wealth, values and family vs shared resources and the unknown (artha vs moksha)",
         "Rahu 2nd / Ketu 8th: driven to accumulate wealth, status and family legacy; detached from joint assets, others' money and deep change",
@@ -102,7 +104,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 3/9 axis",
       backTitle: "Self-Effort ↔ Higher Wisdom",
       body: "",
-      icon: { kind: "chart", house: 3 },
+      icon: { kind: "chart", house: [3, 9] }, // both ends of the axis
       points: [
         "Communication, courage and worldly skill vs faith, philosophy and meaning (personal effort vs higher guidance)",
         "Rahu 3rd / Ketu 9th: drive to master communication, courage and skills, learning by trial and error; detached from inherited dogma, often skeptical or building their own beliefs",
@@ -113,7 +115,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 4/10 axis",
       backTitle: "Roots ↔ Reputation",
       body: "",
-      icon: { kind: "chart", house: 4 },
+      icon: { kind: "chart", house: [4, 10] }, // both ends of the axis
       points: [
         "Home and inner peace vs career and public standing (“nest vs name”)",
         "Rahu 4th / Ketu 10th: restless chase for home, real estate and emotional security; detached from ambition and recognition, often behind the scenes; career can feel unstable",
@@ -124,7 +126,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 5/11 axis",
       backTitle: "Heart ↔ Network",
       body: "",
-      icon: { kind: "chart", house: 5 },
+      icon: { kind: "chart", house: [5, 11] }, // both ends of the axis
       points: [
         "Personal creativity, romance and intelligence vs networks, recognition and gains; often understands the crowd better than their own heart",
         "Rahu 11th / Ketu 5th: insatiable hunger for status, wealth and a wide network; never feels “done”; detached from romance, creative vulnerability and children",
@@ -136,7 +138,7 @@ export const rahuKetu: Deck = {
       title: "Rahu–Ketu on the 6/12 axis",
       backTitle: "Struggle ↔ Surrender",
       body: "",
-      icon: { kind: "chart", house: 6 },
+      icon: { kind: "chart", house: [6, 12] }, // both ends of the axis
       points: [
         "Daily work, health and enemies vs solitude, release and moksha (“doing vs dissolving”)",
         "Rahu 6th / Ketu 12th: strong survival drive, problem-solving and conquering competitors; prone to overwork and hidden rivals; the soul quietly pulls toward retreat and spiritual progress",

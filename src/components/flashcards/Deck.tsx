@@ -183,9 +183,9 @@ export function Deck({
           </button>
 
           {diagramView ? (
-            /* the diagram view: wide, non-flipping, with its own interactive
-               controls — no swipe nav (the day slider IS a horizontal drag);
-               arrows + the side buttons still navigate (and close the view) */
+            /* the diagram view (a card-back button, with a preset frame):
+               wide, non-flipping — no swipe nav (the day slider IS a
+               horizontal drag); arrows + side buttons navigate (and close it) */
             <DiagramCard link={diagramView} onBack={() => setDiagramView(null)} />
           ) : (
             <div
