@@ -252,7 +252,9 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
           else if (a === "downloadable" && Ctor.install && mountedRef.current && !isBrave()) {
             console.info("[reading-notes] downloading the on-device speech pack for next time");
             installKickedRef.current = true; // a network failure now gets the "downloading" message
-            void Ctor.install({ langs: [SPEECH_LANG], processLocally: true }).catch(() => {});
+            void Ctor.install({ langs: [SPEECH_LANG], processLocally: true })
+              .catch(() => {})
+              .finally(() => { installKickedRef.current = false; }); // clear once the download settles
           }
         }
       } catch {

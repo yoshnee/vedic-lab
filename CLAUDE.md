@@ -483,17 +483,16 @@ the visual identity (`Vedic Astrology Lab - Identity.html`) and the flashcard/la
 the reference when building new UI; `HANDOFF-README.md` is the original handoff note.
 
 ### Ported module APIs (reuse these; don't reinvent)
-- **`src/celestial/celestial.ts`** — `body(key, size, retro?)`, `diamond(size, {glow, stroke})`,
+- **`src/celestial/celestial.ts`** — `body(key, size, {state, retro})`, `diamond(size, {glow, stroke})`,
   `glyph(label, color, size)`, `chart(size, {highlight, fill, stroke})` (North Indian chart;
   `highlight` takes one house or an array — Houses deck walks 1→12, the Rahu & Ketu axis cards
   fill both ends, e.g. [1, 7]), `zodiac(symbol, size, color)` (zodiac glyph in a colored disc —
   Ascendants deck), `combust(size, planet?)` (Sun engulfing a dimmed planet — Combustion deck),
   `conjunction(size, a, b)` (two planet spheres merging — Conjunctions deck), `colors`. Returns SVG
   **markup strings**; render via `<Svg/>`.
-  ⚠️ Renders **neutral + retrograde only**. The **dignity-state rendering (exalted / debilitated /
-  own)** lives only in the prototype `body(key,size,state,retro)` in `Vedic Astrology Lab -
-  Identity.html` — **port it here** when the chart is built. (Determination of *which* state a planet
-  is in is engine logic; the art only *draws* a known state.)
+  `body` renders **dignity-state variants** (`exalted | debilitated | own | neutral`) plus the optional
+  retrograde marker (the prototype's `Vedic Astrology Lab - Identity.html` rendering, now ported here).
+  (Determination of *which* state a planet is in is engine logic; the art only *draws* a known state.)
 - **`src/data/decks/types.ts`** — `Deck = {id,title,subtitle?,motif,accent,status?,hidden?,cards[]}`
   (`hidden: true` = registered + flashcardLink-resolvable but never tiled on the landing grid);
   `Card = {title,sanskrit?,body,badge?,accentColor?,icon?,backIcon?,facts?,points?,cloud?,diagramLink?}`; `icon = {kind:'planet',id,retro?}

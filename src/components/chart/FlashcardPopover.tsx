@@ -58,12 +58,11 @@ export function FlashcardPopover({
       if (e.key === "Escape") {
         if (diagramRef.current) setDiagramView(null);
         else onClose();
-      } else if (browse && e.key === "ArrowLeft") {
+      } else if (browse && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+        // let native controls (the diagram's day slider, etc.) keep their arrows
+        if ((e.target as HTMLElement).closest?.("input, select, textarea, button")) return;
         e.preventDefault();
-        go(-1);
-      } else if (browse && e.key === "ArrowRight") {
-        e.preventDefault();
-        go(1);
+        go(e.key === "ArrowLeft" ? -1 : 1);
       } else if (e.key === " " || e.key === "Enter") {
         // let real controls (close/nav + the diagram's slider/toggle/buttons) activate natively
         if ((e.target as HTMLElement).closest?.(".fcpop-close, .fcpop-nav-btn, button, input, label")) return;
