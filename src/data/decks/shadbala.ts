@@ -4,10 +4,14 @@
    facts, BACK = points; em-dashes removed per the owner's request.
    The chart's per-planet Shadbala drawer (PlanetPanel) links its rows here by
    card title (flashcardLink.ts → "shadbala"). The engine computation is the
-   Hora-Prakash reference's simplified scheme (src/core/shadbala.ts) — one
-   deliberate content alignment: the source md said Sun/Moon Chesta is "always
-   0"; the engine (per the reference) gives them their Ayana Bala as Chesta,
-   so the card teaches that instead. */
+   Hora-Prakash reference's simplified scheme (src/core/shadbala.ts). The
+   Cheshta card teaches the BPHS 27.18 rule: the Sun's Cheshta equals its Ayana
+   Bala, the Moon's its Paksha Bala (Santhanam-verified). NB the engine still
+   computes BOTH luminaries' Cheshta from Ayana (shadbala.ts:140), so the Moon's
+   displayed Cheshta does not yet match the card; that engine-side fix is
+   deferred. The card's speed-bracket wording (fast 45 / slow 15) likewise
+   describes the engine's current Cheshta buckets, held pending a methodology
+   review. */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
 
@@ -103,7 +107,7 @@ export const shadbala: Deck = {
         "Retrograde (vakri) reads as highly energised: the maximum Chesta Bala (60)",
         "In direct motion the engine scores by speed bracket: faster than its mean speed 45, slower than mean 15, near-stationary 30",
         "A retrograde Mars, moving against the current, scores highest",
-        "Sun and Moon never retrograde; their Chesta is taken from their Ayana (solstice) strength instead, by classical design",
+        "Sun and Moon never retrograde, so their Chesta comes from elsewhere: the Sun takes it from its Ayana (solstice) strength, the Moon from its Paksha (lunar phase) strength",
       ],
     },
     {

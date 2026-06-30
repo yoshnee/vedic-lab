@@ -1,19 +1,29 @@
 /* ============================================================
-   shadbala.ts — the six-fold planetary strength (virupas), a faithful port of
-   the Hora-Prakash reference's src/core/shadbala.js. Seven grahas only (nodes
-   have no shadbala). Components:
-     Sthana = Ucha + Saptavargaja (dignity over D1/D2/D3/D7/D9/D12/D16, the
-              reference's varga set) + Ojayugma (D1+D9 parity) + Kendradi +
+   shadbala.ts — the six-fold planetary strength (virupas). Seven grahas only (nodes have
+   no shadbala). PROVENANCE: this engine began as a port of the Hora-Prakash
+   reference (src/core/shadbala.js) and now DELIBERATELY DIVERGES from it
+   toward classical BPHS on five documented points: (1) the Moon's Cheshta
+   source is its Paksha Bala, not Ayana; (2) the luminary Ayana term inside
+   Kala is no longer zeroed; (3) the Saptavargaja varga set is D30, not D16;
+   (4) Ojayugma is summed (max 30), not averaged; (5) Mercury's Ayana is
+   declination-derived, always additive. So it is no longer byte-parity with
+   the upstream (kept only as a historical copy under __tests__/__upstream__);
+   the regression test shadbala-regression.test.ts locks the engine's own
+   BPHS-anchored outputs instead. Components:
+     Sthana = Ucha + Saptavargaja (dignity over D1/D2/D3/D7/D9/D12/D30, the
+              classical Saptavarga) + Ojayugma (D1+D9 parity) + Kendradi +
               Drekkana ·  Dig (best-house distance) ·  Kala (Nathonnatha +
-              Paksha + Ayana) ·  Chesta (retro/speed brackets; Sun & Moon take
-              Ayana, per the reference) ·  Naisargika (fixed) ·  Drik (±15 ×
+              Paksha + Ayana) ·  Chesta (retro/speed brackets; Sun takes Ayana,
+              Moon takes Paksha, BPHS 27.18) ·  Naisargika (fixed) ·  Drik (±15 ×
               aspect strength ÷ 2).
-   NOTE this is the reference's deliberately SIMPLIFIED scheme — JHora's full
-   Kala Bala has more sub-balas (tribhaga, year/month/day/hour lords, yuddha)
-   and its Chesta uses orbital anomaly. Totals are therefore comparable but not
-   JHora-exact; the UI presents them with required minimums + ratio, as the
-   reference does.
-   ONE divergence: day/night birth. The reference reads panchang sunrise/sunset
+   STILL SIMPLIFIED (accepted; BPHS-anchored on the five points above but not a
+   full classical Shadbala): the Kala Bala is REDUCED, omitting Tribhaga, the
+   Varsha/Masa/Vara/Hora lord balas, and Yuddha; the Chesta Bala is BUCKETED
+   (retro/speed brackets) rather than the continuous Cheshta-Kendra formula; and
+   the Drik Bala uses WHOLE-SIGN aspect offsets rather than Sphuta Drishti. So
+   totals will not match JHora exactly; the UI presents them with required
+   minimums + ratio.
+   Day/night method (a further reference divergence): the reference reads panchang sunrise/sunset
    (which we don't compute) and silently falls back to "day" without them; we
    instead use the ecliptic-horizon test — the Sun is a day birth when it sits
    in the western half from the ascendant ((sun − asc) mod 360 > 180°), i.e.
@@ -23,7 +33,7 @@ import type { PlanetKey, ShadbalaScore } from "./types";
 import {
   OWN_SIGNS, MOOLTRIKONA, SIGN_RULER, NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES,
 } from "./constants";
-import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa, type VargaPoint } from "./divisional";
+import { navamsa, hora, drekkana, saptamsa, dwadasamsa, trimsamsa, type VargaPoint } from "./divisional";
 
 export type { ShadbalaScore } from "./types";
 
@@ -47,7 +57,7 @@ const EXALT_LON: Partial<Record<PlanetKey, number>> = {
 const DIGNITY_PTS = { moolatrikona: 45, own: 30, friend: 15, neutral: 7.5, enemy: 3.75 } as const;
 const VARGAS: ((lon: number) => VargaPoint)[] = [
   (lon) => ({ sign: Math.floor((((lon % 360) + 360) % 360) / 30) + 1, degree: lon % 30 }), // D1
-  hora, drekkana, saptamsa, navamsa, dwadasamsa, shodasamsa,
+  hora, drekkana, saptamsa, navamsa, dwadasamsa, trimsamsa,
 ];
 
 /* Saptavargaja dignity: moolatrikona > own > permanent (naisargika) relation
@@ -81,7 +91,7 @@ function ojayugmaBala(planet: PlanetKey, d1Sign: number, d9Sign: number): number
     if (["moon", "venus"].includes(planet)) return isOdd ? 0 : 15;
     return 15; // Mercury always
   };
-  return (pref(d1Sign) + pref(d9Sign)) / 2;
+  return pref(d1Sign) + pref(d9Sign); // 15 (Rasi) + 15 (Navamsa), summed; max 30 (BPHS)
 }
 
 const kendradiBala = (house: number) =>
@@ -125,10 +135,11 @@ function pakshaBala(planet: PlanetKey, moonLon: number, sunLon: number): number 
 }
 
 function ayanaBala(planet: PlanetKey, lon: number): number {
-  if (planet === "mercury") return 30;
   const tropLon = (lon + 24) % 360; // reference's fixed ~24° ayanamsa shift
   const obliqRad = (23.45 * Math.PI) / 180;
   const decl = (Math.asin(Math.sin(obliqRad) * Math.sin((tropLon * Math.PI) / 180)) * 180) / Math.PI;
+  // Mercury's declination is always additive (BPHS) -> range 30..60.
+  if (planet === "mercury") return 30 + 30 * (Math.abs(decl) / 23.45);
   const factor = ["sun", "mars", "jupiter", "venus"].includes(planet) ? 1 : -1;
   return 30 + factor * 30 * (decl / 23.45);
 }
@@ -137,18 +148,17 @@ const CHESTA_MEAN_SPEED: Record<string, number> = {
   mars: 0.524, mercury: 1.383, jupiter: 0.083, venus: 1.2, saturn: 0.033,
 };
 function chestaBala(p: ShadbalaBody): number {
-  if (p.key === "sun" || p.key === "moon") return ayanaBala(p.key, p.lon);
+  if (p.key === "sun") return ayanaBala(p.key, p.lon); // Moon's Cheshta = Paksha, set in computeShadbala (BPHS 27.18)
   if (p.retro) return 60;
   const spd = Math.abs(p.speed);
   if (spd < 0.083) return 30;
   return spd >= (CHESTA_MEAN_SPEED[p.key] ?? 1) ? 45 : 15;
 }
 
-/* The reference's literal table (owner-directed: every constant identical to
-   the upstream, parity-gated). Conceptually these are the 60/7 multiples,
+/* The Naisargika table (owner-locked). These are the classical 60/7 multiples,
    strongest to weakest (Sun 7× … Saturn 1×) — the deck teaches that pattern;
    the upstream's rounding (Jupiter 34.28 where 4 × 60/7 = 34.2857) is kept
-   verbatim so totals match the vendored shadbala.js exactly. */
+   unchanged in this pass and locked by the regression test. */
 const NAISARGIKA: Record<string, number> = {
   sun: 60, moon: 51.43, venus: 42.86, jupiter: 34.28, mercury: 25.71, mars: 17.14, saturn: 8.57,
 };
@@ -207,9 +217,12 @@ export function computeShadbala(
     const dig = digBala(p.key, p.house);
     const nathonnatha = nathonnathaBala(p.key, isDayBirth);
     const paksha = pakshaBala(p.key, moon.lon, sun.lon);
-    const ayana = p.key === "sun" || p.key === "moon" ? 0 : ayanaBala(p.key, p.lon);
+    // BPHS 27.18 dual-count (no literal x2): every planet's Ayana counts in
+    // Kala; the Sun's Ayana also returns as its Cheshta (Sun Ayana doubled),
+    // and the Moon's Paksha returns as its Cheshta below (Moon Paksha doubled).
+    const ayana = ayanaBala(p.key, p.lon);
     const kala = nathonnatha + paksha + ayana;
-    const chesta = chestaBala(p);
+    const chesta = p.key === "moon" ? paksha : chestaBala(p);
     const naisargika = NAISARGIKA[p.key];
     const drik = drikBala(p, grahas);
     const total = sthana + dig + kala + chesta + naisargika + drik;

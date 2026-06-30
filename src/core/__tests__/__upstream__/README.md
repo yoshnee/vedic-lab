@@ -1,6 +1,6 @@
-# Vendored Hora Prakash reference (test-only)
+# Vendored Hora Prakash reference (HISTORICAL — no longer a test gate)
 
-Byte-identical copies of the canonical reference implementation, vendored from
+Copies of the canonical reference implementation, vendored from
 **https://github.com/PriyankGahtori/hora-prakash** (`main`, fetched 2026-06-10):
 
 - `src/core/shadbala.js` — the canonical Shadbala (six-fold strength) implementation
@@ -8,21 +8,27 @@ Byte-identical copies of the canonical reference implementation, vendored from
 - `src/utils/time.js` — its `jdToDate` dependency
 
 The upstream directory shape is replicated so the relative imports inside the files
-work unmodified — do **not** edit these files; re-vendor to update.
+resolve unmodified.
 
-**Purpose:** the differential parity gate (`../shadbala-parity.test.ts`) runs our
-engine (`src/core/shadbala.ts`) and this upstream code on the same charts and asserts
-every component agrees within 0.1 virupa. Our port is only trusted because this gate
-passes.
+**Status:** these files were once driven by a differential **parity gate** that ran
+our engine (`src/core/shadbala.ts`) and this upstream code on the same charts and
+asserted every component agreed within 0.1 virupa. **That gate has been retired.**
+The engine has since been re-anchored to classical BPHS and now deliberately
+diverges from this upstream on five documented points (Moon Cheshta source,
+luminary Ayana in Kala, the Saptavargaja varga set, Ojayugma summation, Mercury
+Ayana), so byte-parity no longer holds. The engine is now guarded instead by a
+fixed-expectations regression snapshot (`../shadbala-regression.test.ts`).
+
+These files are now **retained only for provenance / historical comparison**.
+**Nothing in the test or build path imports them.** `shadbala.js` carries a header
+comment marking it historical (the one edit to an otherwise byte-identical copy);
+`divisional.js` and `time.js` are left as vendored.
 
 **License & copyright:** these files are © the hora-prakash authors
 (Priyank Gahtori and contributors) and are redistributed here under the
 **AGPL-3.0**, the same license as this repository — see the upstream repo's
-LICENSE for the full text. The upstream sources carry no per-file headers; this
-notice is the preserved attribution. The files themselves are intentionally NOT
-edited (no header insertion) so they stay byte-identical to upstream — that
-byte-identity is what gives the parity gate its authority.
+LICENSE for the full text. The upstream sources carried no per-file headers;
+this notice (and the `shadbala.js` header) is the preserved attribution.
 
-These files are used by the Vitest suite only — they live under `__tests__/`
-and are never imported by application code, so they do not ship in the client
-bundle.
+Because nothing imports them, they are not part of the Vitest suite and do not
+ship in the client bundle.
