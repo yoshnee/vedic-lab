@@ -20,15 +20,16 @@ Ayana), so byte-parity no longer holds. The engine is now guarded instead by a
 fixed-expectations regression snapshot (`../shadbala-regression.test.ts`).
 
 These files are now **retained only for provenance / historical comparison**.
-**Nothing in the test or build path imports them.** `shadbala.js` carries a header
-comment marking it historical (the one edit to an otherwise byte-identical copy);
-`divisional.js` and `time.js` are left as vendored.
+**Nothing in the test or build path imports them.** All three (`shadbala.js`,
+`divisional.js`, `time.js`) are left **byte-identical to upstream** — no header
+insertion — so they stay a pristine baseline for any future re-vendor or
+comparison. The historical framing lives here in this README, not in the files.
 
 **License & copyright:** these files are © the hora-prakash authors
 (Priyank Gahtori and contributors) and are redistributed here under the
 **AGPL-3.0**, the same license as this repository — see the upstream repo's
 LICENSE for the full text. The upstream sources carried no per-file headers;
-this notice (and the `shadbala.js` header) is the preserved attribution.
+this README is the preserved attribution.
 
 Because nothing imports them, they are not part of the Vitest suite and do not
 ship in the client bundle.

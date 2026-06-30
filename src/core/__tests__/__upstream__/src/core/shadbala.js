@@ -1,17 +1,3 @@
-/* ============================================================
-   HISTORICAL REFERENCE -- NOT a test gate.
-   Vendored byte-for-byte (2026-06-10) from the Hora-Prakash reference
-   (https://github.com/PriyankGahtori/hora-prakash) and once used by a
-   differential parity gate against src/core/shadbala.ts. THAT GATE IS RETIRED:
-   the engine now deliberately diverges from this code toward classical BPHS
-   (Moon Cheshta source, luminary Ayana in Kala, the Saptavargaja varga set,
-   Ojayugma summation, Mercury Ayana). This file is retained ONLY for provenance
-   and historical comparison; it is no longer imported by any test or build path.
-   Do not reinstate it as an authority -- see ../shadbala-regression.test.ts.
-   (c) the hora-prakash authors (Priyank Gahtori and contributors), redistributed
-   under AGPL-3.0, the same license as this repository. This header is the only
-   edit to an otherwise byte-identical copy.
-   ============================================================ */
 // src/core/shadbala.js
 import { calcDivisional } from './divisional.js'
 import { jdToDate } from '../utils/time.js'

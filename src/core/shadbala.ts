@@ -6,8 +6,12 @@
    source is its Paksha Bala, not Ayana; (2) the luminary Ayana term inside
    Kala is no longer zeroed; (3) the Saptavargaja varga set is D30, not D16;
    (4) Ojayugma is summed (max 30), not averaged; (5) Mercury's Ayana is
-   declination-derived, always additive. So it is no longer byte-parity with
-   the upstream (kept only as a historical copy under __tests__/__upstream__);
+   declination-derived, always additive. The Ayana/declination terms also
+   reconstruct tropical longitude from the chart's ACTUAL Lahiri ayanamsa
+   (threaded in via computeShadbala), not the upstream's hard-coded ~24°, so
+   they stay correct for historical and future charts. So it is no longer
+   byte-parity with the upstream (kept only as a historical copy under
+   __tests__/__upstream__);
    the regression test shadbala-regression.test.ts locks the engine's own
    BPHS-anchored outputs instead. Components:
      Sthana = Ucha + Saptavargaja (dignity over D1/D2/D3/D7/D9/D12/D30, the
@@ -134,8 +138,12 @@ function pakshaBala(planet: PlanetKey, moonLon: number, sunLon: number): number 
   return waxing ? (180 - phase) / 3 : (phase - 180) / 3;
 }
 
-function ayanaBala(planet: PlanetKey, lon: number): number {
-  const tropLon = (lon + 24) % 360; // reference's fixed ~24° ayanamsa shift
+function ayanaBala(planet: PlanetKey, lon: number, ayanamsa: number): number {
+  // Tropical longitude = sidereal + the chart's actual ayanamsa. The upstream
+  // reference hard-coded ~24°; we use the per-chart Lahiri value (from
+  // rawPositions) so the declination — and so Mercury's Ayana, every graha's
+  // Kala Ayana, and the Sun's Cheshta — stays correct for historical charts.
+  const tropLon = ((lon + ayanamsa) % 360 + 360) % 360;
   const obliqRad = (23.45 * Math.PI) / 180;
   const decl = (Math.asin(Math.sin(obliqRad) * Math.sin((tropLon * Math.PI) / 180)) * 180) / Math.PI;
   // Mercury's declination is always additive (BPHS) -> range 30..60.
@@ -147,8 +155,8 @@ function ayanaBala(planet: PlanetKey, lon: number): number {
 const CHESTA_MEAN_SPEED: Record<string, number> = {
   mars: 0.524, mercury: 1.383, jupiter: 0.083, venus: 1.2, saturn: 0.033,
 };
-function chestaBala(p: ShadbalaBody): number {
-  if (p.key === "sun") return ayanaBala(p.key, p.lon); // Moon's Cheshta = Paksha, set in computeShadbala (BPHS 27.18)
+function chestaBala(p: ShadbalaBody, ayanamsa: number): number {
+  if (p.key === "sun") return ayanaBala(p.key, p.lon, ayanamsa); // Moon's Cheshta = Paksha, set in computeShadbala (BPHS 27.18)
   if (p.retro) return 60;
   const spd = Math.abs(p.speed);
   if (spd < 0.083) return 30;
@@ -191,10 +199,13 @@ export const SHADBALA_REQUIRED: Record<string, number> = {
 
 const r1 = (x: number) => Math.round(x * 10) / 10;
 
-/** Compute shadbala for the seven grahas. `ascLon` drives the day/night test. */
+/** Compute shadbala for the seven grahas. `ascLon` drives the day/night test;
+    `ayanamsa` (the chart's actual Lahiri value, from rawPositions) reconstructs
+    tropical longitude for the Ayana/declination terms. */
 export function computeShadbala(
   bodies: ShadbalaBody[],
   ascLon: number,
+  ayanamsa: number,
 ): Partial<Record<PlanetKey, ShadbalaScore>> {
   const grahas = bodies.filter((b) => GRAHAS.includes(b.key));
   const sun = grahas.find((b) => b.key === "sun");
@@ -220,9 +231,9 @@ export function computeShadbala(
     // BPHS 27.18 dual-count (no literal x2): every planet's Ayana counts in
     // Kala; the Sun's Ayana also returns as its Cheshta (Sun Ayana doubled),
     // and the Moon's Paksha returns as its Cheshta below (Moon Paksha doubled).
-    const ayana = ayanaBala(p.key, p.lon);
+    const ayana = ayanaBala(p.key, p.lon, ayanamsa);
     const kala = nathonnatha + paksha + ayana;
-    const chesta = p.key === "moon" ? paksha : chestaBala(p);
+    const chesta = p.key === "moon" ? paksha : chestaBala(p, ayanamsa);
     const naisargika = NAISARGIKA[p.key];
     const drik = drikBala(p, grahas);
     const total = sthana + dig + kala + chesta + naisargika + drik;

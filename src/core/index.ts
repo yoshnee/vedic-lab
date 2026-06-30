@@ -210,6 +210,7 @@ export async function computeChart(birth: BirthInput, asOf: Date = new Date()): 
       speed: raw.speeds[key],
     })),
     raw.ascendant,
+    raw.ayanamsa,
   );
 
   const planets: PlanetData[] = PLANET_ORDER.map((key) => {

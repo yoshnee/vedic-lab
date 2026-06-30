@@ -3,15 +3,13 @@
    BPHS minimums, Ishta/Kashta Phala, and how to read the numbers. FRONT =
    facts, BACK = points; em-dashes removed per the owner's request.
    The chart's per-planet Shadbala drawer (PlanetPanel) links its rows here by
-   card title (flashcardLink.ts → "shadbala"). The engine computation is the
-   Hora-Prakash reference's simplified scheme (src/core/shadbala.ts). The
-   Cheshta card teaches the BPHS 27.18 rule: the Sun's Cheshta equals its Ayana
-   Bala, the Moon's its Paksha Bala (Santhanam-verified). NB the engine still
-   computes BOTH luminaries' Cheshta from Ayana (shadbala.ts:140), so the Moon's
-   displayed Cheshta does not yet match the card; that engine-side fix is
-   deferred. The card's speed-bracket wording (fast 45 / slow 15) likewise
-   describes the engine's current Cheshta buckets, held pending a methodology
-   review. */
+   card title (flashcardLink.ts → "shadbala"). The engine computation is a
+   BPHS-anchored simplified scheme (src/core/shadbala.ts). The Cheshta card
+   teaches the BPHS 27.18 rule: the Sun's Cheshta equals its Ayana Bala, the
+   Moon's its Paksha Bala (Santhanam-verified) — and computeShadbala() now
+   matches the card, deriving the Moon's Cheshta from Paksha and the Sun's from
+   Ayana. The card's speed-bracket wording (fast 45 / slow 15) describes the
+   engine's bucketed Cheshta for the other five grahas. */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
 
