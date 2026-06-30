@@ -23,7 +23,9 @@ import { isValidZone } from "@/lib/time";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { ChartCard, type ChartOption } from "./ChartCard";
 import { type DashaSelection } from "./DashaRail";
-import { ReadingNotes, useReadingNotes } from "./ReadingNotes";
+import { useReadingNotes } from "./useReadingNotes";
+import { ReadingNotesLauncher } from "./ReadingNotesLauncher";
+import { NotesWorkspace } from "./NotesWorkspace";
 import { ChartRuler } from "./ChartRuler";
 import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
@@ -126,9 +128,8 @@ export function ChartView({ model }: { model: ChartModel }) {
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
-  const [notesOpen, setNotesOpen] = useState(false); // mobile reading-notes drawer
-  // guided reading checklist — ONE state instance feeding the desktop rail
-  // and the mobile drawer (they can never diverge)
+  // reading-notes workspace — ONE state instance feeding the launcher dock and
+  // the floating sticky notes (desktop-only; hidden on mobile)
   const notesApi = useReadingNotes(model);
   const [chart1, setChart1] = useState<Chart1Type>("d1");
   const [chart2, setChart2] = useState<Chart2Type>("transit");
@@ -193,10 +194,10 @@ export function ChartView({ model }: { model: ChartModel }) {
 
   // Lock body scroll while any overlay is open.
   useEffect(() => {
-    const anyOverlay = fc || legendOpen || dashaOpen || notesOpen;
+    const anyOverlay = fc || legendOpen || dashaOpen;
     document.body.style.overflow = anyOverlay ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [fc, legendOpen, dashaOpen, notesOpen]);
+  }, [fc, legendOpen, dashaOpen]);
 
   const openCard = (type: FlashcardType, id?: string | number) => {
     const target = resolveFlashcard(type, id);
@@ -230,6 +231,10 @@ export function ChartView({ model }: { model: ChartModel }) {
   const vargaMode = !!vargaPanels;
   const panelPlanets = vargaPanels ? vargaPanels.planets : chart.planets;
   const vargaLabel = varga1 ? VARGAS[varga1].short : undefined;
+  // D2 (Horā) is the two-column wealth view, not a full chart — it carries no
+  // per-planet panels and no element balance (owner-directed: the planet panels
+  // stay for Chart 1 only, and even then only for the OTHER vargas, not D2).
+  const horaMode = chart1 === "d2";
 
   /* Toggling is non-destructive; every set derives from the model already in
      memory, so switching back restores. No varga subtitle (owner-trimmed). */
@@ -296,7 +301,7 @@ export function ChartView({ model }: { model: ChartModel }) {
               selected={sel}
               onSelect={setDashaSel}
             />
-            <ElementBalance planets={panelPlanets} onOpenCard={openCard} />
+            {!horaMode && <ElementBalance planets={panelPlanets} onOpenCard={openCard} />}
           </aside>
 
           <div className="chart-main">
@@ -311,12 +316,6 @@ export function ChartView({ model }: { model: ChartModel }) {
                   </span>
                 ))}
               </span>
-            </button>
-
-            {/* mobile reading-notes trigger — the right rail collapses to a drawer */}
-            <button type="button" className="dasha-trigger notes-trigger" onClick={() => setNotesOpen(true)}>
-              <span className="dt-lbl">Reading Notes</span>
-              <span className="nt-sum">{notesApi.doneCount}/5 steps</span>
             </button>
 
             <div className="chart-top">
@@ -385,7 +384,7 @@ export function ChartView({ model }: { model: ChartModel }) {
               />
             </div>
 
-            <ElementBalance planets={panelPlanets} onOpenCard={openCard} inline />
+            {!horaMode && <ElementBalance planets={panelPlanets} onOpenCard={openCard} inline />}
 
             {/* The Chart Ruler (ascendant-lord) walkthrough is a natal-lagna
                 reading — D1 panel context only (owner-directed). */}
@@ -393,32 +392,40 @@ export function ChartView({ model }: { model: ChartModel }) {
               <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
             )}
 
-            {vargaMode && vargaPanels && (
+            {vargaMode && !horaMode && vargaPanels && (
               <p className="pp-context">
                 Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
                 {vargaPanels.ascendant.signName} lagna — switch Chart 1 back to Natal for the full
                 rāśi detail (nakshatra, shadbala, sade sati …)
               </p>
             )}
-            <section className="pp-grid" aria-label="Planet details">
-              {panelPlanets.map((p) => (
-                <PlanetPanel
-                  key={`${chart1}-${p.key}`}
-                  id={`panel-${p.key}`}
-                  planet={p}
-                  onOpenCard={openCard}
-                  onOpenDasha={openDasha}
-                  vargaLabel={vargaLabel}
-                />
-              ))}
-            </section>
+            {!horaMode && (
+              <section className="pp-grid" aria-label="Planet details">
+                {panelPlanets.map((p) => (
+                  <PlanetPanel
+                    key={`${chart1}-${p.key}`}
+                    id={`panel-${p.key}`}
+                    planet={p}
+                    onOpenCard={openCard}
+                    onOpenDasha={openDasha}
+                    vargaLabel={vargaLabel}
+                  />
+                ))}
+              </section>
+            )}
           </div>
 
-          {/* guided reading checklist — a sticky right rail mirroring the daśā
-              rail (owner-directed); collapses to a drawer on mobile */}
+          {/* reading-notes launcher — a sticky right rail mirroring the daśā
+              rail; the "Your Analysis" dock that spawns the floating sticky
+              notes (desktop-only — hidden on mobile). onOpenDeck opens each
+              tenet's relevant flashcard deck in the popover. */}
           <aside className="notes-rail" aria-label="Reading notes">
             <div className="notes-rail-in">
-              <ReadingNotes api={notesApi} onOpenDeck={(d) => openCard("deck", d)} />
+              <ReadingNotesLauncher
+                api={notesApi}
+                model={model}
+                onOpenDeck={(id) => openCard("deck", id)}
+              />
             </div>
           </aside>
         </div>
@@ -441,21 +448,9 @@ export function ChartView({ model }: { model: ChartModel }) {
         </Drawer>
       )}
 
-      {notesOpen && (
-        <Drawer
-          overlayClass="notes-drawer-overlay"
-          drawerClass="notes-drawer"
-          label="Reading notes"
-          title="Reading Notes"
-          onClose={() => setNotesOpen(false)}
-        >
-          <ReadingNotes
-            api={notesApi}
-            heading={false}
-            onOpenDeck={(d) => { setNotesOpen(false); openCard("deck", d); }}
-          />
-        </Drawer>
-      )}
+      {/* the floating sticky-note workspace — a fixed layer above the page;
+          desktop-only (hidden on mobile via CSS) */}
+      <NotesWorkspace api={notesApi} />
 
       {legendOpen && (
         <Legend onClose={() => setLegendOpen(false)} />

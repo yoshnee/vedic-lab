@@ -29,7 +29,7 @@ function naisargikaRow(p: PlanetKey): string {
 
 export const maitri: Deck = {
   id: "maitri",
-  title: "Planetary Conditions",
+  title: "Planetary Friendships",
   subtitle: "Panchadha Maitri",
   motif: "diamond",
   accent: ACCENT,

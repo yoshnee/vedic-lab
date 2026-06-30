@@ -28,7 +28,7 @@
      real-sky coordinate, not re-read from varga longitudes) and the
      rasi-only systems (shadbala, sade sati).
    ============================================================ */
-import { hora, saptamsa, navamsa, dasamsa, trimsamsa, type VargaPoint } from "@/core/divisional";
+import { hora, drekkana, saptamsa, navamsa, dasamsa, dwadasamsa, trimsamsa, type VargaPoint } from "@/core/divisional";
 import * as v from "@/core/vedic";
 import { computeAvasthas } from "@/core/avastha";
 import { computeYogas } from "@/core/yoga";
@@ -36,7 +36,7 @@ import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA, COMBUSTION_ORB } from "@/core/const
 import type { ChartData, PlanetData, PlanetKey } from "@/core/types";
 import type { ChartBody, ChartFrame } from "@/components/chart/NorthIndianChart";
 
-export type VargaKey = "d2" | "d7" | "d9" | "d10" | "d30";
+export type VargaKey = "d2" | "d3" | "d7" | "d9" | "d10" | "d12" | "d30";
 
 export interface VargaDef {
   /** Dropdown label (Sanskrit name + Dn). */
@@ -49,9 +49,11 @@ export interface VargaDef {
 /** The shipped varga set, in dropdown order. */
 export const VARGAS: Record<VargaKey, VargaDef> = {
   d2: { label: "Horā (D2)", short: "Horā · D2", map: hora },
+  d3: { label: "Drekkāṇa (D3)", short: "Drekkāṇa · D3", map: drekkana },
   d7: { label: "Saptāṁśa (D7)", short: "Saptāṁśa · D7", map: saptamsa },
   d9: { label: "Navāṁśa (D9)", short: "Navāṁśa · D9", map: navamsa },
   d10: { label: "Daśāṁśa (D10)", short: "Daśāṁśa · D10", map: dasamsa },
+  d12: { label: "Dvādaśāṁśa (D12)", short: "Dvādaśāṁśa · D12", map: dwadasamsa },
   d30: { label: "Triṁśāṁśa (D30)", short: "Triṁśāṁśa · D30", map: trimsamsa },
 };
 

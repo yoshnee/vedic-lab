@@ -26,6 +26,7 @@ import { shadbala } from "./shadbala";
 import { karakas } from "./karakas";
 import { dashas } from "./dashas";
 import { yogas } from "./yogas";
+import { vargas } from "./vargas";
 import { planetaryGroupings } from "./planetaryGroupings";
 
 export const DECKS: Deck[] = [
@@ -48,6 +49,7 @@ export const DECKS: Deck[] = [
   yogas,
   karakas,
   dashas,
+  vargas,
   // hidden — never on the landing grid (deck.hidden); resolvable via
   // flashcardLink for the /chart page later
   planetaryGroupings,

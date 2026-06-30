@@ -11,6 +11,7 @@
    divisionals all reuse one renderer — only frame + planets differ.
    ============================================================ */
 import { NorthIndianChart, type ChartBody, type ChartFrame } from "./NorthIndianChart";
+import { HoraChart } from "./HoraChart";
 import type { PlanetKey } from "@/core/types";
 
 export interface ChartOption {
@@ -75,7 +76,14 @@ export function ChartCard({
             a div, since caption/controls may be block nodes (e.g. the overlay pill) */}
         <div className="chart-card-cap">{caption}{controls}</div>
       </header>
-      <NorthIndianChart frame={frame} planets={planets} highlightHouses={highlightHouses} onSelectPlanet={onSelectPlanet} />
+      {/* D2 (Horā) is NOT a twelve-house chart — render the two-column horā
+          layout instead of the diamond. D2 only; every other varga keeps the
+          diamond (overlay + panel-jump are D1-only, so they don't apply here). */}
+      {value === "d2" ? (
+        <HoraChart planets={planets} />
+      ) : (
+        <NorthIndianChart frame={frame} planets={planets} highlightHouses={highlightHouses} onSelectPlanet={onSelectPlanet} />
+      )}
     </section>
   );
 }

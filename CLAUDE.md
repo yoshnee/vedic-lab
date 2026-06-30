@@ -22,7 +22,7 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
 3. **Everything stays client-side.** No backend, no server-side calculation, no secrets. External
    calls are limited to the two free geocoding/timezone services below.
 4. **Keep the engine longitude-based.** Expose each planet's raw **sidereal longitude** so divisional
-   charts layer on cleanly. **D1 (Rasi) plus the varga set D2/D7/D9/D10/D30 are built**; further
+   charts layer on cleanly. **D1 (Rasi) plus the varga set D2/D3/D7/D9/D10/D12/D30 are built**; further
    vargas (D60, …) drop into `src/core/divisional.ts` later, following the reference's `divisional.js`.
 5. **Components stay data-driven and reusable.** Content lives in data files; components render data.
    Adding content (a new flashcard deck, a new planet panel) should not require new component code.
@@ -41,7 +41,9 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   title + the words, no Sanskrit/badge/footnote (owner-directed; the design's
   `Significations Cloud.html` + `significations.jsx` in `design-reference/flashcards/` are the
   visual source); **all twelve houses are converted** — no points backs remain;
-  the same treatment is planned for the Planets deck later. Data contract: `Card.cloud =
+  **the Planets deck backs are now converted too** (all nine grahas Sun…Ketu — owner-provided
+  cloud terms, big anchor in caps (SOUL/MIND/ACTION/…) + medium/small lowercase; fronts/facts
+  unchanged, points backs removed). Data contract: `Card.cloud =
   { terms: {label, weight}[] }` (`types.ts`), rendered by
   `src/components/flashcards/SignificationsCloud.tsx` big→medium→small, flexbox wrap, no deps),
   **Ascendants** (3 concept cards +
@@ -170,7 +172,7 @@ src/
   core/                   THE ENGINE (UI-free; follows the Hora-Prakash reference)
     swisseph.ts           swisseph-wasm wrapper (Lahiri positions, speeds, Lagna)
     vedic.ts              sign/degree, nakshatra/pada/lord, whole-sign houses, dignity, drishti, combust
-    divisional.ts         varga mapping (chart-ready D2/D7/D9/D10/D30 incl. D30's unequal portions; D3/D12/D16 for shadbala's saptavargaja)
+    divisional.ts         varga mapping (chart-ready D2/D3/D7/D9/D10/D12/D30 incl. D30's unequal portions; D16 also for shadbala's saptavargaja)
     shadbala.ts           six-fold strength (reference's simplified scheme; see engine bullet)
     dasha.ts              Vimshottari MD→AD→PD (+ running flags, current chain)
     yoga.ts               yoga detection (Pancha Mahapurusha · Gaja Kesari · Budhaditya · Neecha Bhanga · Venus-Mercury · Dhana 2/11 · Grahana); pure over frame placements
@@ -183,15 +185,16 @@ src/
     __fixtures__/jhora/   23 vendored JHora ground-truth charts (trimmed: birth+planets+dasha)
   lib/design/             tokens.css (source of truth), app.css, site.css (global nav/footer + content pages), chart.css, colors.ts
   lib/chart/              generateChart() seam · ChartModel types · ChartProvider store · varga.ts (VARGAS registry + buildVargaChart/buildVargaPanels)
-                          · activation.ts (dasha-lord activated houses) · readingNotes.ts (guided checklist data + localStorage)
+                          · activation.ts (dasha-lord activated houses) · readingNotes.ts (TENETS + sticky-note data/storage)
   lib/{site.ts, flashcardLink.ts, geo.ts, time.ts, birth.ts, hooks/useDebounce.ts}
   celestial/celestial.ts  SVG art: body({state,retro}) / diamond / glyph / chart / zodiac / combust / conjunction
   components/
     Svg.tsx, flashcards/{Card,Deck,DeckGrid,SignificationsCloud,DiagramCard,NodesDiagram}
     home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
-    chart/                ChartView, NorthIndianChart (generic: frame+planets), ChartCard
-                          (title/type-selector wrapper), ChartRuler (lagneśa walkthrough),
+    chart/                ChartView, NorthIndianChart (generic: frame+planets), HoraChart
+                          (D2 two-column wealth layout — replaces the diamond for D2 only), ChartCard
+                          (title/type-selector wrapper; branches to HoraChart when value==="d2"), ChartRuler (lagneśa walkthrough),
                           ShadbalaGroups (built, currently UNMOUNTED — owner pulled it),
                           ElementBalance (element tally; rail on desktop, inline on mobile),
                           DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
@@ -240,8 +243,15 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
 - **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` +
   `Rahu & Ketu` + `Nakshatras` + `Padas` + `Gandanta` + `Elements` + `Maitri` + `Avasthas` +
   `Aspects` + `Shadbala` +
-  `Yogas` + `Karakas` + `Vimshottari Dasha` (full content — every deck is live, no coming-soon
-  tiles remain). Registry: `src/data/decks/registry.ts`.
+  `Yogas` + `Karakas` + `Vimshottari Dasha` + `Vargas` (full content — every deck is live, no
+  coming-soon tiles remain). Registry: `src/data/decks/registry.ts`.
+  (The `vargas` deck (title "Vargas", subtitle "Divisional Charts") is the seven-card **Saptavarga**
+  set ordered by division number — D1 Rasi · D2 Hora · D3 Drekkana · D7 Saptamsa · D9 Navamsa ·
+  D12 Dwadasamsa · D30 Trimsamsa. Intentionally THIN: Sanskrit-primary fronts (title = Sanskrit
+  name, `sanskrit` = the D-number), plain-text `body` backs (owner copy, verbatim) that are
+  placeholders for the weighted Significations Cloud later. The reading-notes "Vargas" step's deck
+  refresher is NOT yet wired to it — deferred until `readingNotes.ts` is past its in-progress
+  TENETS refactor; then it's a one-line `deck: { deckId: "vargas", … }` on the `varga` step.)
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
@@ -318,49 +328,60 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   user's selection is TEAL (`data-selected`); selection defaults to the running chain, tapping an
   MD row selects (MD, MD) (the first AD lord IS the MD lord) and an AD row the (MD, AD) pair,
   state in ChartView so rail + mobile drawer + chart stay in sync, rendered via
-  `NorthIndianChart.highlightHouses`) on the left, **a sticky Reading-Notes rail on the RIGHT**
-  (owner-directed; the page reads daśā rail | charts + planets | notes; mirrors the daśā rail's
-  chrome, collapses to a right-slide drawer on mobile via its own `.notes-trigger`. A guided
-  checklist of SEVEN steps in reading order (owner-directed 2026-06) — Ascendant · Planets ·
-  Rahu/Ketu Axis · Houses · Vargas (optional) · Dashas · Synthesis — as an
-  ACCORDION: only the active step expands (prompt + AUTO-GROWING textarea — rows=4 by default,
-  owner-directed "room invites fuller notes", growing via scrollHeight); the rest collapse to
-  number · title · checkbox rows (done rows mute); the checkbox is the BRAND MARK — a rotated
-  diamond that lights a glowing gold center point when checked (the logo's diamond-holding-light);
-  checking a step collapses it and auto-expands the next unchecked one (wrapping; resume point on
-  load = first unchecked, `firstUnchecked()`); a dots + "n of 7" progress marker tops the panel.
-  Prompts are the owner's CANONICAL wording (`lib/chart/readingNotes.ts`, don't rephrase —
-  Ascendant and Planets were owner-shortened 2026-06: "Inspect the Chart Ruler panel." / "Go
-  through the planet panels in order. For each, assess its dignity."); the Rahu/Ketu prompt is
-  still a DRAFT awaiting the owner's wording. The retitled steps keep their old
-  ids ("lagna" → Ascendant, "varga" → Vargas (optional)) so saved localStorage notes survive. DECK
-  REFRESHERS: Planets (→ the hidden Planetary Groupings deck — its first chart-side use),
-  Rahu/Ketu Axis (→ Rahu & Ketu), Houses, and Dashas (and Vargas once its deck exists) carry a
-  small diamond card-icon
-  beside the step title opening that whole deck in the browsable popover via the `"deck"`
-  flashcard type (`resolveFlashcard("deck", deckId)` → browse-from-card-1) — owner-directed: icons,
-  NOT text links; the Lagna ruler-jump link was removed. Notes persist in LOCALSTORAGE keyed per
-  natal chart (`vedic:readingNotes:<computedUtcISO>|<lat>|<lon>`), write-through on every change,
-  normalized on load (tested). Web Speech dictation: one mic button (sticky at the rail bottom),
-  toggles start/stop with a pulsing recording state, appends FINAL transcripts to the EXPANDED
-  step's notes (no target label — redundant with the accordion, owner-directed; disabled when all
-  steps are done/collapsed); **ON-DEVICE FIRST** — when `SpeechRecognition.available()` (Chrome
-  139+) reports the local `en-US` SODA pack installed, recognition runs with `processLocally`
-  (no Google cloud round-trip, so no `network` failures); a merely-downloadable pack triggers a
-  background `install()` (that attempt still uses the cloud, the next is local); older browsers
-  go straight to the cloud path; failures SURFACE in the mic row (`micError`: permission blocked /
-  no mic / cloud service unreachable — Brave gets its own message, it strips the Google API keys
-  so its cloud path can NEVER work and its SODA install hangs upstream) and log a console.warn;
-  feature-detected, disabled with a tooltip where unsupported (Firefox). Pure UI +
-  storage — nothing astrological computed; the Dashas step just points at the Overlay Dashas
-  toggle. One `useReadingNotes` state instance in ChartView feeds both the rail and the drawer),
+  `NorthIndianChart.highlightHouses`) on the left, **a docked Reading-Notes "Tenets" launcher on
+  the RIGHT** (owner-directed; the page reads daśā rail | charts + planets | notes; mirrors the
+  daśā rail's chrome; **DESKTOP-ONLY — hidden below 960px**, no mobile drawer. The DESIGN is the
+  Claude Design handoff `reading-notes/Draggable Sticky Note.html` (fetched via the claude_design
+  MCP / `DesignSync`); match its output. The launcher `ReadingNotesLauncher` is the Jyotish logo
+  mark (`diamond(28,{glow})`) + a list of the SEVEN tenets in reading order — Ascendant · Planets ·
+  Rahu/Ketu Axis · Houses · Vargas · Dashas · Synthesis — each a button that SPAWNS a draggable
+  sticky note onto a fixed full-viewport workspace, or RAISES it if already open (a "+" affordance
+  marks a closed tenet, a gold dot an open one). **Draggable sticky notes** (`StickyNote` rendered
+  by `NotesWorkspace`, a `position:fixed` pointer-transparent layer at z-index 50 — below the nav
+  (60) and modals (120+), above the page): a drag header (grip + diamond-dot title + ✕), a
+  collapsible "Guiding questions" list (the owner's CANONICAL per-tenet questions, verbatim, NO
+  em-dashes — `TENETS` in `lib/chart/readingNotes.ts`; Synthesis is a single soft line), an
+  AUTO-GROWING free-writing textarea (placeholder "Begin your reading…"; the prompts AUTO-TUCK
+  behind the toggle on the empty→non-empty edge, the eye/chevron peeks/restores), and a footer with
+  a save-status dot + word count. Pointer-drag from the header (mouse/touch/pen) with bring-to-front
+  (per-note `z`, persisted) + viewport clamping (clamp-on-mount/resize RECOVERS off-screen notes;
+  notes stay clear of the nav); the grip is keyboard-operable (arrow-key nudge, Shift = bigger
+  step). The launcher foot carries **Download all** → compiles every OPEN note into one **Markdown**
+  file (`## NN Title` per open tenet; badge = open count; disabled/dashed when none open). **Voice
+  dictation KEPT** (owner-directed) — a per-note mic retargeting the preserved Web Speech engine to
+  the focused note: **ON-DEVICE FIRST** — `SpeechRecognition.available()` (Chrome 139+) → local
+  `en-US` SODA pack with `processLocally` (no cloud round-trip); merely-downloadable triggers a
+  background `install()` (next attempt is local); older browsers use the cloud; failures SURFACE in
+  the note (`micError`: permission / no mic / cloud unreachable — Brave gets its own message, it
+  strips the Google API keys so its cloud path can NEVER work and its SODA install hangs upstream)
+  and log a console.warn; disabled where unsupported (Firefox). **DROPPED vs the old checklist**
+  (the design omits them): the done/checkbox/"n of 7" progress model and the per-step deck-refresher
+  icons are gone (`firstUnchecked`/the accordion are removed). Notes persist in LOCALSTORAGE keyed
+  per natal chart (`vedic:readingNotes:<computedUtcISO>|<lat>|<lon>` — UNCHANGED; a `v:2` envelope,
+  write-through on every change, MIGRATES the old `{done,notes}` shape: text carries over, `done`
+  dropped, written notes auto-open; tested). Pure UI + storage — nothing astrological computed; the
+  Dashas tenet's questions point at the Overlay Dashas toggle. Split: `readingNotes.ts`
+  (data/storage), `useReadingNotes.ts` (state + dictation, ONE instance in ChartView feeding the
+  launcher + workspace), `ReadingNotesLauncher` / `StickyNote` / `NotesWorkspace`; the old
+  `ReadingNotes.tsx` accordion was deleted),
   then **two charts**, each a `ChartCard` with a **live type `<select>`** — Chart 1 offers
-  **D1 + the full varga set: D2 (Horā) / D7 (Saptāṁśa) / D9 (Navāṁśa) / D10 (Daśāṁśa) /
-  D30 (Triṁśāṁśa)** (default D1), Chart 2 the same plus **Transit** (default Transit; transit is
+  **D1 + the full varga set: D2 (Horā) / D3 (Drekkāṇa) / D7 (Saptāṁśa) / D9 (Navāṁśa) /
+  D10 (Daśāṁśa) / D12 (Dvādaśāṁśa) / D30 (Triṁśāṁśa)** ordered by division number (default D1),
+  Chart 2 the same plus **Transit** (default Transit; transit is
   deliberately right-only — the natal-vs-X reading layout). The set lives in the
   **`VARGAS` registry** (`lib/chart/varga.ts`: key → label/short-label/mapping fn) — both
   dropdowns are generated from it, so a new varga = one registry entry + its `divisional.ts`
   function. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
+  **D2 (Horā) is the ONE varga NOT drawn as the diamond** (owner-directed): the D2 splits every
+  sign between the two luminaries, so `ChartCard` branches `value==="d2"` to render `HoraChart`
+  (`design-reference` source: claude.ai/design `hora-chart/D2 Hora Chart.html`) — TWO columns
+  (Sun's Horā = Leo / warm · Moon's Horā = Cancer / cool), each with a live graha count and NEUTRAL
+  clickable chips (planet identity art only, no benefic/malefic colour, no degrees). A planet's
+  column is the **parity of its hora() varga sign** (odd → Sun, even → Moon — `horaLuminaryOf` in
+  `src/data/horaWealth.ts`; reuses the validated `core/divisional.ts` `hora()`, so Rahu/Ketu always
+  share a column with no special-casing). Tapping a chip reveals that planet's **wealth
+  interpretation** for the horā it's actually in (one open at a time; `HORA_WEALTH`, a 9×2 owner
+  copy map, READING-LAYER ONLY — never feeds dignity/strength). This is in both Chart 1 and Chart 2.
   **Chart 1 is the DRIVER**: toggling it to any varga re-derives the nine planet panels for that
   varga via `buildVargaPanels` (`lib/chart/varga.ts`, generic over the mapping fn); Chart 2 is an
   independent secondary view and never drives the grid.
@@ -474,7 +495,7 @@ in-browser compute + navigation to `/chart` run on submit; a hard refresh / deep
 `ChartRoute` read that key and recompute via `generateChart` on-device. Out of scope: yoga
 detection beyond the seven live detectors (Pancha Mahapurusha, Gaja Kesari, Budhaditya,
 Neecha Bhanga, Venus & Mercury Conjunction, Dhana 2/11, Grahana), divisional charts beyond the
-shipped D2/D7/D9/D10/D30 set.
+shipped D2/D3/D7/D9/D10/D12/D30 set.
 
 ### Design prototypes — `design-reference/` (read-only visual source of truth)
 The original design-tool exports (HTML/CSS/JS) live in [`design-reference/`](design-reference/):
@@ -742,7 +763,7 @@ Build in this order; everything from step 2 down reads from the engine.
   "budhaditya" | "neecha-bhanga-c<n>" | "grahana-<lum>-<node>"). Further detectors (Raja, …) follow the same seam:
   rule pinned to the owner's Yogas deck card (the Hora-Prakash reference has NO yoga
   module), detector in `yoga.ts`, tests in `__tests__/yoga.test.ts`.
-- **Divisional charts beyond D2/D7/D9/D10/D30** — the shipped set is live (`core/divisional.ts` +
+- **Divisional charts beyond D2/D3/D7/D9/D10/D12/D30** — the shipped set is live (`core/divisional.ts` +
   the `VARGAS` registry in `lib/chart/varga.ts`; no disabled stubs remain in the dropdowns). Add
   further vargas (D60, …) in `divisional.ts` following the reference's `divisional.js` +
   `JHORA_DIVISIONAL_SPEC.md`, then register them in `VARGAS` — both dropdowns and the panel
