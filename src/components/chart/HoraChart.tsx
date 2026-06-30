@@ -58,7 +58,7 @@ export function HoraChart({ planets }: { planets: ChartBody[] }) {
               <div className="hr-colhead">
                 <Svg className="lum" html={body(col.key, 28)} />
                 <span className="meta">
-                  <span className="k">{col.luminary}'s Horā</span>
+                  <span className="k">{col.luminary}&rsquo;s Horā</span>
                   <span className="nm">
                     <b>{col.luminary}</b>
                     <span className="sign"><span className="gl">{col.glyph}</span>{col.sign}</span>
@@ -94,7 +94,7 @@ export function HoraChart({ planets }: { planets: ChartBody[] }) {
                 <div className="hr-empty">
                   <Svg className="ghost" html={body(col.key, 38)} />
                   <span className="msg">No grahas in this horā</span>
-                  <span className="sub">All planets fall into the other luminary's horā</span>
+                  <span className="sub">All planets fall into the other luminary&rsquo;s horā</span>
                 </div>
               )}
             </section>
@@ -112,7 +112,7 @@ export function HoraChart({ planets }: { planets: ChartBody[] }) {
                   <span className="k">Wealth · D2 Horā</span>
                   <span className="nm">
                     <b>{selBody.name}</b>
-                    <span className="in">in <em>{selColDef.luminary}'s Horā · {selColDef.sign}</em></span>
+                    <span className="in">in <em>{selColDef.luminary}&rsquo;s Horā · {selColDef.sign}</em></span>
                   </span>
                 </span>
                 <button type="button" className="hr-close" onClick={() => setSelected(null)} aria-label="Close reading">×</button>

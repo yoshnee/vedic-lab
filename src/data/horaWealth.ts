@@ -37,8 +37,9 @@ export const HORA_COLUMNS: ReadonlyArray<{
     — same parity, same half — so they always resolve to the same column; the
     rule handles it, no special-casing.) */
 export function horaLuminaryOf(signName: string): HoraKey {
-  const sign = SIGN_NAMES.indexOf(signName) + 1; // 1–12
-  return sign % 2 === 1 ? "sun" : "moon";
+  const idx = SIGN_NAMES.indexOf(signName); // 0–11, or -1 if unknown
+  if (idx < 0) throw new Error(`horaLuminaryOf: unknown sign name "${signName}"`);
+  return (idx + 1) % 2 === 1 ? "sun" : "moon";
 }
 
 /** Wealth interpretation per graha, for each horā. Pick the one matching the

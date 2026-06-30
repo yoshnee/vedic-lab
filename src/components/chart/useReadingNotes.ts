@@ -17,7 +17,7 @@
    ============================================================ */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  TENETS, notesKey, loadDoc, saveDoc,
+  TENETS, notesKey, loadDoc, saveDoc, openNotesCount,
   type NotesDoc,
 } from "@/lib/chart/readingNotes";
 import type { ChartModel } from "@/lib/chart/types";
@@ -146,6 +146,16 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   useEffect(() => { docRef.current = doc; }, [doc]);
   const beginRef = useRef<(id: string) => void>(() => {});
 
+  // a chart change re-anchors the doc (the derive-state-from-props block above).
+  // Abandon any in-flight dictation so a late speech result can't append into —
+  // or save under — the newly loaded chart's notes: recordingIdRef nulls
+  // synchronously (it gates onresult), and stop() lets onend clear the rest.
+  useEffect(() => {
+    pendingStartRef.current = null;
+    recordingIdRef.current = null;
+    recRef.current?.stop();
+  }, [key]);
+
   /** One mutation path: update the doc and write through to localStorage. */
   const mutate = useCallback((fn: (prev: NotesDoc) => NotesDoc) => {
     setDoc((prev) => {
@@ -191,11 +201,14 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
       const note = prev.notes[id];
       if (!note) return prev;
       // auto-collapse the prompts on the empty→non-empty edge (State A→B), once;
-      // a manual toggle afterward wins (unless the field is cleared back to empty)
-      const collapse = !note.promptsCollapsed && note.text.trim() === "" && text.trim() !== "";
+      // a manual toggle afterward wins — but clearing the field back to empty
+      // restores the guiding questions (the documented "return to empty state").
+      const cleared = text.trim() === "";
+      const collapse = !note.promptsCollapsed && note.text.trim() === "" && !cleared;
+      const promptsCollapsed = cleared ? false : collapse || note.promptsCollapsed;
       return {
         ...prev,
-        notes: { ...prev.notes, [id]: { ...note, text, promptsCollapsed: collapse || note.promptsCollapsed } },
+        notes: { ...prev.notes, [id]: { ...note, text, promptsCollapsed } },
       };
     });
   }, [mutate]);
@@ -357,7 +370,7 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
     };
   }, []);
 
-  const openCount = TENETS.reduce((n, t) => n + (doc.notes[t.id]?.open ? 1 : 0), 0);
+  const openCount = openNotesCount(doc);
 
   return {
     doc, openCount, focusedId,

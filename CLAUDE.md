@@ -249,9 +249,9 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   set ordered by division number — D1 Rasi · D2 Hora · D3 Drekkana · D7 Saptamsa · D9 Navamsa ·
   D12 Dwadasamsa · D30 Trimsamsa. Intentionally THIN: Sanskrit-primary fronts (title = Sanskrit
   name, `sanskrit` = the D-number), plain-text `body` backs (owner copy, verbatim) that are
-  placeholders for the weighted Significations Cloud later. The reading-notes "Vargas" step's deck
-  refresher is NOT yet wired to it — deferred until `readingNotes.ts` is past its in-progress
-  TENETS refactor; then it's a one-line `deck: { deckId: "vargas", … }` on the `varga` step.)
+  placeholders for the weighted Significations Cloud later. The reading-notes "Vargas" step now
+  refreshes it: the `varga` TENET carries `deck: { id: "vargas", label: "Open the Vargas deck" }`
+  (`readingNotes.ts`), so the launcher's per-tenet deck diamond opens this deck.)
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
   (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are

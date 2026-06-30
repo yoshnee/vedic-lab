@@ -65,17 +65,20 @@ export function StickyNote({
   tenet, note, focused, speechSupported, recording, micError,
   onMove, onFocus, onClose, onSetText, onTogglePrompts, onToggleRecording,
 }: StickyNoteProps) {
-  const [pos, setPos] = useState({ x: note.x, y: note.y });
-  const [dragging, setDragging] = useState(false);
+  // `drag` holds the transient position only WHILE dragging; when null the
+  // rendered position derives straight from the committed note.x/note.y, so
+  // reloads / external moves / nudges reflect with no setState-in-effect mirror.
+  const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
+  const dragging = drag !== null;
+  const pos = drag ?? { x: note.x, y: note.y };
   const rootRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const grab = useRef({ dx: 0, dy: 0 });
   const raf = useRef<number | undefined>(undefined);
-  const posRef = useRef(pos);
-  useEffect(() => { posRef.current = pos; }, [pos]);
-
-  // external moves (reload / commit / nudge) re-sync the local position
-  useEffect(() => { setPos({ x: note.x, y: note.y }); }, [note.x, note.y]);
+  // mirror the COMMITTED position for the stable resize closure + keyboard nudge
+  // (both reposition from the saved spot, never from a transient drag frame)
+  const posRef = useRef({ x: note.x, y: note.y });
+  useEffect(() => { posRef.current = { x: note.x, y: note.y }; }, [note.x, note.y]);
 
   /** Clamp a position so the note stays inside the viewport (below the header). */
   const clamp = useCallback((x: number, y: number) => {
@@ -87,16 +90,18 @@ export function StickyNote({
     return { x: Math.min(Math.max(0, x), maxX), y: Math.min(Math.max(HEADER_SAFE, y), maxY) };
   }, []);
 
-  // recovery: clamp the stored position into the live viewport on mount + resize
+  // recovery: clamp the stored position into the live viewport on mount + resize.
+  // We commit through onMove (the parent re-renders with the clamped note.x/note.y,
+  // which is what we render); the useLayoutEffect flush keeps mount paint clean.
   useLayoutEffect(() => {
-    const c = clamp(posRef.current.x, posRef.current.y);
-    if (c.x !== posRef.current.x || c.y !== posRef.current.y) { setPos(c); onMove(c.x, c.y); }
+    const c = clamp(note.x, note.y);
+    if (c.x !== note.x || c.y !== note.y) onMove(c.x, c.y);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     const onResize = () => {
       const c = clamp(posRef.current.x, posRef.current.y);
-      if (c.x !== posRef.current.x || c.y !== posRef.current.y) { setPos(c); onMove(c.x, c.y); }
+      if (c.x !== posRef.current.x || c.y !== posRef.current.y) onMove(c.x, c.y);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -122,7 +127,7 @@ export function StickyNote({
     const rect = el.getBoundingClientRect();
     grab.current = { dx: e.clientX - rect.left, dy: e.clientY - rect.top };
     e.currentTarget.setPointerCapture(e.pointerId);
-    setDragging(true);
+    setDrag({ x: note.x, y: note.y }); // enter dragging at the committed position
     e.preventDefault();
   };
   const onHeadPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -130,16 +135,15 @@ export function StickyNote({
     const nx = e.clientX - grab.current.dx;
     const ny = e.clientY - grab.current.dy;
     if (raf.current) cancelAnimationFrame(raf.current);
-    raf.current = requestAnimationFrame(() => setPos(clamp(nx, ny)));
+    raf.current = requestAnimationFrame(() => setDrag(clamp(nx, ny)));
   };
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!dragging) return;
-    setDragging(false);
     try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* already released */ }
     if (raf.current) cancelAnimationFrame(raf.current);
     const c = clamp(e.clientX - grab.current.dx, e.clientY - grab.current.dy);
-    setPos(c);
-    onMove(c.x, c.y);
+    setDrag(null);       // fall back to the committed note.x/note.y…
+    onMove(c.x, c.y);    // …which this commits in the same batch
   };
 
   const onGripKeyDown = (e: React.KeyboardEvent) => {
@@ -152,7 +156,6 @@ export function StickyNote({
     else return;
     e.preventDefault();
     const c = clamp(posRef.current.x + dx, posRef.current.y + dy);
-    setPos(c);
     onMove(c.x, c.y);
   };
 
