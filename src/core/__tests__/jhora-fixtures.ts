@@ -1,8 +1,8 @@
 /* ============================================================
    jhora-fixtures.ts — shared loader for the vendored JHora ground-truth
-   charts (__fixtures__/jhora/). Both validation gates (fixtures.test.ts and
-   shadbala-parity.test.ts) read fixtures and build BirthInputs through this
-   single path, so the two suites can never drift onto different inputs.
+   charts (__fixtures__/jhora/). fixtures.test.ts reads these charts and builds
+   BirthInputs through this single path. (The retired shadbala parity gate also
+   used this loader; the shadbala regression test now uses the sample chart.)
    Not a test file (vitest only picks up *.test.ts).
    ============================================================ */
 import { readdirSync, readFileSync } from "node:fs";

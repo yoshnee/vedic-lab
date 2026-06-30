@@ -276,9 +276,14 @@ describe("shadbala", () => {
       return b;
     });
   };
+  // A representative ayanamsa for the Ayana/declination terms; these are
+  // invariant checks (totals, peaks, day/night flip), not value locks, so the
+  // exact figure only needs to be a fixed, valid number. The locked sample
+  // values live in shadbala-regression.test.ts.
+  const AYANAMSA = 24;
 
   it("total = sum of the six components; ratio = total/required; tables exact", () => {
-    const out = computeShadbala(mkBodies(), 0);
+    const out = computeShadbala(mkBodies(), 0, AYANAMSA);
     const NAISARGIKA = { sun: 60, moon: 51.43, venus: 42.86, jupiter: 34.28, mercury: 25.71, mars: 17.14, saturn: 8.57 };
     for (const [key, s] of Object.entries(out)) {
       const sum = s.sthana + s.dig + s.kala + s.chesta + s.naisargika + s.drik;
@@ -291,28 +296,28 @@ describe("shadbala", () => {
 
   it("dig bala peaks (60) in the planet's best house and zeroes opposite", () => {
     const at = (house: number) =>
-      computeShadbala(mkBodies((b) => { if (b.key === "sun") b.house = house; }), 0).sun!.dig;
+      computeShadbala(mkBodies((b) => { if (b.key === "sun") b.house = house; }), 0, AYANAMSA).sun!.dig;
     expect(at(10)).toBe(60); // Sun's best: the 10th
     expect(at(4)).toBe(0); // opposite house
   });
 
   it("retrograde grahas take full chesta (60)", () => {
-    const out = computeShadbala(mkBodies((b) => { if (b.key === "mars") b.retro = true; }), 0);
+    const out = computeShadbala(mkBodies((b) => { if (b.key === "mars") b.retro = true; }), 0, AYANAMSA);
     expect(out.mars!.chesta).toBe(60);
   });
 
   it("nathonnatha flips with day/night birth (Sun gains by day, Moon by night)", () => {
     const bodies = mkBodies();
     // sun lon 5: asc 100 → (5−100+360)%360 = 265 > 180 → day; asc 0 → 5 → night
-    const day = computeShadbala(bodies, 100);
-    const night = computeShadbala(bodies, 0);
+    const day = computeShadbala(bodies, 100, AYANAMSA);
+    const night = computeShadbala(bodies, 0, AYANAMSA);
     expect(day.sun!.kala - night.sun!.kala).toBeCloseTo(60, 1);
     expect(night.moon!.kala - day.moon!.kala).toBeCloseTo(60, 1);
     expect(day.mercury!.kala).toBeCloseTo(night.mercury!.kala, 1); // Mercury: 60 always
   });
 
   it("ishta/kashta are 0–60 geometric means of uchcha & chesta; parts sum to their components", () => {
-    const out = computeShadbala(mkBodies(), 0);
+    const out = computeShadbala(mkBodies(), 0, AYANAMSA);
     for (const [key, s] of Object.entries(out)) {
       expect(s.ishta, `${key} ishta`).toBeGreaterThanOrEqual(0);
       expect(s.ishta, `${key} ishta`).toBeLessThanOrEqual(60);
@@ -337,7 +342,7 @@ describe("shadbala", () => {
   });
 
   it("drik bala may be negative and is never produced for the nodes", () => {
-    const out = computeShadbala(mkBodies(), 0);
+    const out = computeShadbala(mkBodies(), 0, AYANAMSA);
     expect(out.rahu).toBeUndefined();
     expect(out.ketu).toBeUndefined();
     for (const s of Object.values(out)) expect(Math.abs(s.drik)).toBeLessThanOrEqual(52.5);
