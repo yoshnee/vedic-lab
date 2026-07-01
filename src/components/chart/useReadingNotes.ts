@@ -112,10 +112,12 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   // Dictation refs + an epoch bumped on every re-anchor so stale probe/speech
   // work from a previous chart is stranded. recRef: the live recognizer;
   // recordingIdRef: the note being dictated into (gates onresult); pendingStartRef:
-  // a queued switch-to-another note.
+  // a queued switch-to-another note; startingRef: an availability probe is in
+  // flight (cleared on re-anchor so a slow/hung probe can't lock the new chart).
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   const recordingIdRef = useRef<string | null>(null);
   const pendingStartRef = useRef<string | null>(null);
+  const startingRef = useRef(false);
   const epochRef = useRef(0);
 
   // a different chart re-anchors the workspace (derive-state-from-props, no
@@ -143,17 +145,19 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
     micErrTimer.current = window.setTimeout(() => setMicError(null), 6000);
   }, []);
 
-  // refs keep the long-lived callbacks reading fresh values — synced via
-  // effects, which run long before any user event or speech result can fire
-  // (recRef/recordingIdRef/pendingStartRef are declared above the re-anchor block)
+  // refs keep the long-lived callbacks reading fresh values — synced via effects
+  // (the dictation refs are declared above the re-anchor block). keyRef/docRef
+  // back mutate() + downloadAll(), which can fire on the very next interaction
+  // after a re-anchor, so they sync in a LAYOUT effect — updated in the commit
+  // phase, before any post-commit event can save/export against the old chart.
   const keyRef = useRef(key);
-  useEffect(() => { keyRef.current = key; }, [key]);
+  useLayoutEffect(() => { keyRef.current = key; }, [key]);
   useEffect(() => { recordingIdRef.current = recordingId; }, [recordingId]);
   // docRef lets the speech result + download read the live doc without
   // re-binding the long-lived recognition callbacks; beginRef breaks the
   // start↔onend cycle without a forward reference
   const docRef = useRef(doc);
-  useEffect(() => { docRef.current = doc; }, [doc]);
+  useLayoutEffect(() => { docRef.current = doc; }, [doc]);
   const beginRef = useRef<(id: string) => void>(() => {});
 
   // A chart change re-anchors the doc (the block above resets the visible state).
@@ -162,11 +166,14 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   // speech task, so a late onresult can't append into (or save under) the newly
   // loaded chart: bumping the epoch strands any in-flight probe/onresult (both
   // guard on it), nulling recordingIdRef gates onresult, pendingStartRef drops a
-  // queued switch, and stop() halts the mic (onend then clears recRef).
+  // queued switch, and stop() halts the mic (onend then clears recRef). Clear
+  // startingRef too — the stranded probe won't run its finally on this chart, so
+  // a slow/hung probe must not keep the new chart's mic locked.
   useLayoutEffect(() => {
     epochRef.current += 1;
     recordingIdRef.current = null;
     pendingStartRef.current = null;
+    startingRef.current = false;
     recRef.current?.stop();
   }, [key]);
 
@@ -276,9 +283,8 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
       official Chrome's cloud path has outages). When the pack is merely
       downloadable, kick its install off in the background (this attempt still
       uses the cloud) so the NEXT dictation is local. Older browsers skip
-      straight to the cloud path, exactly as before. */
-  const startingRef = useRef(false); // guards the async availability probe
-
+      straight to the cloud path, exactly as before. (startingRef, which guards
+      this async probe, is declared with the other dictation refs above.) */
   const startRecognition = useCallback((Ctor: SpeechRecognitionCtor, local: boolean, id: string) => {
     const rec = new Ctor();
     const startEpoch = epochRef.current; // strand this recognizer's results if the chart re-anchors
@@ -314,6 +320,7 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
       if (pending && mountedRef.current) beginRef.current(pending);
     };
     rec.onerror = (e) => {
+      if (epochRef.current !== startEpoch) return; // chart re-anchored — drop the stale recognizer's error
       // surfaced in the mic row (onend follows and clears the recording state)
       console.warn("[reading-notes] dictation error:", e.error);
       flagMicError(e.error);
@@ -361,7 +368,9 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
         // re-anchored — starting now would dictate into the wrong chart's note
         if (mountedRef.current && epochRef.current === epoch) startRecognition(Ctor, local, id);
       } finally {
-        startingRef.current = false;
+        // only release the lock for our own epoch — a stranded old probe must not
+        // clear a fresh probe's startingRef on the re-anchored chart
+        if (epochRef.current === epoch) startingRef.current = false;
       }
     })();
   }, [startRecognition]);
