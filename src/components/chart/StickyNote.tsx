@@ -90,14 +90,18 @@ export function StickyNote({
     return { x: Math.min(Math.max(0, x), maxX), y: Math.min(Math.max(HEADER_SAFE, y), maxY) };
   }, []);
 
-  // recovery: clamp the stored position into the live viewport on mount + resize.
-  // We commit through onMove (the parent re-renders with the clamped note.x/note.y,
-  // which is what we render); the useLayoutEffect flush keeps mount paint clean.
+  // recovery: clamp the stored position into the live viewport — on mount AND
+  // whenever the committed coordinates change from outside (a chart re-anchor or
+  // a storage reload re-seats the note without remounting it, so the mount-only
+  // clamp would leave it off-screen). We commit through onMove (the parent
+  // re-renders with the clamped note.x/note.y, which is what we render); the
+  // useLayoutEffect flush keeps the corrected paint clean. clamp is stable and
+  // onMove is read fresh, so we key only on the coordinates.
   useLayoutEffect(() => {
     const c = clamp(note.x, note.y);
     if (c.x !== note.x || c.y !== note.y) onMove(c.x, c.y);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [note.x, note.y]);
   useEffect(() => {
     const onResize = () => {
       const c = clamp(posRef.current.x, posRef.current.y);

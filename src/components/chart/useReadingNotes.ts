@@ -15,7 +15,7 @@
    localStorage access is safe, no hydration mismatch. Every mutation writes
    through to localStorage.
    ============================================================ */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   TENETS, notesKey, loadDoc, saveDoc, openNotesCount,
   type NotesDoc,
@@ -106,16 +106,30 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   const key = notesKey(model);
   const [doc, setDoc] = useState<NotesDoc>(() => loadDoc(key));
   const [focusedId, setFocusedId] = useState<string | null>(null);
-  // a different chart re-anchors the workspace (derive-state-from-props, no effect)
+  const [recordingId, setRecordingId] = useState<string | null>(null);
+  const [micError, setMicError] = useState<string | null>(null);
+
+  // Dictation refs + an epoch bumped on every re-anchor so stale probe/speech
+  // work from a previous chart is stranded. recRef: the live recognizer;
+  // recordingIdRef: the note being dictated into (gates onresult); pendingStartRef:
+  // a queued switch-to-another note.
+  const recRef = useRef<SpeechRecognitionLike | null>(null);
+  const recordingIdRef = useRef<string | null>(null);
+  const pendingStartRef = useRef<string | null>(null);
+  const epochRef = useRef(0);
+
+  // a different chart re-anchors the workspace (derive-state-from-props, no
+  // effect) — reset the visible state here; the dictation refs/recognizer are
+  // torn down in the layout effect below (refs can't be mutated during render).
   const [anchorKey, setAnchorKey] = useState(key);
   if (anchorKey !== key) {
     setAnchorKey(key);
     setDoc(loadDoc(key));
     setFocusedId(null);
+    setRecordingId(null);
+    setMicError(null);
   }
 
-  const [recordingId, setRecordingId] = useState<string | null>(null);
-  const [micError, setMicError] = useState<string | null>(null);
   const micErrTimer = useRef<number | undefined>(undefined);
   const mountedRef = useRef(true); // guards the async probe's continuation
   const installKickedRef = useRef(false); // an on-device pack download is in flight
@@ -131,14 +145,10 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
 
   // refs keep the long-lived callbacks reading fresh values — synced via
   // effects, which run long before any user event or speech result can fire
-  const recRef = useRef<SpeechRecognitionLike | null>(null);
+  // (recRef/recordingIdRef/pendingStartRef are declared above the re-anchor block)
   const keyRef = useRef(key);
   useEffect(() => { keyRef.current = key; }, [key]);
-  const recordingIdRef = useRef<string | null>(null);
   useEffect(() => { recordingIdRef.current = recordingId; }, [recordingId]);
-  // a deferred start when switching the mic from one note to another (stop is
-  // async — onend starts the queued note)
-  const pendingStartRef = useRef<string | null>(null);
   // docRef lets the speech result + download read the live doc without
   // re-binding the long-lived recognition callbacks; beginRef breaks the
   // start↔onend cycle without a forward reference
@@ -146,13 +156,17 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   useEffect(() => { docRef.current = doc; }, [doc]);
   const beginRef = useRef<(id: string) => void>(() => {});
 
-  // a chart change re-anchors the doc (the derive-state-from-props block above).
-  // Abandon any in-flight dictation so a late speech result can't append into —
-  // or save under — the newly loaded chart's notes: recordingIdRef nulls
-  // synchronously (it gates onresult), and stop() lets onend clear the rest.
-  useEffect(() => {
-    pendingStartRef.current = null;
+  // A chart change re-anchors the doc (the block above resets the visible state).
+  // Abandon any in-flight dictation SYNCHRONOUSLY on the same commit — a layout
+  // effect runs in the commit phase, before the browser can dispatch another
+  // speech task, so a late onresult can't append into (or save under) the newly
+  // loaded chart: bumping the epoch strands any in-flight probe/onresult (both
+  // guard on it), nulling recordingIdRef gates onresult, pendingStartRef drops a
+  // queued switch, and stop() halts the mic (onend then clears recRef).
+  useLayoutEffect(() => {
+    epochRef.current += 1;
     recordingIdRef.current = null;
+    pendingStartRef.current = null;
     recRef.current?.stop();
   }, [key]);
 
@@ -267,11 +281,13 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
 
   const startRecognition = useCallback((Ctor: SpeechRecognitionCtor, local: boolean, id: string) => {
     const rec = new Ctor();
+    const startEpoch = epochRef.current; // strand this recognizer's results if the chart re-anchors
     rec.lang = SPEECH_LANG;
     rec.continuous = true;
     rec.interimResults = false; // final results only — keeps the text stable
     if (local) rec.processLocally = true; // the validated on-device path
     rec.onresult = (e) => {
+      if (epochRef.current !== startEpoch) return; // chart re-anchored — drop stale speech
       let text = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const r = e.results[i];
@@ -320,6 +336,7 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
     const Ctor = speechCtor();
     if (!Ctor) return;
     startingRef.current = true;
+    const epoch = epochRef.current; // strand this probe if the chart re-anchors mid-await
     void (async () => {
       let local = false;
       try {
@@ -340,7 +357,9 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
         /* probe failed → cloud path, as on older browsers */
       }
       try {
-        if (mountedRef.current) startRecognition(Ctor, local, id);
+        // ignore a probe that resolved after the component unmounted or the chart
+        // re-anchored — starting now would dictate into the wrong chart's note
+        if (mountedRef.current && epochRef.current === epoch) startRecognition(Ctor, local, id);
       } finally {
         startingRef.current = false;
       }
