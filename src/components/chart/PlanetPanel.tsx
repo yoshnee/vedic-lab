@@ -316,7 +316,23 @@ export function PlanetPanel({
           aria-label={`${p.name} details`}
           onClick={() => setOpen((o) => !o)}
         />
-        <span className="pp-ico"><Svg html={icon} /></span>
+        <span className="pp-ico" style={{ "--pc": `var(--p-${p.key})` } as React.CSSProperties}>
+          <Svg html={icon} />
+          {/* per-planet flashcard launcher — opens this graha's Planets-deck card.
+              pointer-events:auto lifts it above the full-bleed header toggle, as the pills do. */}
+          <button
+            type="button"
+            className="pp-card-link"
+            aria-label={`Open the ${p.name} flashcard`}
+            title={`Open the ${p.name} flashcard`}
+            onClick={(e) => { e.stopPropagation(); onOpenCard("planet", PNAME[p.key]); }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="8.5" y="3.5" width="11" height="15" rx="2" />
+              <path d="M15 18.5v1a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h1" />
+            </svg>
+          </button>
+        </span>
         <span className="pp-id">
           <span className="pp-name">
             <span className="nm">{p.name}</span>

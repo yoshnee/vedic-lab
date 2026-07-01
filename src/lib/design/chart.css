@@ -385,7 +385,18 @@
 .pp-header-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; border-radius: 16px; }
 .pp-header > .pp-ico, .pp-header > .pp-id, .pp-header > .pp-chev { position: relative; z-index: 1; pointer-events: none; }
 .pp-header .pp-pills { pointer-events: auto; }
-.pp-ico { flex: none; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
+.pp-ico { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
+/* per-planet flashcard launcher beneath the graha icon — tinted with the planet
+   color; clickable (pointer-events:auto) so it escapes the full-bleed header
+   toggle, exactly like the pills. */
+.pp-card-link { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 27px; height: 21px; padding: 0; border-radius: 6px; cursor: pointer;
+  color: var(--pc, var(--text-2));
+  border: 1px solid color-mix(in srgb, var(--pc, var(--text-2)) 40%, transparent);
+  background: color-mix(in srgb, var(--pc, var(--text-2)) 12%, transparent);
+  transition: filter .18s, background .18s; }
+.pp-card-link:hover { filter: brightness(1.14); background: color-mix(in srgb, var(--pc, var(--text-2)) 18%, transparent); }
+.pp-card-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* name on top, pills wrapping below — predictable height so every header matches */
 .pp-id { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
 .pp-name .nm { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.1; }
