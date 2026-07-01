@@ -8,7 +8,7 @@
 import type { PlanetKey, Dignity, Nakshatra, AspectRef, Maitri } from "./types";
 import {
   SIGN_NAMES, SIGN_RULER, NAKSHATRAS, PLANET_NAMES,
-  EXALTATION, DEBILITATION, OWN_SIGNS, DRISHTI, COMBUSTION_ORB,
+  EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA, MOOLTRIKONA_DEGREES, DRISHTI, COMBUSTION_ORB,
   NAKSHATRA_ARC, PADA_ARC,
   GANDANTA_BOUNDARIES, GANDANTA_ORB, GANDANTA_DEEP_ORB,
   NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES,
@@ -56,6 +56,22 @@ export function dignityOf(planet: PlanetKey, sign: number): Dignity {
   if (DEBILITATION[planet] === sign) return "debilitated";
   if (OWN_SIGNS[planet]?.includes(sign)) return "own";
   return "neutral";
+}
+
+/** True when a planet sits within its mooltrikona DEGREE range (standard BPHS,
+    [lower, upper) — see MOOLTRIKONA_DEGREES). `degreeInSign` is 0–30 within the
+    occupied sign. PRESENTATION-ONLY: distinguishes a mooltrikona-degree placement
+    from the rest of an own sign for the panel label. Sign-level mooltrikona
+    (shadbala / Jagradadi avastha) stays on the MOOLTRIKONA table, not this. */
+export function inMooltrikonaDegrees(
+  planet: PlanetKey,
+  sign: number,
+  degreeInSign: number,
+): boolean {
+  if (MOOLTRIKONA[planet] !== sign) return false;
+  const range = MOOLTRIKONA_DEGREES[planet];
+  if (!range) return false; // Moon/Mercury: mool sign is their exaltation sign — never here
+  return degreeInSign >= range[0] && degreeInSign < range[1];
 }
 
 /** Whole-sign house of a planet's sign, counted from the Lagna sign. */

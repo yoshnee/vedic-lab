@@ -15,6 +15,7 @@ import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
 import type { PlanetData, PlanetKey, SadePeriod, Maitri, Avastha, ShadbalaScore } from "@/core/types";
 import { tierOf, type ShadbalaTier } from "@/core/shadbala";
+import { inMooltrikonaDegrees } from "@/core/vedic";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
 const PNAME: Record<PlanetKey, string> = {
@@ -26,6 +27,27 @@ const MAITRI_LABEL: Record<Maitri, string> = {
   adhi_mitra: "Great Friend", mitra: "Friend", sama: "Neutral",
   shatru: "Enemy", adhi_shatru: "Great Enemy", own_sign: "Own Sign",
 };
+
+/* Dignity overrides the friendship label (owner-directed): when a planet is
+   exalted, debilitated, or in its mooltrikona DEGREE range, the condition pill
+   names that dignity instead of the maitri-to-dispositor relation. Precedence is
+   exaltation > debilitation > mooltrikona; anything else falls through to the
+   maitri label (including "Own Sign"). Mooltrikona is DEGREE-level (owner-directed):
+   e.g. Saturn is "Mooltrikona" only in Aquarius 0–20°, "Own Sign" for 20–30° — see
+   inMooltrikonaDegrees. Reads p.sign / p.dignity / p.degreeValue, so it is
+   automatically correct in every varga (buildVargaPanels recomputes all three from
+   the varga placement, reading the varga's expanded degree). Nodes never reach
+   here — the pill is gated on a non-null maitri, which the nodes lack. */
+type DignityKey = "exalted" | "debilitated" | "mooltrikona";
+const DIGNITY_LABEL: Record<DignityKey, string> = {
+  exalted: "Exalted", debilitated: "Debilitated", mooltrikona: "Mooltrikona",
+};
+function dignityPillKey(p: PlanetData): DignityKey | null {
+  if (p.dignity === "exalted") return "exalted";
+  if (p.dignity === "debilitated") return "debilitated";
+  if (inMooltrikonaDegrees(p.key, p.sign, p.degreeValue)) return "mooltrikona";
+  return null;
+}
 
 function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"], v = n % 100;
@@ -279,6 +301,7 @@ export function PlanetPanel({
   const [open, setOpen] = useState(defaultOpen);
   const p = planet;
   const icon = body(p.key, 46, { state: p.dignity, retro: p.retro });
+  const dignityKey = dignityPillKey(p);
 
   return (
     <article className="pp-panel" data-open={open} id={id}>
@@ -319,14 +342,23 @@ export function PlanetPanel({
                 </button>
               )}
               {p.maitriToDispositor && (
-                <button type="button" className="pp-pill" data-kind="maitri"
-                  data-maitri={p.maitriToDispositor}
-                  title={p.dispositor
-                    ? `Toward its dispositor ${PNAME[p.dispositor]} (lord of ${p.signName})`
-                    : "In its own sign — its own dispositor"}
-                  onClick={(e) => { e.stopPropagation(); onOpenCard("maitri", "panchadha"); }}>
-                  {MAITRI_LABEL[p.maitriToDispositor]}
-                </button>
+                dignityKey ? (
+                  <button type="button" className="pp-pill" data-kind="dignity"
+                    data-dignity={dignityKey}
+                    title={`${DIGNITY_LABEL[dignityKey]} in ${p.signName} — its dignity in this sign`}
+                    onClick={(e) => { e.stopPropagation(); onOpenCard("planet", PNAME[p.key]); }}>
+                    {DIGNITY_LABEL[dignityKey]}
+                  </button>
+                ) : (
+                  <button type="button" className="pp-pill" data-kind="maitri"
+                    data-maitri={p.maitriToDispositor}
+                    title={p.dispositor
+                      ? `Toward its dispositor ${PNAME[p.dispositor]} (lord of ${p.signName})`
+                      : "In its own sign — its own dispositor"}
+                    onClick={(e) => { e.stopPropagation(); onOpenCard("maitri", "panchadha"); }}>
+                    {MAITRI_LABEL[p.maitriToDispositor]}
+                  </button>
+                )
               )}
             </span>
           )}

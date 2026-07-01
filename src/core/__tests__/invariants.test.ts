@@ -7,13 +7,14 @@
    ============================================================ */
 import { describe, it, expect } from "vitest";
 import {
-  PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA,
+  PLANET_ORDER, SIGN_RULER, EXALTATION, DEBILITATION, OWN_SIGNS, MOOLTRIKONA, MOOLTRIKONA_DEGREES,
   NAKSHATRAS, NAKSHATRA_ARC, PADA_ARC, DRISHTI,
   DASHA_SEQUENCE, DASHA_TOTAL_YEARS, PADA_PURUSHARTHAS, NAKSHATRA_PURUSHARTHA, COMBUSTION_ORB,
   SIGN_ELEMENT, ASCENDANT_FUNCTIONAL,
 } from "../constants";
 import {
   dignityOf, nakshatraOf, gandantaOf, isCombust, aspectsOnto, maitriToDispositor,
+  inMooltrikonaDegrees,
 } from "../vedic";
 import { navamsa, hora, drekkana, saptamsa, dwadasamsa, shodasamsa, dasamsa, trimsamsa } from "../divisional";
 import { computeShadbala, SHADBALA_REQUIRED, tierOf } from "../shadbala";
@@ -88,6 +89,31 @@ describe("dignity tables", () => {
       if (p === "moon") expect(MOOLTRIKONA.moon).toBe(2);
       else expect(OWN_SIGNS[p]).toContain(MOOLTRIKONA[p]!);
     }
+  });
+
+  it("mooltrikona degree ranges are well-formed and skip the Moon/Mercury (exalted in their mool sign)", () => {
+    // Moon (Taurus) and Mercury (Virgo) have no degree entry — their mool sign is
+    // their exaltation sign, so the label resolves to Exalted before it ever runs.
+    expect(MOOLTRIKONA_DEGREES.moon).toBeUndefined();
+    expect(MOOLTRIKONA_DEGREES.mercury).toBeUndefined();
+    for (const p of SEVEN) {
+      const range = MOOLTRIKONA_DEGREES[p];
+      if (!range) continue;
+      const [lo, hi] = range;
+      expect(lo).toBeGreaterThanOrEqual(0);
+      expect(hi).toBeLessThanOrEqual(30);
+      expect(lo).toBeLessThan(hi);
+    }
+  });
+
+  it("inMooltrikonaDegrees splits the mool sign (Saturn 0–20° Aquarius) and rejects other signs/degrees", () => {
+    expect(inMooltrikonaDegrees("saturn", 11, 10)).toBe(true);   // inside 0–20°
+    expect(inMooltrikonaDegrees("saturn", 11, 25)).toBe(false);  // 20–30° → own sign
+    expect(inMooltrikonaDegrees("saturn", 11, 20)).toBe(false);  // upper bound exclusive
+    expect(inMooltrikonaDegrees("saturn", 10, 5)).toBe(false);   // Capricorn (own, not mool)
+    expect(inMooltrikonaDegrees("venus", 7, 14)).toBe(true);     // Libra 0–15°
+    expect(inMooltrikonaDegrees("venus", 7, 16)).toBe(false);    // Libra 15–30° → own
+    expect(inMooltrikonaDegrees("rahu", 11, 5)).toBe(false);     // nodes: no mooltrikona
   });
 });
 

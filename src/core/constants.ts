@@ -155,9 +155,26 @@ export const OWN_SIGNS: Partial<Record<PlanetKey, number[]>> = {
 };
 /* Mooltrikona sign per planet (canonical BPHS; sign-level, no degree sub-range).
    Coincides with an own sign for all except the Moon (Taurus, not its own Cancer).
-   Used by Jagradadi avastha, where mooltrikona reads as own → Awake. */
+   Used by Jagradadi avastha and shadbala's Saptavargaja bala (both sign-level, to
+   match the pinned Hora-Prakash upstream, whose MOOLA_SIGN is likewise sign-level). */
 export const MOOLTRIKONA: Partial<Record<PlanetKey, number>> = {
   sun: 5, moon: 2, mars: 1, mercury: 6, jupiter: 9, venus: 7, saturn: 11,
+};
+
+/* Mooltrikona DEGREE sub-range within the mool sign, [lower, upper) in degrees,
+   standard BPHS. PRESENTATION-ONLY (owner-directed): used solely by the planet
+   panel's dignity label to split the mool sign into "Mooltrikona" (inside the
+   range) vs "Own Sign" (the rest). Deliberately NOT fed into shadbala or the
+   Jagradadi avastha — those stay sign-level on MOOLTRIKONA above, pinned to the
+   upstream. Moon (Taurus) and Mercury (Virgo) are omitted: their mool sign IS
+   their exaltation sign, which the engine flags exalted at sign level, so the
+   label resolves to "Exalted" first and never reaches a mooltrikona-degree test. */
+export const MOOLTRIKONA_DEGREES: Partial<Record<PlanetKey, [number, number]>> = {
+  sun: [0, 20],      // Leo 0°–20°
+  mars: [0, 12],     // Aries 0°–12°
+  jupiter: [0, 10],  // Sagittarius 0°–10°
+  venus: [0, 15],    // Libra 0°–15°
+  saturn: [0, 20],   // Aquarius 0°–20°
 };
 
 /* Naisargika (natural) maitri — each planet's standing friends / enemies; anyone not

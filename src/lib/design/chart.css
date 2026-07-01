@@ -427,6 +427,16 @@
 .pp-pill[data-kind="maitri"][data-maitri="shatru"] { color: #E58A78; border-color: color-mix(in srgb, #E2503C 34%, transparent); background: color-mix(in srgb, #E2503C 9%, transparent); }
 .pp-pill[data-kind="maitri"][data-maitri="adhi_shatru"] { color: #E2503C; border-color: color-mix(in srgb, #E2503C 50%, transparent); background: color-mix(in srgb, #E2503C 15%, transparent); }
 .pp-pill[data-kind="maitri"][data-maitri="own_sign"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 42%, transparent); background: color-mix(in srgb, var(--accent) 11%, transparent); }
+/* dignity overrides the maitri label (owner-directed) — exaltation/mooltrikona
+   ride the gold strength family, debilitation goes muted + dashed, echoing the
+   icon's dignity language (radiant gold halo / calm own-sign gold / dashed grey ring). */
+.pp-pill[data-kind="dignity"][data-dignity="exalted"] { color: var(--accent); font-weight: 700;
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: color-mix(in srgb, var(--accent) 15%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent), 0 0 9px color-mix(in srgb, var(--accent) 24%, transparent); }
+.pp-pill[data-kind="dignity"][data-dignity="mooltrikona"] { color: var(--accent-deep); font-weight: 600;
+  border-color: color-mix(in srgb, var(--accent-deep) 54%, transparent); background: color-mix(in srgb, var(--accent-deep) 13%, transparent); }
+.pp-pill[data-kind="dignity"][data-dignity="debilitated"] { color: var(--text-3);
+  border: 1px dashed color-mix(in srgb, var(--text-3) 55%, transparent); background: color-mix(in srgb, var(--text-3) 8%, transparent); }
 .pp-chev { flex: none; color: var(--text-3); transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
 .pp-panel[data-open="true"] .pp-chev { transform: rotate(180deg); color: var(--accent); }
 
