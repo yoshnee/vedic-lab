@@ -114,6 +114,23 @@ function combinePanchadha(
   return nat === "friend" ? "sama" : nat === "neutral" ? "shatru" : "adhi_shatru";
 }
 
+/** Compound (panchadha) relationship of `planet` toward an arbitrary `lord` graha,
+    given their rasi (D1) signs. Natural (naisargika) + temporal (tatkalika, from
+    the D1 positions) combined into the five-step result. `"own_sign"` when
+    lord === planet; `null` when `planet` has no natural table (a node). The shared
+    primitive behind both maitriToDispositor and shadbala's Saptavargaja dignity. */
+export function panchadhaMaitri(
+  planet: PlanetKey,
+  lord: PlanetKey,
+  planetSign: number,
+  lordSign: number,
+): Maitri | null {
+  if (lord === planet) return "own_sign";
+  const nat = naturalRelation(planet, lord); // occupant → lord (asymmetric)
+  if (!nat) return null; // node → no defined natural table
+  return combinePanchadha(nat, temporalRelation(planetSign, lordSign));
+}
+
 /** A planet's compound (panchadha) relationship toward its dispositor — the lord of
     the sign it occupies (its "landlord"). `signs` maps every planet key to its sign.
     Returns `{ dispositor: null, relation: "own_sign" }` when self-dispositing, and
@@ -125,10 +142,7 @@ export function maitriToDispositor(
   const occSign = signs[planet];
   const lord = SIGN_RULER[occSign - 1];
   if (lord === planet) return { dispositor: null, relation: "own_sign" };
-  const nat = naturalRelation(planet, lord); // occupant → dispositor (asymmetric)
-  if (!nat) return { dispositor: lord, relation: null }; // node occupant → omit badge
-  const temp = temporalRelation(occSign, signs[lord]);
-  return { dispositor: lord, relation: combinePanchadha(nat, temp) };
+  return { dispositor: lord, relation: panchadhaMaitri(planet, lord, occSign, signs[lord]) };
 }
 
 /** Natural (naisargika) standing of a planet toward the lord of the sign it occupies —

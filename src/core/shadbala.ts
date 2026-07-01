@@ -34,9 +34,8 @@
    above the asc/desc axis. Degree-accurate and never silently wrong-by-default.
    ============================================================ */
 import type { PlanetKey, ShadbalaScore } from "./types";
-import {
-  OWN_SIGNS, MOOLTRIKONA, SIGN_RULER, NAISARGIKA_FRIENDS, NAISARGIKA_ENEMIES,
-} from "./constants";
+import { MOOLTRIKONA, SIGN_RULER } from "./constants";
+import { panchadhaMaitri } from "./vedic";
 import { navamsa, hora, drekkana, saptamsa, dwadasamsa, trimsamsa, type VargaPoint } from "./divisional";
 
 export type { ShadbalaScore } from "./types";
@@ -58,21 +57,37 @@ const EXALT_LON: Partial<Record<PlanetKey, number>> = {
   sun: 10, moon: 33, mars: 298, mercury: 165, jupiter: 95, venus: 357, saturn: 200,
 };
 
-const DIGNITY_PTS = { moolatrikona: 45, own: 30, friend: 15, neutral: 7.5, enemy: 3.75 } as const;
 const VARGAS: ((lon: number) => VargaPoint)[] = [
   (lon) => ({ sign: Math.floor((((lon % 360) + 360) % 360) / 30) + 1, degree: lon % 30 }), // D1
   hora, drekkana, saptamsa, navamsa, dwadasamsa, trimsamsa,
 ];
 
-/* Saptavargaja dignity: moolatrikona > own > permanent (naisargika) relation
-   to the varga sign's ruler — the reference's getDignity. */
-function vargaDignity(planet: PlanetKey, sign: number): keyof typeof DIGNITY_PTS {
-  if (MOOLTRIKONA[planet] === sign) return "moolatrikona";
-  if (OWN_SIGNS[planet]?.includes(sign)) return "own";
-  const ruler = SIGN_RULER[sign - 1];
-  if (NAISARGIKA_FRIENDS[planet]?.includes(ruler)) return "friend";
-  if (NAISARGIKA_ENEMIES[planet]?.includes(ruler)) return "enemy";
-  return "neutral";
+/* Saptavargaja dignity POINTS (virupas), per BPHS / the astrosight.ai 7-tier
+   scheme: moolatrikona 45 > own 30 > the COMPOUND (panchadha) relation to the
+   varga sign's lord — Adhimitra 22.5 / Mitra 15 / Sama 7.5 / Shatru 3.75 /
+   Adhishatru 1.875. The compound relation combines naisargika (permanent) +
+   tatkalika (temporal, from the RASI/D1 positions of the planet and the lord),
+   reusing the same panchadhaMaitri as the maitri pill. (The Hora-Prakash
+   upstream's getDignity used permanent-only 5 tiers — 15/7.5/3.75, no
+   great-friend/great-enemy; see __upstream__. Owner-directed change, 2026-07.)
+   `d1Signs` maps every graha to its rasi sign; the lord (a sign ruler) is always
+   one of the seven and therefore present. */
+function vargaDignityPts(
+  planet: PlanetKey,
+  vargaSign: number,
+  d1Signs: Record<PlanetKey, number>,
+): number {
+  if (MOOLTRIKONA[planet] === vargaSign) return 45;
+  const lord = SIGN_RULER[vargaSign - 1];
+  if (lord === planet) return 30; // own sign (non-moolatrikona)
+  switch (panchadhaMaitri(planet, lord, d1Signs[planet], d1Signs[lord])) {
+    case "adhi_mitra": return 22.5;
+    case "mitra": return 15;
+    case "sama": return 7.5;
+    case "shatru": return 3.75;
+    case "adhi_shatru": return 1.875;
+    default: return 7.5; // own_sign/null unreachable past the guards (grahas only)
+  }
 }
 
 function uchaBala(planet: PlanetKey, lon: number): number {
@@ -82,9 +97,9 @@ function uchaBala(planet: PlanetKey, lon: number): number {
   return 60 * (1 - dist / 180);
 }
 
-function saptaVargajaBala(planet: PlanetKey, lon: number): number {
+function saptaVargajaBala(planet: PlanetKey, lon: number, d1Signs: Record<PlanetKey, number>): number {
   let total = 0;
-  for (const varga of VARGAS) total += DIGNITY_PTS[vargaDignity(planet, varga(lon).sign)];
+  for (const varga of VARGAS) total += vargaDignityPts(planet, varga(lon).sign, d1Signs);
   return total;
 }
 
@@ -215,12 +230,15 @@ export function computeShadbala(
   }
   // Day birth ⇔ the Sun is above the asc/desc axis (see header note).
   const isDayBirth = (sun.lon - ascLon + 360) % 360 > 180;
+  // Rasi (D1) signs of every graha — the tatkalika (temporal) basis for the
+  // compound Saptavargaja dignity (a sign's lord is always one of the seven).
+  const d1Signs = Object.fromEntries(grahas.map((g) => [g.key, g.sign])) as Record<PlanetKey, number>;
 
   const out: Partial<Record<PlanetKey, ShadbalaScore>> = {};
   for (const p of grahas) {
     const d9Sign = navamsa(p.lon).sign;
     const uchcha = uchaBala(p.key, p.lon);
-    const saptavargaja = saptaVargajaBala(p.key, p.lon);
+    const saptavargaja = saptaVargajaBala(p.key, p.lon, d1Signs);
     const ojayugma = ojayugmaBala(p.key, p.sign, d9Sign);
     const kendradi = kendradiBala(p.house);
     const drekkana = drekkanaBala(p.key, p.degreeValue);
