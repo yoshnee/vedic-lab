@@ -29,7 +29,10 @@
    Shadbala parity with JHora or a complete BPHS implementation.
 
    Cross-planet BPHS rules baked into every expectation below:
-     - Saptavargaja over the seven vargas D1, D2, D3, D7, D9, D12, D30.
+     - Saptavargaja over the seven vargas D1, D2, D3, D7, D9, D12, D30, scored by
+       the COMPOUND (panchadha) dignity 7-tier scheme — moolatrikona 45 / own 30 /
+       adhimitra 22.5 / mitra 15 / sama 7.5 / shatru 3.75 / adhishatru 1.875
+       (naisargika + tatkalika; owner-directed 2026-07, was permanent-only 5-tier).
      - Ojayugma summed across Rasi and Navamsa (15 + 15, max 30), not averaged.
      - Ayana/declination terms reconstruct tropical longitude from the chart's
        ACTUAL ayanamsa (22.04 for 1869), not a hard-coded ~24.
@@ -101,39 +104,39 @@ interface Expected {
    chart. `note` names the BPHS rule(s) the corrected figures reflect. */
 const EXPECTED: Record<Graha, Expected> = {
   sun: {
-    sthana: 97.7, dig: 40, kala: 129.3, chesta: 25.5, naisargika: 60, drik: 0, total: 352.4,
-    parts: { uchcha: 7.7, saptavargaja: 60, ojayugma: 15, kendradi: 15, drekkana: 0, nathonnatha: 60, paksha: 43.8, ayana: 25.5 },
-    note: "Cheshta = Ayana (BPHS 27.18); Ayana doubled by dual-count in Kala + Cheshta, no multiplier; Ayana from actual ayanamsa.",
+    sthana: 112.7, dig: 40, kala: 129.3, chesta: 25.5, naisargika: 60, drik: 0, total: 367.4,
+    parts: { uchcha: 7.7, saptavargaja: 75, ojayugma: 15, kendradi: 15, drekkana: 0, nathonnatha: 60, paksha: 43.8, ayana: 25.5 },
+    note: "Cheshta = Ayana (BPHS 27.18); Ayana doubled by dual-count in Kala + Cheshta, no multiplier; Ayana from actual ayanamsa. Saptavargaja compound 7-tier (panchadha).",
   },
   moon: {
-    sthana: 241.6, dig: 0, kala: 27.4, chesta: 16.2, naisargika: 51.4, drik: 0, total: 336.6,
-    parts: { uchcha: 31.6, saptavargaja: 105, ojayugma: 30, kendradi: 60, drekkana: 15, nathonnatha: 0, paksha: 16.2, ayana: 11.2 },
-    note: "Cheshta = Paksha (BPHS 27.18); Paksha doubled by dual-count in Kala + Cheshta, no multiplier.",
+    sthana: 279.1, dig: 0, kala: 27.4, chesta: 16.2, naisargika: 51.4, drik: 0, total: 374.1,
+    parts: { uchcha: 31.6, saptavargaja: 142.5, ojayugma: 30, kendradi: 60, drekkana: 15, nathonnatha: 0, paksha: 16.2, ayana: 11.2 },
+    note: "Cheshta = Paksha (BPHS 27.18); Paksha doubled by dual-count in Kala + Cheshta, no multiplier. Saptavargaja compound 7-tier (panchadha).",
   },
   mars: {
-    sthana: 198.2, dig: 30, kala: 51.6, chesta: 45, naisargika: 17.1, drik: 7.5, total: 349.5,
-    parts: { uchcha: 29.5, saptavargaja: 93.8, ojayugma: 15, kendradi: 60, drekkana: 0, nathonnatha: 0, paksha: 43.8, ayana: 7.8 },
-    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30; Ojayugma summed (max 30).",
+    sthana: 188.8, dig: 30, kala: 51.6, chesta: 45, naisargika: 17.1, drik: 7.5, total: 340.1,
+    parts: { uchcha: 29.5, saptavargaja: 84.4, ojayugma: 15, kendradi: 60, drekkana: 0, nathonnatha: 0, paksha: 43.8, ayana: 7.8 },
+    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30, compound 7-tier (panchadha); Ojayugma summed (max 30).",
   },
   mercury: {
-    sthana: 216.1, dig: 60, kala: 122.6, chesta: 15, naisargika: 25.7, drik: 7.5, total: 446.9,
-    parts: { uchcha: 51.1, saptavargaja: 60, ojayugma: 30, kendradi: 60, drekkana: 15, nathonnatha: 60, paksha: 16.2, ayana: 46.4 },
-    note: "Ayana from declination, always additive (range 30..60); Saptavargaja D1..D30; Ojayugma summed.",
+    sthana: 219.8, dig: 60, kala: 122.6, chesta: 15, naisargika: 25.7, drik: 7.5, total: 450.6,
+    parts: { uchcha: 51.1, saptavargaja: 63.8, ojayugma: 30, kendradi: 60, drekkana: 15, nathonnatha: 60, paksha: 16.2, ayana: 46.4 },
+    note: "Ayana from declination, always additive (range 30..60); Saptavargaja D1..D30, compound 7-tier (panchadha); Ojayugma summed.",
   },
   jupiter: {
-    sthana: 274, dig: 0, kala: 129, chesta: 60, naisargika: 34.3, drik: 7.5, total: 504.7,
-    parts: { uchcha: 37.7, saptavargaja: 146.3, ojayugma: 30, kendradi: 60, drekkana: 0, nathonnatha: 60, paksha: 16.2, ayana: 52.8 },
-    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30; Ojayugma summed (max 30).",
+    sthana: 260.8, dig: 0, kala: 129, chesta: 60, naisargika: 34.3, drik: 7.5, total: 491.6,
+    parts: { uchcha: 37.7, saptavargaja: 133.1, ojayugma: 30, kendradi: 60, drekkana: 0, nathonnatha: 60, paksha: 16.2, ayana: 52.8 },
+    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30, compound 7-tier (panchadha); Ojayugma summed (max 30).",
   },
   venus: {
-    sthana: 245.4, dig: 30, kala: 84.8, chesta: 15, naisargika: 42.9, drik: 7.5, total: 425.5,
-    parts: { uchcha: 9.1, saptavargaja: 146.3, ojayugma: 15, kendradi: 60, drekkana: 15, nathonnatha: 60, paksha: 16.2, ayana: 8.5 },
-    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30; Ojayugma summed (max 30).",
+    sthana: 230.4, dig: 30, kala: 84.8, chesta: 15, naisargika: 42.9, drik: 7.5, total: 410.5,
+    parts: { uchcha: 9.1, saptavargaja: 131.3, ojayugma: 15, kendradi: 60, drekkana: 15, nathonnatha: 60, paksha: 16.2, ayana: 8.5 },
+    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30, compound 7-tier (panchadha); Ojayugma summed (max 30).",
   },
   saturn: {
-    sthana: 181.1, dig: 10, kala: 102.3, chesta: 30, naisargika: 8.6, drik: 0, total: 332,
-    parts: { uchcha: 49.9, saptavargaja: 101.3, ojayugma: 0, kendradi: 30, drekkana: 0, nathonnatha: 0, paksha: 43.8, ayana: 58.5 },
-    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30; Ojayugma summed (max 30).",
+    sthana: 196.1, dig: 10, kala: 102.3, chesta: 30, naisargika: 8.6, drik: 0, total: 347,
+    parts: { uchcha: 49.9, saptavargaja: 116.3, ojayugma: 0, kendradi: 30, drekkana: 0, nathonnatha: 0, paksha: 43.8, ayana: 58.5 },
+    note: "Saptavargaja D1/D2/D3/D7/D9/D12/D30, compound 7-tier (panchadha); Ojayugma summed (max 30).",
   },
 };
 
