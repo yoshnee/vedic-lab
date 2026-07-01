@@ -54,7 +54,11 @@
 /* Side-by-side cards share row tracks via SUBGRID (header | chart), so the two
    diamonds sit level by construction — even when one header wraps (the gochar
    scrubber) or one caption runs long, the other card gets the same gap. */
-.chart-top { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr;
+/* minmax(0, 1fr) on BOTH tracks: a plain 1fr keeps a min-content floor, so a
+   card whose content can't shrink (the D2 two-column horā) pushes its track
+   wider and collides with the neighbouring chart. minmax(0, …) lets each card
+   shrink to its share so the two charts never overlap. */
+.chart-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr;
   gap: clamp(14px, 2vw, 24px); margin-bottom: clamp(26px, 4vw, 40px); }
 
 /* chart card (title / type selector + caption, then the chart) */
@@ -131,14 +135,9 @@
   font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 16px; color: var(--text); }
 @keyframes drawer-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 
-/* reading-notes drawer (mobile) — the daśā drawer's twin, sliding from the RIGHT */
-.notes-drawer-overlay { position: fixed; inset: 0; z-index: 120; background: var(--scrim, rgba(4, 10, 7, .6));
-  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; justify-content: flex-end; }
-.notes-drawer { width: min(360px, 88vw); max-width: 88vw; height: 100%; overflow-y: auto;
-  background: linear-gradient(180deg, var(--surface), var(--bg-2)); border-left: 1px solid var(--border);
-  padding: 16px 14px 28px; animation: drawer-in-right .26s cubic-bezier(.2, .7, .2, 1); }
-/* the mobile trigger reuses .dasha-trigger chrome; .notes-trigger just adds the count */
-.nt-sum { margin-left: auto; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .05em; color: var(--text-2); }
+/* (the reading-notes mobile drawer was removed — reading notes are desktop-only;
+   the right rail now holds the Tenets launcher, the notes float on a fixed
+   workspace, both hidden below 960px) */
 
 /* ---------- North Indian chart ---------- */
 .nic { position: relative; width: 100%; max-width: 430px; margin: 0 auto; aspect-ratio: 1 / 1; }
@@ -158,6 +157,128 @@
 .nic-planet svg { width: 26px; height: 26px; display: block; }
 .nic-deg { font-family: var(--font-mono), monospace; font-size: 8.5px; color: var(--text-2); margin-top: -1px; }
 .nic-planet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+/* ============================================================
+   D2 (Horā) — two-column wealth layout, REPLACES the diamond when D2 is the
+   selected varga (ChartCard branches on value === "d2"). Ported from the Claude
+   Design handoff (hora-chart/hora.css), class names kept, hex → tokens (the
+   design's --sun/--moon = our --p-sun/--p-moon). Compacted to live inside the
+   ~half-width chart card; two columns side by side (owner-directed). The page
+   chrome (pagehead) + demo bar from the standalone design are dropped — the
+   ChartCard header already identifies the chart.
+   ============================================================ */
+/* match the diamond's footprint (.nic max-width 430, centered) so D2 fits the
+   chart panel instead of spilling over the right reading-notes rail */
+.hr { width: 100%; max-width: 430px; margin: 0 auto; }
+/* minmax(0, 1fr) lets the two columns shrink BELOW their content (chip names +
+   the count badge truncate) — a plain 1fr keeps a min-content floor and the
+   grid overflows the card on the narrow half-width slot */
+.hr-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: start; }
+
+.hr-col { --col: var(--accent); min-width: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  background:
+    radial-gradient(150% 90% at 50% -30%, color-mix(in srgb, var(--col) 13%, transparent), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--col) 5%, var(--surface)), var(--bg-2));
+  box-shadow: 0 18px 40px -30px #000; }
+.hr-col[data-theme="warm"] { --col: var(--p-sun); }
+.hr-col[data-theme="cool"] { --col: var(--p-moon); }
+
+/* column header: luminary art · name + sign · live count (wrap-friendly for the
+   narrow card) */
+.hr-colhead { display: flex; align-items: center; gap: 9px; padding: 11px 11px 10px; flex-wrap: wrap;
+  border-bottom: 1px solid color-mix(in srgb, var(--col) 22%, var(--border-soft));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--col) 10%, transparent), transparent); }
+.hr-colhead .lum { flex: none; display: flex; filter: drop-shadow(0 3px 12px rgba(0, 0, 0, .5)); }
+.hr-colhead .meta { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.hr-colhead .k { font-family: var(--font-mono), monospace; font-size: 8.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: color-mix(in srgb, var(--col) 78%, var(--text-2));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hr-colhead .nm { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.hr-colhead .nm b { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 16px;
+  letter-spacing: -.01em; color: var(--text); }
+.hr-colhead .nm .sign { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .03em;
+  color: var(--text-2); display: inline-flex; align-items: center; gap: 4px; }
+.hr-colhead .nm .sign .gl { font-size: 13px; color: color-mix(in srgb, var(--col) 82%, var(--text)); }
+.hr-count { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 34px; padding: 5px 8px; border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--col) 34%, var(--border));
+  background: color-mix(in srgb, var(--col) 12%, transparent); }
+.hr-count b { font-family: var(--font-display), sans-serif; font-weight: 700; font-size: 16px; line-height: 1;
+  color: color-mix(in srgb, var(--col) 80%, var(--text)); }
+.hr-count span { font-family: var(--font-mono), monospace; font-size: 7.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+/* chip stack — neutral chips (planet identity art only, no benefic/malefic colour) */
+.hr-chips { display: flex; flex-direction: column; gap: 7px; padding: 11px; }
+.hr-chip { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; min-width: 0;
+  padding: 8px 9px; border-radius: 11px; cursor: pointer;
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent); border: 1px solid var(--border); color: var(--text);
+  transition: background .18s, border-color .18s, box-shadow .2s, transform .12s; }
+.hr-chip .ico { flex: none; display: flex; filter: drop-shadow(0 2px 7px rgba(0, 0, 0, .5)); }
+.hr-chip .label { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.hr-chip .label .nm { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13.5px;
+  letter-spacing: -.005em; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hr-chip .label .sk { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .06em; color: var(--text-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hr-chip .chev { flex: none; color: var(--text-3); opacity: .6;
+  transition: transform .26s cubic-bezier(.2, .7, .2, 1), color .2s, opacity .2s; }
+.hr-chip:hover { background: color-mix(in srgb, var(--col) 9%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--col) 42%, var(--border)); transform: translateY(-1px); }
+.hr-chip:hover .chev { color: color-mix(in srgb, var(--col) 75%, var(--text-2)); opacity: 1; }
+.hr-chip:focus-visible { outline: 2px solid var(--col); outline-offset: 2px; }
+.hr-chip[data-selected="true"] { background: color-mix(in srgb, var(--col) 15%, var(--surface));
+  border-color: color-mix(in srgb, var(--col) 62%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--col) 40%, transparent), 0 10px 26px -16px color-mix(in srgb, var(--col) 80%, #000); }
+.hr-chip[data-selected="true"] .chev { transform: rotate(90deg); color: color-mix(in srgb, var(--col) 85%, var(--text)); opacity: 1; }
+.hr-chip[data-selected="true"] .label .sk { color: color-mix(in srgb, var(--col) 60%, var(--text-3)); }
+
+/* empty column (a luminary's horā with no grahas — possible; Rahu & Ketu share one) */
+.hr-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  gap: 10px; padding: 26px 14px 30px; min-height: 130px; }
+.hr-empty .ghost { display: flex; opacity: .4; filter: grayscale(.5) drop-shadow(0 2px 10px rgba(0, 0, 0, .4)); }
+.hr-empty .msg { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13px; color: var(--text-2); }
+.hr-empty .sub { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-3); max-width: 22ch; line-height: 1.5; }
+
+/* reveal — wealth interpretation, expanding panel below the two columns */
+.hr-reveal { --col: var(--accent); max-height: 0; overflow: hidden; opacity: 0; margin-top: 0;
+  transition: max-height .4s cubic-bezier(.3, .8, .3, 1), opacity .3s ease, margin-top .4s cubic-bezier(.3, .8, .3, 1); }
+.hr-reveal[data-open] { max-height: 520px; opacity: 1; margin-top: 12px; }
+.hr-reveal[data-theme="warm"] { --col: var(--p-sun); }
+.hr-reveal[data-theme="cool"] { --col: var(--p-moon); }
+.hr-reveal-in { overflow: hidden; }
+.hr-reveal-card { border: 1px solid color-mix(in srgb, var(--col) 38%, var(--border)); border-radius: 14px;
+  background:
+    radial-gradient(120% 140% at 92% -20%, color-mix(in srgb, var(--col) 12%, transparent), transparent 55%),
+    linear-gradient(160deg, color-mix(in srgb, var(--col) 6%, var(--surface-2)), var(--bg-2));
+  padding: 15px 16px 16px; }
+.hr-reveal-top { display: flex; align-items: center; gap: 11px; margin-bottom: 11px; padding-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--col) 20%, var(--border-soft)); }
+.hr-reveal-top .ico { flex: none; display: flex; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
+.hr-reveal-top .id { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.hr-reveal-top .id .k { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .18em;
+  text-transform: uppercase; color: color-mix(in srgb, var(--col) 78%, var(--text-2)); }
+.hr-reveal-top .id .nm { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.hr-reveal-top .id .nm b { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 17px;
+  letter-spacing: -.01em; color: var(--text); }
+.hr-reveal-top .id .nm .in { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .03em; color: var(--text-3); }
+.hr-reveal-top .id .nm .in em { font-style: normal; color: color-mix(in srgb, var(--col) 80%, var(--text-2)); }
+.hr-close { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); font-size: 14px; cursor: pointer; transition: .2s; line-height: 1; }
+.hr-close:hover { color: var(--text); border-color: var(--col); background: var(--surface-2); }
+.hr-close:focus-visible { outline: 2px solid var(--col); outline-offset: 2px; }
+.hr-reveal-body { font-size: 14px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
+
+/* hint shown when nothing is selected */
+.hr-hint { margin-top: 12px; display: flex; align-items: center; gap: 10px; border: 1px dashed var(--border);
+  border-radius: 12px; padding: 11px 15px; background: color-mix(in srgb, var(--surface) 50%, transparent); }
+.hr-hint i { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.hr-hint span { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .04em; color: var(--text-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hr-reveal { transition: none; }
+  .hr-chip, .hr-chip .chev { transition: none; }
+}
 
 /* ============================================================
    DAŚĀ TREE (shared by the rail + the mobile drawer; see the rail block above)
@@ -186,7 +307,7 @@
 .drow[data-running="true"] { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
 .drow[data-running="true"] .ddate { color: var(--accent); }
 .dnow { flex: none; font-family: var(--font-mono), monospace; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase;
-  color: #15110a; background: var(--accent); padding: 2px 7px; border-radius: 999px; margin-left: 10px; }
+  color: var(--on-accent); background: var(--accent); padding: 2px 7px; border-radius: 999px; margin-left: 10px; }
 .dchild { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.3, .8, .3, 1); }
 .dnode[data-open="true"] > .dchild { grid-template-rows: 1fr; }
 .dchild-in { overflow: hidden; }
@@ -493,13 +614,13 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
    /chart RESPONSIVE — desktop is 3-up; below 960px everything stacks
    ============================================================ */
 @media (min-width: 960px) {
-  /* the mobile drawers can never show on desktop (the rails are visible) */
-  .dasha-drawer-overlay, .notes-drawer-overlay { display: none; }
+  /* the mobile drawer can never show on desktop (the rail is visible) */
+  .dasha-drawer-overlay { display: none; }
 }
 @media (max-width: 959px) {
   .chart-layout { grid-template-columns: 1fr; }
   .dasha-rail { display: none; }       /* the rail collapses to the drawer */
-  .notes-rail { display: none; }       /* ditto, to its own drawer (right) */
+  .notes-rail { display: none; }       /* reading notes are desktop-only */
   .eb-card[data-inline] { display: flex; }  /* element balance moves in-flow */
   .dasha-trigger { display: flex; }
   .chart-top { grid-template-columns: 1fr; grid-template-rows: none; }
@@ -512,12 +633,12 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
   .lg-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .legend, .dasha-drawer, .notes-drawer { animation: none; }
+  .legend, .dasha-drawer { animation: none; }
 }
 
 /* ---------- the brand-mark checkbox: a diamond that lights a gold point when
-   checked (the logo is the chart diamond holding a point of light). Shared by
-   the reading-notes steps and the Overlay Dashas pill. ---------- */
+   checked (the logo is the chart diamond holding a point of light). Used by
+   the Overlay Dashas pill. ---------- */
 .dia-check { appearance: none; -webkit-appearance: none; width: 13px; height: 13px;
   margin: 0; flex: none; cursor: pointer; position: relative;
   border: 1.5px solid color-mix(in srgb, var(--accent) 45%, var(--border));
@@ -532,66 +653,161 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
 .dia-check:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* ============================================================
-   Reading Notes — the guided checklist (rail + drawer share these)
+   Reading Notes — the "Tenets" launcher dock (.rn) in the right rail + the
+   draggable sticky notes (.sn) on a fixed workspace. Ported from the Claude
+   Design handoff (reading-notes/Draggable Sticky Note.html); tokens come from
+   tokens.css (byte-identical to the design's :root). The text-on-gold ink is the
+   shared --on-accent token (the design's #15110a).
    ============================================================ */
-.rn { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-/* progress marker: five dots (filled = done) + "n of 5" */
-.rn-progress { display: flex; align-items: center; gap: 10px; }
-.rn-dots { display: flex; gap: 5px; }
-.rn-dots i { width: 7px; height: 7px; border-radius: 50%; flex: none;
-  background: color-mix(in srgb, var(--text-3) 38%, transparent); transition: background .2s; }
-.rn-dots i[data-on] { background: var(--accent); }
-.rn-count { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .08em; color: var(--text-2); }
-/* accordion: only the active step expands; the rest are single rows */
-.rn-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.rn-step { display: flex; flex-direction: column; border-radius: 10px; }
-.rn-step[data-open] { background: color-mix(in srgb, var(--surface) 55%, transparent);
-  border: 1px solid var(--border-soft); padding: 2px 8px 10px; margin: 0 -8px; }
-.rn-step-head { display: flex; align-items: center; gap: 4px; }
-.rn-step-head .dia-check { margin: 0 4px 0 2px; }
-.rn-step-btn { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; text-align: left;
-  background: none; border: 0; padding: 7px 6px; border-radius: 8px; cursor: pointer; }
-.rn-step-btn:hover { background: color-mix(in srgb, var(--surface) 70%, transparent); }
-.rn-step-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.rn-step-no { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .1em; color: var(--text-3); }
-.rn-step-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13.5px; color: var(--text); }
-/* checked: the checkbox is the checkmark; the collapsed row mutes slightly */
-.rn-step[data-done] .rn-step-title { color: var(--text-3); }
-.rn-step[data-done]:not([data-open]) { opacity: .82; }
-/* the deck-refresher card icon beside a step title (Houses / Dashas) */
-.rn-deck-btn { flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 24px; height: 24px; background: none; border: 0; border-radius: 7px; padding: 0;
-  cursor: pointer; opacity: .75; transition: opacity .18s, background .18s; }
-.rn-deck-btn:hover { opacity: 1; background: color-mix(in srgb, var(--accent) 10%, transparent); }
-.rn-deck-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; opacity: 1; }
-.rn-step-body { display: flex; flex-direction: column; gap: 8px; padding: 2px 6px 0; }
-.rn-prompt { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-3); text-wrap: pretty; }
-/* auto-growing notes: 4 lines by default (room invites fuller notes,
-   owner-directed), growing with content beyond that (JS sets height) */
-.rn-notes { width: 100%; resize: none; overflow: hidden; min-height: 96px; font-family: var(--font-body), sans-serif;
-  font-size: 13px; line-height: 1.5; color: var(--text); background: var(--surface);
-  border: 1px solid var(--border); border-radius: 11px; padding: 8px 11px;
-  transition: border-color .16s, box-shadow .16s; }
-.rn-notes::placeholder { color: var(--text-3); }
-.rn-notes:hover { border-color: color-mix(in srgb, var(--accent) 36%, var(--border)); }
-.rn-notes:focus { outline: none; border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
-/* dictation row — sticky at the rail/drawer bottom; the dot pulses while recording */
-.rn-mic-row { position: sticky; bottom: -14px; display: flex; align-items: center; gap: 10px;
-  padding: 10px 0 4px; margin-bottom: -8px;
-  background: linear-gradient(180deg, transparent, var(--bg-2) 40%); }
-.rn-mic { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono), monospace;
+/* ---- launcher dock ---- */
+.rn { display: flex; flex-direction: column; }
+.rn-head { display: flex; align-items: center; gap: 12px; padding-bottom: 15px; margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-soft); }
+.rn-mark { flex: none; display: flex; filter: drop-shadow(0 4px 16px rgba(228, 194, 87, .32)); }
+.rn-head .k { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--accent); display: block; }
+.rn-head h3 { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 17px;
+  letter-spacing: -.015em; margin-top: 3px; }
+.rn-tenets { display: flex; flex-direction: column; gap: 2px; }
+.rn-tenet { display: flex; align-items: center; gap: 6px; border-radius: 11px; }
+.rn-tenet.is-open { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+/* the deck-refresher icon (replaces the old 01..07 number) — opens the tenet's
+   relevant deck; lifts + grows on hover to read as clickable */
+.rn-deck { flex: none; display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; padding: 0; border: 0; cursor: pointer; background: transparent;
+  border-radius: 9px; filter: drop-shadow(0 2px 7px rgba(228, 194, 87, .22));
+  transition: transform .16s ease, filter .16s ease; }
+.rn-deck svg { display: block; }
+.rn-deck:hover { transform: translateY(-2px) scale(1.1); filter: drop-shadow(0 5px 13px rgba(228, 194, 87, .5)); }
+.rn-deck:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* the note-spawn row — the main clickable area beside the deck icon */
+.rn-note { flex: 1 1 auto; display: flex; align-items: center; gap: 10px; border: 0; cursor: pointer;
+  text-align: left; padding: 9px 9px 9px 5px; border-radius: 11px; background: transparent; color: var(--text);
+  transition: background .16s; }
+.rn-note:hover { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.rn-note:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.rn-note .nm { flex: 1 1 auto; font-family: var(--font-display), sans-serif; font-weight: 500;
+  font-size: 14.5px; letter-spacing: -.005em; }
+.rn-note .add { flex: none; display: flex; color: var(--text-3); transition: color .16s; }
+.rn-note:hover .add { color: var(--accent); }
+.rn-tenet.is-open .open { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 8px -1px var(--accent); }
+.rn-foot { margin-top: 14px; padding-top: 15px; border-top: 1px solid var(--border-soft); }
+.rn-dl { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; cursor: pointer;
+  padding: 12px 16px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent);
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 14.5px; letter-spacing: -.005em;
+  transition: .2s; }
+.rn-dl svg { flex: none; }
+.rn-dl .badge { font-family: var(--font-mono), monospace; font-size: 11px; font-weight: 400; padding: 2px 8px;
+  border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent);
+  letter-spacing: .02em; }
+.rn-dl:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); border-color: var(--accent);
+  box-shadow: 0 12px 28px -12px var(--accent-deep); }
+.rn-dl:hover:not(:disabled) .badge { background: color-mix(in srgb, var(--on-accent) 22%, transparent); color: var(--on-accent); }
+.rn-dl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rn-dl:disabled { opacity: .4; cursor: not-allowed; border-style: dashed; }
+.rn-dlnote { margin: 11px 0 0; text-align: center; font-family: var(--font-mono), monospace; font-size: 10px;
+  letter-spacing: .05em; line-height: 1.5; color: var(--text-3); }
+
+/* ---- the fixed workspace layer (below the nav z-index:60 and the modals
+   z-index:120+, above the page) + the draggable sticky notes ---- */
+.notes-workspace { position: fixed; inset: 0; z-index: 50; isolation: isolate; pointer-events: none; }
+.notes-workspace .sn { position: absolute; pointer-events: auto; }
+
+.sn { width: 340px; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; background: linear-gradient(180deg, var(--surface), var(--bg-2));
+  box-shadow: 0 18px 40px -22px #000, inset 0 1px 0 rgba(255, 255, 255, .04);
+  transition: transform .26s cubic-bezier(.2, .7, .2, 1), box-shadow .26s, border-color .26s; }
+.sn::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 3;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 85%, transparent), transparent);
+  opacity: .5; }
+.sn--sm { width: 300px; }
+.sn-head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px; cursor: grab;
+  border-bottom: 1px solid var(--border-soft); touch-action: none; }
+.sn-grip { flex: none; display: flex; color: var(--text-3); cursor: grab; transition: color .2s; }
+.sn-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.sn-head:hover .sn-grip { color: var(--text-2); }
+.sn-title { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 9px;
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 16px; letter-spacing: -.012em;
+  color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sn-dot { flex: none; width: 7px; height: 7px; border-radius: 2px; transform: rotate(45deg); background: var(--accent);
+  box-shadow: 0 0 9px -1px color-mix(in srgb, var(--accent) 70%, transparent); }
+.sn-close { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 70%, transparent); color: var(--text-3); font-size: 12px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .18s; }
+.sn-close:hover { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
+.sn-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sn-toggle { display: flex; align-items: center; gap: 9px; width: 100%; border: 0; cursor: pointer;
+  padding: 11px 15px; background: transparent; color: var(--text-3); text-align: left;
+  font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  transition: background .18s, color .18s; }
+.sn-toggle:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); color: var(--text-2); }
+.sn-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sn-toggle .eye { flex: none; display: flex; color: color-mix(in srgb, var(--accent) 75%, var(--text-3)); }
+.sn-toggle .lbl { flex: 1 1 auto; }
+.sn-toggle .ct { flex: none; color: var(--text-3); letter-spacing: .06em; }
+.sn-toggle .chev { flex: none; display: flex; color: var(--text-3); transition: transform .26s cubic-bezier(.2, .7, .2, 1); }
+.sn.is-collapsed .sn-toggle { border-bottom: 1px solid var(--border-soft); }
+.sn:not(.is-collapsed) .sn-toggle .chev { transform: rotate(180deg); }
+
+.sn-q-wrap { padding: 0 15px 4px; }
+.sn-q-list { margin: 0; padding: 0 0 8px; list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.sn-q { display: flex; gap: 11px; font-size: 13.5px; line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
+.sn-q i { flex: none; margin-top: 7px; width: 5px; height: 5px; transform: rotate(45deg);
+  background: color-mix(in srgb, var(--accent) 80%, transparent); }
+.sn.is-collapsed .sn-q-wrap { display: none; }
+
+.sn-write { position: relative; padding: 15px 16px 14px 18px; border-top: 1px solid var(--border-soft); }
+.sn-write::before { content: ""; position: absolute; left: 8px; top: 15px; bottom: 14px; width: 2px; border-radius: 2px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent); }
+.sn-textarea { display: block; width: 100%; min-height: 98px; resize: none; overflow: hidden; border: 0; padding: 0;
+  background: transparent; color: var(--text); font-family: var(--font-body), sans-serif; font-size: 14.5px; line-height: 1.72; }
+.sn-textarea::placeholder { color: var(--text-3); }
+.sn-textarea:focus { outline: none; }
+
+.sn-foot { display: flex; align-items: center; gap: 8px; padding: 9px 15px 6px;
+  font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .06em; color: var(--text-3); }
+.sn-foot .save { display: flex; align-items: center; gap: 6px; }
+.sn-foot .save i { width: 5px; height: 5px; border-radius: 50%; background: color-mix(in srgb, var(--text-3) 60%, transparent); }
+.sn-foot .save i[data-on] { background: var(--good); box-shadow: 0 0 7px -1px var(--good); }
+.sn-foot .right { margin-left: auto; }
+
+/* dictation row inside a note (kept feature; reuses the old mic visual language) */
+.sn-mic-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 0 15px 13px; }
+.sn-mic { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-2);
-  background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
-  padding: 7px 14px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
-.rn-mic:hover:not(:disabled) { color: var(--text); border-color: var(--accent); }
-.rn-mic:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rn-mic:disabled { opacity: .45; cursor: default; }
-.rn-mic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; transition: background .2s; }
-.rn-mic[data-recording] { color: var(--bad-text-bright); border-color: color-mix(in srgb, var(--bad) 55%, transparent);
+  background: color-mix(in srgb, var(--surface) 70%, transparent); border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 13px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+.sn-mic:hover:not(:disabled) { color: var(--text); border-color: var(--accent); }
+.sn-mic:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sn-mic:disabled { opacity: .45; cursor: default; }
+.sn-mic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; transition: background .2s; }
+.sn-mic[data-recording] { color: var(--bad-text-bright); border-color: color-mix(in srgb, var(--bad) 55%, transparent);
   background: color-mix(in srgb, var(--bad) 10%, transparent); }
-.rn-mic[data-recording] .rn-mic-dot { background: var(--bad); animation: rn-pulse 1.2s ease-in-out infinite; }
+.sn-mic[data-recording] .sn-mic-dot { background: var(--bad); animation: rn-pulse 1.2s ease-in-out infinite; }
 @keyframes rn-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
-@media (prefers-reduced-motion: reduce) { .rn-mic[data-recording] .rn-mic-dot { animation: none; } }
-.rn-mic-err { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .03em;
-  color: var(--bad-text); line-height: 1.4; }
+.sn-mic-err { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .03em;
+  color: var(--bad-text); line-height: 1.4; flex: 1 1 100%; }
+
+/* interaction states */
+.sn--drag { transform: rotate(-1.7deg) scale(1.035); cursor: grabbing;
+  box-shadow: 0 46px 92px -28px #000, 0 10px 34px -8px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(228, 194, 87, .16); }
+.sn--drag .sn-head { cursor: grabbing; }
+.sn--drag::before { opacity: .85; }
+.sn--focus { border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+  box-shadow: 0 28px 64px -28px #000, 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+  0 0 36px -8px rgba(228, 194, 87, .3); }
+.sn--focus::before { opacity: 1; }
+.sn--focus .sn-title { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sn { transition: none; }
+  .sn--drag { transform: none; }
+  .sn-toggle .chev { transition: none; }
+  .sn-mic[data-recording] .sn-mic-dot { animation: none; }
+}
+@media (max-width: 959px) {
+  .notes-workspace { display: none; }   /* reading notes are desktop-only */
+}
