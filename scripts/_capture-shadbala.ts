@@ -31,4 +31,7 @@ async function main() {
   console.log("=== OUTPUT ===");
   console.log(JSON.stringify(out, null, 2));
 }
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

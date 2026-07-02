@@ -429,7 +429,9 @@ export const zodiacs: Deck = {
   // inject a concise "Body" fact right before the ascendant-only Yogakaraka block
   cards: SIGN_CARDS.map((c, i) => {
     const facts = c.facts ?? [];
-    const at = facts.findIndex((f) => f.label === "Yogakaraka");
+    // match the Yogakaraka row by prefix — its label carries a trailing " *"
+    // marker (the ascendant-only footnote flag), so an exact match would miss it
+    const at = facts.findIndex((f) => f.label.startsWith("Yogakaraka"));
     const cut = at < 0 ? facts.length : at;
     const withBody = [
       ...facts.slice(0, cut),

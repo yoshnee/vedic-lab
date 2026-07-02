@@ -71,6 +71,7 @@ function AnalyzerDemo() {
 
   // Each beat starts front-facing; only a beat marked flip flips a moment later.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate per-beat reset
     setFlipped(false);
     if (reduce.current) return;
     const b = BEATS[step];

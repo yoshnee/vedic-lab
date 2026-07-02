@@ -44,6 +44,7 @@ export function FCTeaser({
         {shown.map((d) => (
           <button
             key={d.id}
+            type="button"
             className="fc-deckback"
             style={{ "--deck-accent": d.accent } as CSSProperties}
             onClick={(e) => onOpen(d, e.currentTarget)}

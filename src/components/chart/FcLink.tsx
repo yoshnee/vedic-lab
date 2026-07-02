@@ -6,11 +6,20 @@
 import type { ReactNode } from "react";
 import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
 
-export function FcLink({ children, onClick }: { children: ReactNode; onClick: () => void }) {
+export function FcLink({
+  children,
+  onClick,
+  className,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  /** Extra class(es) appended to `fc-link` (e.g. a context-specific style like `eb-name`). */
+  className?: string;
+}) {
   return (
     <button
       type="button"
-      className="fc-link"
+      className={className ? `fc-link ${className}` : "fc-link"}
       onClick={(e) => {
         e.stopPropagation();
         onClick();

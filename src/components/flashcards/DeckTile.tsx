@@ -36,6 +36,7 @@ export function DeckTile({
 
   return (
     <button
+      type="button"
       className="fc-deckback"
       onClick={(e) => onOpen(deck, e.currentTarget)}
       aria-label={"Open " + deck.title + " deck, " + deck.cards.length + " cards"}

@@ -29,6 +29,10 @@ export function FlashcardsApp() {
       opener.current.focus();
       opener.current = null;
     }
+    // never leave the scroll lock behind if this unmounts while a deck is open
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [openDeck]);
 
   return (

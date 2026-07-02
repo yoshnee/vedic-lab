@@ -87,18 +87,18 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .analyzer-demo-btn { grid-area: demo; border: 0; background: transparent; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; align-self: center; width: 100%; }
 .analyzer-demo-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 16px; }
 .az-demo { position: relative; display: block; width: min(340px, 100%); aspect-ratio: 1 / .92; margin: 0 auto; }
-.az-chart { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 58%; animation: azPulse .9s ease; }
+.az-chart { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 58%; animation: az-pulse .9s ease; }
 .az-chart-svg, .az-chart-svg svg { display: block; width: 100%; height: auto; }
-@keyframes azPulse {
+@keyframes az-pulse {
   0% { filter: drop-shadow(0 12px 34px rgba(228, 194, 87, .10)); }
   40% { filter: drop-shadow(0 12px 42px rgba(228, 194, 87, .34)); }
   100% { filter: drop-shadow(0 12px 34px rgba(228, 194, 87, .20)); }
 }
 .az-artifact {
   position: absolute; right: 0; top: 50%; width: 52%; display: flex; align-items: center; justify-content: center;
-  animation: azArtIn .55s cubic-bezier(.2, .7, .2, 1) both;
+  animation: az-art-in .55s cubic-bezier(.2, .7, .2, 1) both;
 }
-@keyframes azArtIn {
+@keyframes az-art-in {
   from { opacity: 0; transform: translateY(-50%) translateX(-10px) scale(.92); }
   to { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
 }
@@ -124,8 +124,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .az-note-body i { display: block; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--text-3) 55%, transparent); }
 .az-note-body i:nth-child(1) { width: 82%; }
 .az-note-body i:nth-child(2) { width: 60%; }
-.az-note-cursor { width: 38%; background: color-mix(in srgb, var(--accent) 70%, transparent); animation: azType 1.3s steps(1) infinite; }
-@keyframes azType { 0%, 100% { opacity: .3; } 50% { opacity: .9; } }
+.az-note-cursor { width: 38%; background: color-mix(in srgb, var(--accent) 70%, transparent); animation: az-type 1.3s steps(1) infinite; }
+@keyframes az-type { 0%, 100% { opacity: .3; } 50% { opacity: .9; } }
 .az-note--demo { width: 150px; }
 .az-note--chip { width: 100%; height: 100%; border-radius: 6px; }
 .az-note--chip .az-note-head { padding: 4px 5px 3px; gap: 4px; }
@@ -287,7 +287,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   color: var(--accent); max-width: 24ch; text-wrap: balance;
   text-shadow: 0 4px 40px color-mix(in srgb, var(--accent) 30%, transparent);
 }
-.hero-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hero-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .hero-dots { display: flex; align-items: center; gap: 9px; margin-top: clamp(10px, 1.4vw, 16px); }
 .hero-dot {
@@ -597,6 +597,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .trait-terms {
   display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
   column-gap: 13px; row-gap: 6px;
+  list-style: none; margin: 0; padding: 0;
 }
 .trait-term { white-space: nowrap; line-height: 1.15; }
 /* size tiers mirror the significations cloud; color comes from the group tone */

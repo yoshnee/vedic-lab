@@ -29,6 +29,7 @@ export function Instructions({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const el = ref.current;
+    const prevFocused = document.activeElement as HTMLElement | null;
     el?.focus();
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") { onClose(); return; }
@@ -41,7 +42,10 @@ export function Instructions({ onClose }: { onClose: () => void }) {
       }
     }
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      prevFocused?.focus(); // return focus to the trigger on close
+    };
   }, [onClose]);
 
   return (

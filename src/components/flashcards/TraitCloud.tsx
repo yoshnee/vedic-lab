@@ -26,13 +26,13 @@ function TraitGroup({
   return (
     <div className="trait-group" data-tone={tone}>
       <span className="trait-label">{label}</span>
-      <div className="trait-terms" role="list" aria-label={`${label} traits`}>
+      <ul className="trait-terms" aria-label={`${label} traits`}>
         {sorted.map((t) => (
-          <span key={t.label} role="listitem" className={`trait-term trait-term--${t.weight}`}>
+          <li key={t.label} className={`trait-term trait-term--${t.weight}`}>
             {t.label}
-          </span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

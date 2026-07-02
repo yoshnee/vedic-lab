@@ -11,7 +11,7 @@
    ============================================================ */
 import { SIGN_ELEMENT, type Element } from "@/core/constants";
 import { ELEMENT_INFO } from "@/data/decks/elements";
-import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
+import { FcLink } from "./FcLink";
 import type { PlanetData } from "@/core/types";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
@@ -41,10 +41,9 @@ export function ElementBalance({
       <ul className="eb-rows">
         {ELEMENTS.map((e) => (
           <li className="eb-row" key={e} data-dominant={(counts[e] === max && max > 0) || undefined}>
-            <button type="button" className="eb-name" onClick={() => onOpenCard("element", ELEMENT_INFO[e].label)}>
+            <FcLink className="eb-name" onClick={() => onOpenCard("element", ELEMENT_INFO[e].label)}>
               {ELEMENT_INFO[e].label}
-              <FlashcardIcon size={11} className="fc-link-ico" />
-            </button>
+            </FcLink>
             <span className="eb-dots" aria-hidden="true">
               {Array.from({ length: counts[e] }, (_, i) => <i key={i} />)}
             </span>
