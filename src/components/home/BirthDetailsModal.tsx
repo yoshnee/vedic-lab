@@ -182,8 +182,8 @@ export function BirthDetailsModal({
         {/* CHART STYLE — North Indian works today; South Indian ships in a later PR.
             Kept as a real (uncontrolled) radio group so the choice is visible; South
             is disabled/greyed for now and nothing is plumbed to the engine yet. */}
-        <div className="bd-style" role="radiogroup" aria-label="Chart style">
-          <span className="bd-label">Chart style</span>
+        <div className="bd-style" role="radiogroup" aria-labelledby="bd-chartstyle-label">
+          <span className="bd-label" id="bd-chartstyle-label">Chart style</span>
           <div className="bd-style-opts">
             <label className="bd-style-opt">
               <input type="radio" name="chartStyle" value="north" defaultChecked />
