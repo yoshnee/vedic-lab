@@ -10,7 +10,8 @@
 import type { Deck } from "./types";
 import { planets } from "./planets";
 import { houses } from "./houses";
-import { signs } from "./signs";
+import { zodiacs } from "./zodiacs";
+import { ascendants } from "./ascendants";
 import { nakshatras } from "./nakshatras";
 import { padas } from "./padas";
 import { gandanta } from "./gandanta";
@@ -33,7 +34,8 @@ export const DECKS: Deck[] = [
   // available
   planets,
   houses,
-  signs,
+  zodiacs,
+  ascendants,
   nakshatras,
   padas,
   gandanta,

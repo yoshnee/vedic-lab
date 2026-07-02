@@ -235,10 +235,10 @@ export const ASCENDANT_FUNCTIONAL: AscendantFunctional[] = [
     yogakaraka: null, maleficNote: "Mars especially difficult" },
   // 4 Cancer
   { benefics: ["moon", "mars", "jupiter"], neutrals: ["sun"], malefics: ["mercury", "venus", "saturn"],
-    yogakaraka: "mars", yogakarakaNote: "5+10", beneficNote: "Mars especially auspicious", maleficNote: "Saturn especially difficult" },
+    yogakaraka: "mars", yogakarakaNote: "5+10", beneficNote: "Mars especially auspicious", maleficNote: "especially difficult" },
   // 5 Leo
   { benefics: ["sun", "mars", "jupiter"], neutrals: ["moon"], malefics: ["mercury", "venus", "saturn"],
-    yogakaraka: "mars", yogakarakaNote: "4+9", beneficNote: "Mars especially auspicious", maleficNote: "Saturn especially difficult" },
+    yogakaraka: "mars", yogakarakaNote: "4+9", beneficNote: "Mars especially auspicious", maleficNote: "especially difficult" },
   // 6 Virgo
   { benefics: ["mercury", "venus"], neutrals: ["sun", "saturn"], malefics: ["moon", "mars", "jupiter"],
     yogakaraka: null, maleficNote: "Mars especially difficult" },

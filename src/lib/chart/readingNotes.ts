@@ -43,7 +43,7 @@ export const TENETS: Tenet[] = [
       "For this ascendant, which planets are functional benefics and which are malefics?",
       "What stands out as the foundation of the chart?",
     ],
-    deck: { id: "signs", label: "Open the Ascendants deck" },
+    deck: { id: "ascendants", label: "Open the Ascendants deck" },
   },
   {
     id: "planets",

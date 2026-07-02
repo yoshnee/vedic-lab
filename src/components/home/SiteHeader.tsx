@@ -17,6 +17,7 @@ import { SITE } from "@/lib/site";
    Resources / FAQ are their own routes. */
 const SITE_NAV = [
   { label: "Home", href: "/" },
+  { label: "Flashcards", href: "/flashcards" },
   { label: "About", href: "/about" },
   { label: "Resources", href: "/resources" },
   { label: "FAQ", href: "/faq" },
@@ -25,6 +26,7 @@ const SITE_NAV = [
 /* The landing page (and the live /chart route) light up "Home"; the
    content routes light up their own tab. */
 function activeLabel(pathname: string): string | null {
+  if (pathname === "/flashcards") return "Flashcards";
   if (pathname === "/about") return "About";
   if (pathname === "/resources") return "Resources";
   if (pathname === "/faq") return "FAQ";

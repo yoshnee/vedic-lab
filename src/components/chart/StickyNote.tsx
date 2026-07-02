@@ -115,6 +115,20 @@ export function StickyNote({
   // prompts fold/unfold (which changes available height)
   useEffect(() => { autoGrow(taRef.current); }, [note.text, note.promptsCollapsed]);
 
+  // keep the note fully on-screen as it grows (typing / dictation / prompt fold):
+  // reclamp whenever the box resizes. The CSS max-height bounds that growth, so a
+  // long note grows to the bound and then scrolls its body (.sn-body) internally.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      const c = clamp(posRef.current.x, posRef.current.y);
+      if (c.x !== posRef.current.x || c.y !== posRef.current.y) onMove(c.x, c.y);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [clamp, onMove]);
+
   // focus the textarea when the note gains focus (a fresh open / raise) — but
   // NOT on a reload mount (focusedId is null then, so nothing auto-grabs focus)
   const wasFocused = useRef(false);
@@ -197,6 +211,10 @@ export function StickyNote({
         <button type="button" className="sn-close" aria-label="Close note" onClick={onClose}>✕</button>
       </div>
 
+      {/* Everything below the drag header scrolls as one when the note grows past
+          its max-height (long text / many questions) — the header stays a fixed
+          handle and the note never runs off the fixed workspace. */}
+      <div className="sn-body">
       {tenet.questions.length > 0 && (
         <button type="button" className="sn-toggle" aria-expanded={!collapsed} onClick={onTogglePrompts}>
           <span className="eye"><Eye /></span>
@@ -249,6 +267,7 @@ export function StickyNote({
           {recording ? "Listening" : "Dictate"}
         </button>
         {micError && <span className="sn-mic-err" aria-live="polite">{micError}</span>}
+      </div>
       </div>
     </div>
   );

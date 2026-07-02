@@ -5,22 +5,20 @@
    right rail. Lists the seven tenets; clicking a row spawns its sticky note (or
    raises it if already open). Beside each title is a clickable diamond deck
    icon (replaces the old 01..07 numbers) opening that tenet's relevant deck in
-   the browsable popover via onOpenDeck. A "+" affordance marks a closed tenet,
-   a gold dot an open one. The foot carries the shared "Download all" control
+   the browsable popover via onOpenDeck. A mini sticky-note icon (the shared
+   NoteMark, same as the landing hero) marks a closed tenet — tap it (or the row)
+   to spawn the note; a gold dot marks an open one. The foot carries the shared "Download all" control
    (badge = open count, disabled when none open) that compiles every open note
    into one Markdown file. Presentational over the api from useReadingNotes.
    ============================================================ */
 import { Svg } from "@/components/Svg";
 import { diamond } from "@/celestial/celestial";
+import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
+import { NoteMark } from "@/components/NoteMark";
 import { TENETS } from "@/lib/chart/readingNotes";
 import type { ReadingNotesApi } from "./useReadingNotes";
 import type { ChartModel } from "@/lib/chart/types";
 
-const Plus = () => (
-  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
-    <path d="M6.5 2v9M2 6.5h9" />
-  </svg>
-);
 const DownloadIcon = () => (
   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M7.5 1.5v8M4 6l3.5 3.5L11 6M2 12.5h11" />
@@ -56,7 +54,7 @@ export function ReadingNotesLauncher({
                 aria-label={t.deck.label}
                 onClick={() => onOpenDeck(t.deck.id)}
               >
-                <Svg html={diamond(16, { glow: true })} />
+                <FlashcardIcon size={16} />
               </button>
               <button
                 type="button"
@@ -68,7 +66,7 @@ export function ReadingNotesLauncher({
                 <span className="nm">{t.title}</span>
                 {open
                   ? <span className="open" aria-hidden="true" />
-                  : <span className="add" aria-hidden="true"><Plus /></span>}
+                  : <span className="add" aria-hidden="true"><NoteMark variant="chip" /></span>}
               </button>
             </div>
           );

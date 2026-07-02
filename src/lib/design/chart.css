@@ -33,6 +33,42 @@
 .chart-asc b { color: var(--accent); font-weight: 600; }
 .chart-moon { margin: 6px 0 0; display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono), monospace; font-size: 12px; color: var(--text-2); }
 .chart-moon-glyph { flex: none; color: var(--p-moon); }
+/* the Legend + Instructions launchers, side by side, on their OWN line below the
+   panchanga line. Must be block-level (display:flex, not inline-flex): .chart-moon
+   is itself inline-flex, so an inline-flex group would ride up onto the moon line. */
+.chart-hero-btns { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; gap: 10px; margin-top: clamp(14px, 2vw, 18px); }
+
+/* ---------- Instructions popup (centered "how to use" modal) ---------- */
+.instr-overlay { position: fixed; inset: 0; z-index: 130; display: flex; align-items: center; justify-content: center;
+  padding: 28px 20px; background: rgba(4, 10, 7, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.instr-modal { width: min(560px, 100%); max-height: calc(100dvh - 56px); overflow: hidden; position: relative;
+  display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 20px;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2));
+  box-shadow: 0 30px 70px -34px #000, inset 0 1px 0 rgba(255, 255, 255, .04); }
+.instr-modal::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 82%, transparent), transparent); opacity: .6; }
+.instr-head { flex: none; display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border-soft); }
+.instr-head-txt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.instr-eyebrow { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-mono), monospace;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+.instr-eyebrow svg { flex: none; }
+.instr-head h2 { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 21px; letter-spacing: -.01em; color: var(--text); }
+.instr-close { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text-2); cursor: pointer; font-size: 14px; line-height: 1; transition: .18s;
+  display: flex; align-items: center; justify-content: center; }
+.instr-close:hover { color: var(--text); border-color: var(--accent); }
+.instr-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.instr-body { overflow-y: auto; padding: 18px 22px 24px; }
+.instr-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.instr-step { display: flex; gap: 14px; }
+.instr-num { flex: none; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 11%, transparent); color: var(--accent);
+  font-family: var(--font-mono), monospace; font-size: 11px; }
+.instr-text { display: flex; flex-direction: column; gap: 3px; }
+.instr-step-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 15px; color: var(--text); }
+.instr-step-body { font-size: 14px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
 
 /* ---------- /chart status shells (loading / error / redirect) ---------- */
 .chart-status { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
@@ -343,29 +379,6 @@
 .eb-note b { color: var(--text); font-weight: 600; }
 .eb-note[data-missing] { color: var(--text-3); }
 
-/* ── Chart Ruler (lagneśa walkthrough) — full-width card above the panels ── */
-.cr-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
-  background: linear-gradient(180deg, var(--surface), var(--bg-2)); box-shadow: 0 16px 38px -28px #000;
-  padding: 18px 20px 20px; margin-bottom: clamp(26px, 4vw, 40px); }
-.cr-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 14px;
-  border-bottom: 1px solid var(--border-soft); }
-.cr-eyebrow { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
-.cr-who { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
-.cr-who svg { flex: none; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
-.cr-name { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -.01em;
-  color: var(--text); background: none; border: 0; padding: 0; cursor: pointer; }
-.cr-name:hover { color: var(--accent); }
-.cr-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-.cr-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.cr-step { display: flex; align-items: baseline; gap: 12px; }
-.cr-num { flex: none; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
-  background: color-mix(in srgb, var(--accent) 11%, transparent); color: var(--accent);
-  font-family: var(--font-mono), monospace; font-size: 10.5px; transform: translateY(4px); }
-.cr-text { font-size: 14.5px; color: var(--text-2); line-height: 1.6; text-wrap: pretty; }
-.cr-text b { color: var(--text); font-weight: 600; }
-.cr-deg { font-family: var(--font-mono), monospace; font-size: 12.5px; color: var(--accent); }
-
 .pp-context { margin: 0 0 12px; font-family: var(--font-mono), monospace; font-size: 11px;
   letter-spacing: .03em; color: var(--text-2); line-height: 1.6; text-wrap: pretty; }
 .pp-context b { color: var(--accent); font-weight: 600; }
@@ -386,19 +399,20 @@
 .pp-header > .pp-ico, .pp-header > .pp-id, .pp-header > .pp-chev { position: relative; z-index: 1; pointer-events: none; }
 .pp-header .pp-pills { pointer-events: auto; }
 .pp-ico { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .5)); }
-/* per-planet flashcard launcher beneath the graha icon — tinted with the planet
-   color; clickable (pointer-events:auto) so it escapes the full-bleed header
-   toggle, exactly like the pills. */
-.pp-card-link { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center;
-  width: 27px; height: 21px; padding: 0; border-radius: 6px; cursor: pointer;
-  color: var(--pc, var(--text-2));
-  border: 1px solid color-mix(in srgb, var(--pc, var(--text-2)) 40%, transparent);
-  background: color-mix(in srgb, var(--pc, var(--text-2)) 12%, transparent);
-  transition: filter .18s, background .18s; }
-.pp-card-link:hover { filter: brightness(1.14); background: color-mix(in srgb, var(--pc, var(--text-2)) 18%, transparent); }
+/* per-planet flashcard launcher, sat inline beside the graha name — the shared
+   FlashcardIcon (diamond mark), styled to match the Reading-Notes deck buttons
+   (.rn-deck) so every flashcard-open affordance looks identical. Clickable
+   (pointer-events:auto) so it escapes the full-bleed header toggle, like the pills. */
+.pp-card-link { pointer-events: auto; flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  border-radius: 8px; filter: drop-shadow(0 2px 7px rgba(228, 194, 87, .22));
+  transition: transform .16s ease, filter .16s ease; }
+.pp-card-link svg { display: block; }
+.pp-card-link:hover { transform: translateY(-2px) scale(1.1); filter: drop-shadow(0 5px 13px rgba(228, 194, 87, .5)); }
 .pp-card-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* name on top, pills wrapping below — predictable height so every header matches */
 .pp-id { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.pp-name { display: inline-flex; align-items: center; gap: 3px; }
 .pp-name .nm { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.1; }
 .pp-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 .pp-pill { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
@@ -476,6 +490,9 @@
 .fc-link:hover { text-decoration-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .fc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .pp-coords .fc-link { font-family: var(--font-mono), monospace; font-weight: 400; }
+/* the shared FlashcardIcon trailing an inline flashcard link (.fc-link / .eb-name) */
+.fc-link-ico { display: inline-flex; vertical-align: middle; margin-left: 4px; text-decoration: none; }
+.fc-link-ico svg { display: block; width: 11px; height: 11px; }
 
 .pp-rows { display: flex; flex-direction: column; }
 .pp-row { display: grid; grid-template-columns: 118px 1fr; gap: 14px; align-items: start; padding: 12px 0; border-top: 1px solid var(--border-soft); }
@@ -515,6 +532,9 @@
 .pp-ava-row .sk { flex: none; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .03em; color: var(--text-3); }
 .pp-ava-row .str { flex: none; margin-left: auto; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .04em;
   color: color-mix(in srgb, var(--pc) 70%, var(--text-3)); }
+/* the shared FlashcardIcon leading a drawer row (avastha / shadbala) */
+.pp-ava-ico { flex: none; display: inline-flex; align-self: center; }
+.pp-ava-ico svg { display: block; width: 12px; height: 12px; }
 
 .pchips { display: flex; flex-wrap: wrap; gap: 7px; }
 .pchip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 6px; border-radius: 999px;
@@ -709,8 +729,10 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
 .rn-note:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .rn-note .nm { flex: 1 1 auto; font-family: var(--font-display), sans-serif; font-weight: 500;
   font-size: 14.5px; letter-spacing: -.005em; }
-.rn-note .add { flex: none; display: flex; color: var(--text-3); transition: color .16s; }
-.rn-note:hover .add { color: var(--accent); }
+/* the closed-tenet affordance is the shared mini sticky-note (NoteMark chip),
+   which fills its box — so the slot is sized here. Lifts slightly on row hover. */
+.rn-note .add { flex: none; width: 22px; height: 26px; display: flex; transition: transform .16s ease, filter .16s ease; }
+.rn-note:hover .add { transform: translateY(-1px); filter: drop-shadow(0 3px 8px rgba(228, 194, 87, .3)); }
 .rn-tenet.is-open .open { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
   box-shadow: 0 0 8px -1px var(--accent); }
 .rn-foot { margin-top: 14px; padding-top: 15px; border-top: 1px solid var(--border-soft); }
@@ -736,7 +758,7 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
 .notes-workspace { position: fixed; inset: 0; z-index: 50; isolation: isolate; pointer-events: none; }
 .notes-workspace .sn { position: absolute; pointer-events: auto; }
 
-.sn { width: 340px; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 18px;
+.sn { width: 340px; max-height: calc(100dvh - 96px); display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 18px;
   overflow: hidden; background: linear-gradient(180deg, var(--surface), var(--bg-2));
   box-shadow: 0 18px 40px -22px #000, inset 0 1px 0 rgba(255, 255, 255, .04);
   transition: transform .26s cubic-bezier(.2, .7, .2, 1), box-shadow .26s, border-color .26s; }
@@ -744,8 +766,11 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 85%, transparent), transparent);
   opacity: .5; }
 .sn--sm { width: 300px; }
-.sn-head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px; cursor: grab;
+.sn-head { flex: none; display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px; cursor: grab;
   border-bottom: 1px solid var(--border-soft); touch-action: none; }
+/* the scrollable body: everything under the drag header. min-height:0 lets it
+   shrink below content so overflow-y actually scrolls inside the capped note. */
+.sn-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 .sn-grip { flex: none; display: flex; color: var(--text-3); cursor: grab; transition: color .2s; }
 .sn-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 .sn-head:hover .sn-grip { color: var(--text-2); }

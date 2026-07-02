@@ -115,24 +115,6 @@ export function Legend({ onClose }: { onClose: () => void }) {
           </section>
 
           <section className="lg-sec">
-            <h3>Shadbala <span className="lg-sec-sub">drawer header verdict</span></h3>
-            <div className="lg-grid">
-              <Item label="Strong" hint="20%+ above the planet's own minimum"
-                swatch={<span className="pp-sb-sum" data-tier="strong">7.20 rupas · Strong</span>} />
-              <Item label="Adequate" hint="at or above its minimum"
-                swatch={<span className="pp-sb-sum" data-tier="adequate">5.76 rupas · Adequate</span>} />
-              <Item label="Borderline" hint="within 10% below its minimum"
-                swatch={<span className="pp-sb-sum" data-tier="borderline">4.71 rupas · Borderline</span>} />
-              <Item label="Weak" hint="more than 10% short"
-                swatch={<span className="pp-sb-sum" data-tier="weak">4.05 rupas · Weak</span>} />
-            </div>
-            <p className="lg-note">
-              Each planet is judged against its own minimum (Sun 6.5 rupas, Mercury 7 …); the
-              drawer&apos;s Required row keeps the classical Bal-Yukta / Balaheena binary.
-            </p>
-          </section>
-
-          <section className="lg-sec">
             <h3>Markers</h3>
             <div className="lg-grid">
               <Item label="Gandanta" hint="water→fire knot; “True Gandanta” within ±1°40′"

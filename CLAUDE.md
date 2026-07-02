@@ -47,7 +47,10 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   { terms: {label, weight}[] }` (`types.ts`), rendered by
   `src/components/flashcards/SignificationsCloud.tsx` big→medium→small, flexbox wrap, no deps),
   **Ascendants** (3 concept cards +
-  the 12 signs as Lagnas, with functional lords/benefics/malefics + a Kalapurusha "Body" rulership point on each card back), **Combustion** (Asta),
+  the 12 signs as Lagnas, with functional lords/benefics/malefics on the front (a small footnote
+  notes these apply only when the sign is the ascendant) + a two-part positive/negative trait word
+  cloud on each card back (green/red, owner copy, rendered by `TraitCloud` — the old Kalapurusha
+  "Body" rulership points were replaced deck-wide 2026-07)), **Combustion** (Asta),
   **Conjunctions** (Yuti), **Retrogression** (Vakri), **Nakshatras (27)**, **Nakshatra Padas**
   (concept), **Gandanta** (concept), **The Four Elements** (Tattva, concept — backs the chart's
   element-balance readout via its exported `ELEMENT_INFO`), **Planetary Conditions** (Panchadha
@@ -194,7 +197,7 @@ src/
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
     chart/                ChartView, NorthIndianChart (generic: frame+planets), HoraChart
                           (D2 two-column wealth layout — replaces the diamond for D2 only), ChartCard
-                          (title/type-selector wrapper; branches to HoraChart when value==="d2"), ChartRuler (lagneśa walkthrough),
+                          (title/type-selector wrapper; branches to HoraChart when value==="d2"),
                           ShadbalaGroups (built, currently UNMOUNTED — owner pulled it),
                           ElementBalance (element tally; rail on desktop, inline on mobile),
                           DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
@@ -432,14 +435,10 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   carries only status ("computing …" while in flight, "transit unavailable for that moment" on
   failure). The scrub state is ChartView-local (the `ChartModel` in the store is never mutated). The daśā
   rail and Chart 2 stay natal regardless of the selectors; the planet panels and element balance
-  follow Chart 1. Below the charts, a full-width **`ChartRuler`** card — the "start here" lagneśa
-  walkthrough, a numbered chain in the OWNER'S EXACT PHRASING (don't embellish): "<Sign> is the
-  ascendant." → "<Sign> is ruled by <planet>." → "<planet> sits in <sign>, the Nth house." →
-  "<planet> occupies the nakshatra <name>, pada N." → "Also in <sign>: <planets>" (only when
-  conjunct), every noun a flashcard link via the same resolver, the header glyph + name jumping
-  to the ruler's panel. Pure presentation — reads only `ChartData.lagnaLord` + `planets[]`;
-  renders in D1 panel context only (a natal-lagna reading). (It was briefly deleted 2026-06 and
-  the owner RESTORED it — keep it.) An **`ElementBalance`** block (in the sticky rail on
+  follow Chart 1. (The full-width **`ChartRuler`** lagneśa-walkthrough card was REMOVED entirely
+  2026-07, owner-directed — component + `.cr-*` styles deleted. Its identity is now carried by a
+  simple **"Ascendant Lord" pill** on the lagneśa's planet panel instead; see the panel note below.)
+  An **`ElementBalance`** block (in the sticky rail on
   desktop, an inline card on mobile — CSS shows exactly one of the two rendered copies) tallies all
   nine planets by sign element (`SIGN_ELEMENT`, nodes included), gold-highlights the leading
   element(s), flags any missing element (counts only — the prevailing-trait prose and the footer
@@ -457,8 +456,9 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   the live UI (so it can't drift), most rows a flashcard link. Panels: nine Planet Detail Panels
   (placement
   prose, aspect/conjunct chips — conjunct/combust hidden when empty, Sade Sati phase-track timeline,
-  MD/AD/**Gandanta** pills — the old Ascendant-Lord pill stays retired (the ChartRuler card owns
-  that identity); the **chara-karaka computation and its violet Karaka pill were REMOVED entirely**
+  MD/AD/**Gandanta** pills — plus an **"Ascendant Lord" pill** (teal `data-kind="lagna"`) on the
+  planet whose `PlanetData.lagnaLord` is true, opening the Ascendants concept deck (this REPLACED
+  the removed ChartRuler card 2026-07); the **chara-karaka computation and its violet Karaka pill were REMOVED entirely**
   (owner-directed 2026-06: `core/karaka.ts`, `PlanetData.karaka`, the flashcard type `"karaka"`,
   the Legend Markers row, and the `--karaka` token are all gone — the **Karakas flashcard deck
   itself stays**, it's study content), with a single-card flashcard popover

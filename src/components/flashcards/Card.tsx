@@ -14,6 +14,7 @@ import {
 } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
 import { SignificationsCloud } from "./SignificationsCloud";
+import { TraitCloud } from "./TraitCloud";
 import type { Card as CardData, CardDiagramLink } from "@/data/decks/types";
 
 function CardIcon({
@@ -66,9 +67,10 @@ export function Card({
   const accent = card.accentColor || deckAccent;
   const hasFacts = !!card.facts?.length;
   const hasCloud = !!card.cloud?.terms.length;
+  const hasTraits = !!(card.traits?.positive.length || card.traits?.negative.length);
   const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
-  const hasBackContent = hasCloud || hasPoints || hasBody;
+  const hasBackContent = hasCloud || hasTraits || hasPoints || hasBody;
   // Zodiac sign cards carry their Sanskrit name on the BACK only — the front
   // leads with the English sign + glyph; the Sanskrit name appears once you flip.
   const frontSanskrit = card.sanskrit && card.icon?.kind !== "zodiac";
@@ -99,6 +101,7 @@ export function Card({
               ))}
             </dl>
           )}
+          {card.footnote && <p className="fc-fn">{card.footnote}</p>}
           {/* always shown — the card's own self-explanatory flip cue. On data
               cards it's pinned to the corner (CSS) so it clears the facts. */}
           <span className="fc-hint" aria-hidden="true">Flip ↻</span>
@@ -106,7 +109,7 @@ export function Card({
         {/* Cloud backs ("wordsmith") show ONLY the title + the weighted words —
             no Sanskrit, no badge, no prose (owner-directed). The front above
             is identical either way. */}
-        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : "")}>
+        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : hasTraits ? " fc-back--traits" : "")}>
           <div className="fc-back-head">
             {card.backIcon && <CardIcon icon={card.backIcon} accent={accent} size={26} />}
             <span className="fc-back-term">{card.backTitle ?? card.title}</span>
@@ -114,6 +117,8 @@ export function Card({
           </div>
           {hasCloud ? (
             <SignificationsCloud data={card.cloud!} />
+          ) : hasTraits ? (
+            <TraitCloud data={card.traits!} />
           ) : hasPoints ? (
             <>
               <ul className="fc-points">

@@ -26,11 +26,11 @@ import { type DashaSelection } from "./DashaRail";
 import { useReadingNotes } from "./useReadingNotes";
 import { ReadingNotesLauncher } from "./ReadingNotesLauncher";
 import { NotesWorkspace } from "./NotesWorkspace";
-import { ChartRuler } from "./ChartRuler";
 import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
+import { Instructions } from "./Instructions";
 import { FlashcardPopover } from "./FlashcardPopover";
 import { resolveFlashcard, type FlashcardType, type FlashcardTarget } from "@/lib/flashcardLink";
 import type { ChartModel } from "@/lib/chart/types";
@@ -127,6 +127,7 @@ export function ChartView({ model }: { model: ChartModel }) {
   const { chart, meta, panchanga, transit } = model;
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
+  const [instrOpen, setInstrOpen] = useState(false);
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
   // reading-notes workspace — ONE state instance feeding the launcher dock and
   // the floating sticky notes (desktop-only; hidden on mobile)
@@ -194,10 +195,10 @@ export function ChartView({ model }: { model: ChartModel }) {
 
   // Lock body scroll while any overlay is open.
   useEffect(() => {
-    const anyOverlay = fc || legendOpen || dashaOpen;
+    const anyOverlay = fc || legendOpen || instrOpen || dashaOpen;
     document.body.style.overflow = anyOverlay ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [fc, legendOpen, dashaOpen]);
+  }, [fc, legendOpen, instrOpen, dashaOpen]);
 
   const openCard = (type: FlashcardType, id?: string | number) => {
     const target = resolveFlashcard(type, id);
@@ -258,9 +259,6 @@ export function ChartView({ model }: { model: ChartModel }) {
           <Svg className="chart-mark" html={diamond(30, { glow: true })} />
           <span>Vedic Astrology Lab</span>
         </Link>
-        <button type="button" className="chart-legend-btn" onClick={() => setLegendOpen(true)}>
-          <span aria-hidden="true">?</span> Legend
-        </button>
       </header>
 
       <main className="chart-page">
@@ -291,6 +289,14 @@ export function ChartView({ model }: { model: ChartModel }) {
               {panchanga.waxing ? "Waxing" : "Waning"} Moon · {ordinal(panchanga.tithiNumber)} tithi
             </p>
           )}
+          <div className="chart-hero-btns">
+            <button type="button" className="chart-legend-btn" onClick={() => setLegendOpen(true)}>
+              <span aria-hidden="true">?</span> Legend
+            </button>
+            <button type="button" className="chart-legend-btn" onClick={() => setInstrOpen(true)}>
+              <span aria-hidden="true">?</span> Instructions
+            </button>
+          </div>
         </div>
 
         <div className="chart-layout">
@@ -386,12 +392,6 @@ export function ChartView({ model }: { model: ChartModel }) {
 
             {!horaMode && <ElementBalance planets={panelPlanets} onOpenCard={openCard} inline />}
 
-            {/* The Chart Ruler (ascendant-lord) walkthrough is a natal-lagna
-                reading — D1 panel context only (owner-directed). */}
-            {!vargaMode && (
-              <ChartRuler chart={chart} onOpenCard={openCard} onSelectPlanet={selectPlanet} />
-            )}
-
             {vargaMode && !horaMode && vargaPanels && (
               <p className="pp-context">
                 Planet panels showing <b>{vargaLabel}</b> placements ·{" "}
@@ -454,6 +454,10 @@ export function ChartView({ model }: { model: ChartModel }) {
 
       {legendOpen && (
         <Legend onClose={() => setLegendOpen(false)} />
+      )}
+
+      {instrOpen && (
+        <Instructions onClose={() => setInstrOpen(false)} />
       )}
 
       {fc && <FlashcardPopover target={fc} onClose={() => setFc(null)} />}

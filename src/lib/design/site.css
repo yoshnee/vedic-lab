@@ -84,6 +84,20 @@ a{color:inherit;}
 
 .jyotish{font-style:italic; color:var(--accent);}
 
+/* ---- FLASHCARDS PAGE (full deck grid) ---- */
+.fc-page-stat{margin:20px 0 0; display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--font-mono),monospace; font-size:12px; letter-spacing:.06em; color:var(--text-3);}
+.fc-page-stat b{color:var(--accent); font-weight:700;}
+.fc-page-stat span{color:var(--border);}
+.fc-page-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:clamp(18px,2.6vw,28px); align-items:stretch; padding-bottom:clamp(20px,4vw,40px);}
+.fc-page-grid .fc-deckback{width:100%; min-height:308px; padding:30px 24px;}
+.fc-page-grid .fc-deckback::before{transform:translate(6px,7px) rotate(1.8deg);}
+.fc-page-grid .fc-deckback::after{transform:translate(11px,14px) rotate(3.4deg);}
+@media (max-width:480px){
+  .fc-page-grid{grid-template-columns:1fr;}
+}
+
 /* ---- ABOUT ---- */
 .about{max-width:680px;}
 .about p{font-size:clamp(16.5px,2vw,18.5px); line-height:1.72; color:var(--text); margin:0 0 1.35em; text-wrap:pretty;}
