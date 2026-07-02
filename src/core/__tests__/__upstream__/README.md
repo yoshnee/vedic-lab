@@ -1,7 +1,7 @@
 # Vendored Hora Prakash reference (HISTORICAL — no longer a test gate)
 
 Copies of the canonical reference implementation, vendored from
-**https://github.com/PriyankGahtori/hora-prakash** (`main`, fetched 2026-06-10):
+**https://github.com/petergus/hora-prakash** (`main`, fetched 2026-06-10):
 
 - `src/core/shadbala.js` — the canonical Shadbala (six-fold strength) implementation
 - `src/core/divisional.js` — its varga dependency (`calcDivisional`)

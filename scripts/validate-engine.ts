@@ -2,12 +2,15 @@
    every planet + Lagna against the Hora-Prakash JHora ground-truth fixture.
    Run: npx --yes tsx scripts/validate-engine.ts
    This is the accuracy gate for CLAUDE.md working rule #1. */
+import { readFileSync } from "node:fs";
 import { computeChart } from "../src/core/index";
 import { computeDasha } from "../src/core/dasha";
 import { sampleBirth } from "../src/core/sample";
 
-const FIXTURE =
-  "https://raw.githubusercontent.com/PriyankGahtori/hora-prakash/main/src/core/__fixtures__/jhora-ground-truth/Mahatma_Gandhi.json";
+// The Gandhi JHora ground-truth, vendored locally (src/core/__fixtures__/jhora/). Read from disk
+// rather than fetched: the reference repo moved (github.com/petergus/hora-prakash) and no longer
+// ships the JSON fixtures, and our vendored copy is the same file the Vitest suite validates against.
+const FIXTURE = new URL("../src/core/__fixtures__/jhora/Mahatma_Gandhi.json", import.meta.url);
 
 const TOL_DEG = 0.05; // longitude tolerance (~3 arcmin) — absorbs apparent/true & rounding
 
@@ -32,7 +35,7 @@ const diffDays = (engineIso: string, fixtureDate: string) =>
   Math.abs(new Date(engineIso).getTime() - new Date(fixtureDate).getTime()) / DAY_MS;
 
 async function main() {
-  const fx = (await (await fetch(FIXTURE)).json()) as {
+  const fx = JSON.parse(readFileSync(FIXTURE, "utf8")) as {
     planets: Record<string, { longitude: number; sign: string; sign_degree: string; nakshatra: string; nakshatra_lord: string; pada: number; retrograde: boolean }>;
     dasha: Record<string, { start: string; antardashas: Record<string, string> }>;
   };

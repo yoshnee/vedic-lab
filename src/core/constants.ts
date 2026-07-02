@@ -1,6 +1,6 @@
 /* ============================================================
    constants.ts — fixed Jyotish tables. Every value here follows the
-   Hora-Prakash reference (github.com/PriyankGahtori/hora-prakash, src/core/)
+   Hora-Prakash reference (github.com/petergus/hora-prakash, src/core/)
    — see CLAUDE.md working rule #1. Do not edit without checking the reference.
    ============================================================ */
 import type { PlanetKey } from "./types";

@@ -8,7 +8,7 @@ export const SITE = {
   /** Public source repository (AGPL-3.0). Update if the repo moves. */
   repoUrl: "https://github.com/yoshnee/vedic-lab",
   /** The Hora Prakash reference repo — source for the derived-technique algorithms. */
-  horaPrakashUrl: "https://github.com/PriyankGahtori/hora-prakash",
+  horaPrakashUrl: "https://github.com/petergus/hora-prakash",
   liveUrl: "https://studyvedicastrology.kerjasama.dev",
   tagline: "Learn the science of light. Study & explore Jyotish",
 } as const;

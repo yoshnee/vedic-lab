@@ -129,7 +129,7 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   MD ≤5d, AD ≤7d, the documented linear-vs-JHora drift), **plus pure invariant tests** over the fixed
   tables (e.g. `debilitation === exaltation + 6` — the guard that catches transcription typos like the
   Moon-in-Scorpio one, independent of any chart). `scripts/validate-engine.ts` remains as a single-chart
-  printout (network, tsx). Output is **longitude-based** (raw sidereal longitude per planet) so divisional
+  printout (reads the vendored Gandhi fixture from disk, tsx). Output is **longitude-based** (raw sidereal longitude per planet) so divisional
   charts can be layered later.
 - **The chart flow is LIVE in the browser.** The birth-details popup submit runs the engine on-device
   (swisseph-wasm), holds the result in a store, and navigates to `/chart`:
@@ -553,7 +553,7 @@ Build these ourselves, **following the reference repo's methods**:
 - **Aspects (drishti)** — graha drishti including the special aspects of Mars, Jupiter, Saturn.
 
 ### Reference repo
-**https://github.com/PriyankGahtori/hora-prakash** — a working client-side Vedic app on the **same
+**https://github.com/petergus/hora-prakash** — a working client-side Vedic app on the **same
 engine**. **Whenever you need an algorithm or computation, consult this repo and follow its established
 methods.** Its engine + derivation logic lives in `src/core/`:
 
