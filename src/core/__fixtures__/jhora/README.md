@@ -6,7 +6,7 @@ ground truth for the engine tests in `../../__tests__/fixtures.test.ts` (run via
 ## Source
 
 Vendored from the Hora-Prakash reference repo, `src/core/__fixtures__/jhora-ground-truth/`:
-<https://github.com/PriyankGahtori/hora-prakash>
+<https://github.com/petergus/hora-prakash>
 
 Each file is **trimmed** to what the engine validates — `meta`, `birth`, `_jhora_ayanamsa`,
 `planets`, `dasha`. The upstream originals also carry `panchang`, `divisionals` (D1/D9/D60…),
