@@ -90,9 +90,9 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .az-chart { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 58%; animation: az-pulse .9s ease; }
 .az-chart-svg, .az-chart-svg svg { display: block; width: 100%; height: auto; }
 @keyframes az-pulse {
-  0% { filter: drop-shadow(0 12px 34px rgba(228, 194, 87, .10)); }
-  40% { filter: drop-shadow(0 12px 42px rgba(228, 194, 87, .34)); }
-  100% { filter: drop-shadow(0 12px 34px rgba(228, 194, 87, .20)); }
+  0% { filter: drop-shadow(0 12px 34px color-mix(in srgb, var(--accent) 10%, transparent)); }
+  40% { filter: drop-shadow(0 12px 42px color-mix(in srgb, var(--accent) 34%, transparent)); }
+  100% { filter: drop-shadow(0 12px 34px color-mix(in srgb, var(--accent) 20%, transparent)); }
 }
 .az-artifact {
   position: absolute; right: 0; top: 50%; width: 52%; display: flex; align-items: center; justify-content: center;
