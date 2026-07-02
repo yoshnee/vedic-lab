@@ -60,7 +60,7 @@ Because this is a public web service, the complete corresponding source is avail
 
 - [Swiss Ephemeris](https://www.astro.com/swisseph/) by Astrodienst AG, the astronomical engine
 - [swisseph-wasm](https://github.com/prolaxu/swisseph-wasm) by prolaxu, Swiss Ephemeris compiled to WebAssembly
-- [Hora Prakash](https://github.com/PriyankGahtori/hora-prakash), reference for calculation methodology
+- [Hora Prakash](https://github.com/petergus/hora-prakash), reference for calculation methodology
 - [Nominatim](https://nominatim.openstreetmap.org/) (OpenStreetMap), geocoding
 - [timeapi.io](https://timeapi.io/), timezone lookup
 
