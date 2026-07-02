@@ -102,17 +102,14 @@ export function BirthDetailsModal({
         tabIndex={-1}
       >
         <header className="bd-head">
-          <span className="bd-eyebrow">
-            <Svg html={diamond(20, { glow: true })} /> Birth Chart Analyzer
+          <span className="bd-eyebrow" id="bd-title">
+            <Svg html={diamond(20, { glow: true })} /> Enter Chart Details
           </span>
           <button type="button" className="bd-close" onClick={onClose} aria-label="Close">
             {icons.x}
           </button>
         </header>
 
-        <h2 className="bd-title" id="bd-title">
-          Enter birth details
-        </h2>
         <p className="bd-sub">
           A few details to cast your chart. We&rsquo;ll resolve your birthplace to exact coordinates.
         </p>
@@ -182,6 +179,25 @@ export function BirthDetailsModal({
           />
         </div>
 
+        {/* CHART STYLE — North Indian works today; South Indian ships in a later PR.
+            Kept as a real (uncontrolled) radio group so the choice is visible; South
+            is disabled/greyed for now and nothing is plumbed to the engine yet. */}
+        <div className="bd-style" role="radiogroup" aria-label="Chart style">
+          <span className="bd-label">Chart style</span>
+          <div className="bd-style-opts">
+            <label className="bd-style-opt">
+              <input type="radio" name="chartStyle" value="north" defaultChecked />
+              <span>North Indian</span>
+            </label>
+            <label className="bd-style-opt is-disabled">
+              <input type="radio" name="chartStyle" value="south" disabled />
+              <span>
+                South Indian <span className="bd-soon">(coming soon)</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
         {/* FOOTER / CTA */}
         <div className="bd-foot">
           <button type="button" className="bd-cta" disabled={!valid || submitting} onClick={submit}>
@@ -211,6 +227,14 @@ export function BirthDetailsModal({
             <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">
               Open-Meteo
             </a>
+          </p>
+          <p className="bd-disclaimer">
+            {icons.info}
+            <span>
+              Charts are cast on the <strong>sidereal zodiac</strong> using the{" "}
+              <strong>Lahiri ayanamsha</strong>, the standard most Vedic astrologers use.
+              It&rsquo;s the only option for now.
+            </span>
           </p>
         </div>
       </div>

@@ -1,14 +1,17 @@
 "use client";
 
-/* The landing page composition: rotating hero → analyzer hero → flashcards
-   teaser (five featured decks + a "…and more" link to the full /flashcards page).
+/* The landing page composition: hero lockup (identity, top) → self-learn hook →
+   analyzer hero → rotating hero → flashcards teaser (five featured decks + a
+   "…and more" link to the full /flashcards page) → closing CTA.
    Owns the open-deck and birth-details modal state, locks body scroll while a
    modal is open, and returns focus to the opener on close. */
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { HeroRotator } from "./HeroRotator";
+import { HeroLockup, HeroRotator } from "./HeroRotator";
+import { SelfLearnHook } from "./SelfLearnHook";
 import { AnalyzerHero } from "./AnalyzerHero";
 import { FCTeaser } from "./FCTeaser";
+import { FinalCTA } from "./FinalCTA";
 import { BirthDetailsModal } from "./BirthDetailsModal";
 import { Deck as DeckModal } from "@/components/flashcards/Deck";
 import { DECKS } from "@/data/decks/registry";
@@ -106,10 +109,13 @@ export function HomeApp() {
 
   return (
     <>
-      <HeroRotator />
+      <HeroLockup />
       <main className="home">
+        <SelfLearnHook />
         <AnalyzerHero onOpen={onOpenAnalyzer} />
+        <HeroRotator />
         <FCTeaser decks={visibleDecks} featured={featured} onOpen={onOpenDeck} />
+        <FinalCTA onOpen={onOpenAnalyzer} />
       </main>
       {openDeck && <DeckModal deck={openDeck} onClose={onCloseDeck} />}
       {analyzer && (
