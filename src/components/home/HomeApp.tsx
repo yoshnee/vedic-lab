@@ -1,20 +1,27 @@
 "use client";
 
-/* The landing page composition: app header → analyzer hero → flashcards grid.
+/* The landing page composition: rotating hero → analyzer hero → flashcards
+   teaser (five featured decks + a "…and more" link to the full /flashcards page).
    Owns the open-deck and birth-details modal state, locks body scroll while a
    modal is open, and returns focus to the opener on close. */
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "./AppHeader";
+import { HeroRotator } from "./HeroRotator";
 import { AnalyzerHero } from "./AnalyzerHero";
+import { FCTeaser } from "./FCTeaser";
 import { BirthDetailsModal } from "./BirthDetailsModal";
-import { DeckGrid } from "@/components/flashcards/DeckGrid";
 import { Deck as DeckModal } from "@/components/flashcards/Deck";
 import { DECKS } from "@/data/decks/registry";
 import type { Deck } from "@/data/decks/types";
 import { BIRTH_DETAILS_KEY, toEngineCivil, type BirthDetails } from "@/lib/birth";
 import { useChart } from "@/lib/chart/ChartProvider";
 import { generateChart } from "@/lib/chart/generateChart";
+
+/* The decks previewed on the landing teaser, in display order — the five
+   fundamentals a student learns first. With the trailing "…and more" tile that
+   makes six cells (two rows of three). The rest live on /flashcards. Ids that
+   don't resolve are skipped, so this is safe to edit. */
+const FEATURED_DECK_IDS = ["houses", "planets", "zodiacs", "rahu-ketu", "maitri"];
 
 export function HomeApp() {
   const [openDeck, setOpenDeck] = useState<Deck | null>(null);
@@ -90,16 +97,19 @@ export function HomeApp() {
     }
   }, [openDeck, analyzer]);
 
+  // The landing grid teases five fundamentals (+ a "…and more" tile); the rest
+  // live on /flashcards. Hidden decks stay registered (chart-page links) but never tile.
+  const visibleDecks = DECKS.filter((d) => !d.hidden);
+  const featured = FEATURED_DECK_IDS.map((id) => visibleDecks.find((d) => d.id === id)).filter(
+    (d): d is Deck => Boolean(d),
+  );
+
   return (
     <>
-      <AppHeader />
+      <HeroRotator />
       <main className="home">
         <AnalyzerHero onOpen={onOpenAnalyzer} />
-        <div id="flashcards">
-          {/* hidden decks stay registered (chart-page flashcard links) but
-              never tile on the landing grid */}
-          <DeckGrid decks={DECKS.filter((d) => !d.hidden)} onOpen={onOpenDeck} />
-        </div>
+        <FCTeaser decks={visibleDecks} featured={featured} onOpen={onOpenDeck} />
       </main>
       {openDeck && <DeckModal deck={openDeck} onClose={onCloseDeck} />}
       {analyzer && (

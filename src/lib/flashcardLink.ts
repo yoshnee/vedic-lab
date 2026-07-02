@@ -70,9 +70,9 @@ export function resolveFlashcard(
     return byTitle(DECKS.find((d) => d.id === "nakshatras"), String(id));
   }
   if (type === "sign" || type === "ascendant") {
-    // the Ascendants deck (id "signs") holds 3 concept cards then the 12 signs;
+    // the twelve rising-sign cards live in the Zodiacs deck (id "zodiacs");
     // both the Ascendant-Lord pill and the functional-nature badge open the rising-sign card
-    return byTitle(DECKS.find((d) => d.id === "signs"), String(id));
+    return byTitle(DECKS.find((d) => d.id === "zodiacs"), String(id));
   }
   if (type === "pada") {
     // concept deck: always open the purushartha card, highlighting the tapped pada's row

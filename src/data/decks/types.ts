@@ -37,6 +37,15 @@ export interface CardCloud {
   terms: CloudTerm[];
 }
 
+/** A two-group trait word-cloud BACK (Zodiacs deck): positive traits shown in
+    green, negative in red, each a weighted cloud group reusing the same size
+    tiers as `CardCloud`. Unlike `cloud`, this keeps the standard back head
+    (sign name + Sanskrit) above the two labeled groups. Sizing is editorial. */
+export interface CardTraitCloud {
+  positive: CloudTerm[];
+  negative: CloudTerm[];
+}
+
 /** A card-back link that pulls up the deck's interactive diagram view
     (e.g. "How Rahu & Ketu Form" on the Rahu & Ketu deck — its cards 1 and 2
     open the same component on different preset frames). The diagram's own
@@ -67,10 +76,17 @@ export interface Card {
   backIcon?: CardIcon;
   /** Reference data shown on the card FRONT (under the icon/title). */
   facts?: CardFact[];
+  /** A small clarifying note shown on the card FRONT beneath the facts
+      (e.g. the zodiac cards note that their functional benefics/malefics
+      apply only when that sign is the ascendant). */
+  footnote?: string;
   /** Characteristics shown on the card BACK as a bulleted list (used instead of `body`). */
   points?: string[];
   /** Significations word-cloud BACK (used instead of `points`/`body`). */
   cloud?: CardCloud;
+  /** Two-group positive/negative trait cloud BACK (Zodiacs deck; used instead
+      of `points`/`body`). Keeps the standard back head. */
+  traits?: CardTraitCloud;
   /** Back-of-card button opening the deck's interactive diagram view. */
   diagramLink?: CardDiagramLink;
 }

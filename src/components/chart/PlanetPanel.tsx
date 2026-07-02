@@ -12,6 +12,8 @@
    ============================================================ */
 import { useState } from "react";
 import { Svg } from "@/components/Svg";
+import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
+import { FcLink } from "./FcLink";
 import { body } from "@/celestial/celestial";
 import type { PlanetData, PlanetKey, SadePeriod, Maitri, Avastha, ShadbalaScore } from "@/core/types";
 import { tierOf, type ShadbalaTier } from "@/core/shadbala";
@@ -55,18 +57,6 @@ function ordinal(n: number): string {
 }
 
 type OpenCard = (type: FlashcardType, id?: string | number) => void;
-
-function FcLink({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      className="fc-link"
-      onClick={(e) => { e.stopPropagation(); onClick(); }}
-    >
-      {children}
-    </button>
-  );
-}
 
 /** Small crescent — opens one way for waxing, mirrored for waning. */
 function MoonPhaseGlyph({ waxing }: { waxing: boolean }) {
@@ -163,6 +153,7 @@ function AvasthaDrawer({
                   className="fc-link pp-ava-row"
                   onClick={(e) => { e.stopPropagation(); onOpenCard(a.flashcard.type, a.flashcard.id); }}
                 >
+                  <FlashcardIcon size={12} className="pp-ava-ico" />
                   <span className="sys">{a.systemLabel}</span>
                   <span className="state">{a.label}</span>
                   {a.sanskrit && <span className="sk">{a.sanskrit}</span>}
@@ -229,6 +220,7 @@ function ShadbalaDrawer({
                   className="fc-link pp-ava-row"
                   onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", r.id); }}
                 >
+                  <FlashcardIcon size={12} className="pp-ava-ico" />
                   <span className="sys">{r.label}</span>
                   <span className="str">{r.get(sb)}</span>
                 </button>
@@ -240,6 +232,7 @@ function ShadbalaDrawer({
                 className="fc-link pp-ava-row pp-sb-total"
                 onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "ishta"); }}
               >
+                <FlashcardIcon size={12} className="pp-ava-ico" />
                 <span className="sys">Ishta Phala</span>
                 <span className="str">{sb.ishta}</span>
               </button>
@@ -250,6 +243,7 @@ function ShadbalaDrawer({
                 className="fc-link pp-ava-row"
                 onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "kashta"); }}
               >
+                <FlashcardIcon size={12} className="pp-ava-ico" />
                 <span className="sys">Kashta Phala</span>
                 <span className="str">{sb.kashta}</span>
               </button>
@@ -260,6 +254,7 @@ function ShadbalaDrawer({
                 className="fc-link pp-ava-row pp-sb-total"
                 onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "total"); }}
               >
+                <FlashcardIcon size={12} className="pp-ava-ico" />
                 <span className="sys">Total</span>
                 <span className="str">{sb.total} virupas · {rupas} rupas</span>
               </button>
@@ -270,6 +265,7 @@ function ShadbalaDrawer({
                 className="fc-link pp-ava-row pp-sb-total"
                 onClick={(e) => { e.stopPropagation(); onOpenCard("shadbala", "required"); }}
               >
+                <FlashcardIcon size={12} className="pp-ava-ico" />
                 <span className="sys">Required</span>
                 <span className="str" data-strong={strong || undefined}>{sb.required} · {sb.ratio}× {strong ? "(Bal-Yukta)" : "(Balaheena)"}</span>
               </button>
@@ -318,27 +314,33 @@ export function PlanetPanel({
         />
         <span className="pp-ico" style={{ "--pc": `var(--p-${p.key})` } as React.CSSProperties}>
           <Svg html={icon} />
-          {/* per-planet flashcard launcher — opens this graha's Planets-deck card.
-              pointer-events:auto lifts it above the full-bleed header toggle, as the pills do. */}
-          <button
-            type="button"
-            className="pp-card-link"
-            aria-label={`Open the ${p.name} flashcard`}
-            title={`Open the ${p.name} flashcard`}
-            onClick={(e) => { e.stopPropagation(); onOpenCard("planet", PNAME[p.key]); }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="8.5" y="3.5" width="11" height="15" rx="2" />
-              <path d="M15 18.5v1a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h1" />
-            </svg>
-          </button>
         </span>
         <span className="pp-id">
           <span className="pp-name">
             <span className="nm">{p.name}</span>
+            {/* per-planet flashcard launcher, sat beside the graha name — opens this
+                graha's Planets-deck card. Uses the shared FlashcardIcon (the diamond
+                mark) so it matches every other flashcard-open button. pointer-events:auto
+                lifts it above the full-bleed header toggle, as the pills do. */}
+            <button
+              type="button"
+              className="pp-card-link"
+              aria-label={`Open the ${p.name} flashcard`}
+              title={`Open the ${p.name} flashcard`}
+              onClick={(e) => { e.stopPropagation(); onOpenCard("planet", PNAME[p.key]); }}
+            >
+              <FlashcardIcon size={16} />
+            </button>
           </span>
-          {(p.dasha.length > 0 || p.gandanta || p.maitriToDispositor) && (
+          {(p.dasha.length > 0 || p.lagnaLord || p.gandanta || p.maitriToDispositor) && (
             <span className="pp-pills">
+              {p.lagnaLord && (
+                <button type="button" className="pp-pill" data-kind="lagna"
+                  title="Rules the ascendant sign"
+                  onClick={(e) => { e.stopPropagation(); onOpenCard("deck", "ascendants"); }}>
+                  Ascendant Lord
+                </button>
+              )}
               {p.dasha.includes("maha") && (
                 <button type="button" className="pp-pill" data-kind="maha"
                   onClick={(e) => { e.stopPropagation(); onOpenDasha?.(); }}>Mahādaśā lord</button>
@@ -347,8 +349,6 @@ export function PlanetPanel({
                 <button type="button" className="pp-pill" data-kind="antar"
                   onClick={(e) => { e.stopPropagation(); onOpenDasha?.(); }}>Antardaśā lord</button>
               )}
-              {/* (The "Ascendant Lord" pill was retired — the ChartRuler card
-                  above the panels now owns that identity.) */}
               {p.gandanta && (
                 <button type="button" className="pp-pill" data-kind="gandanta"
                   data-deep={p.gandantaDeep || undefined}
@@ -405,7 +405,7 @@ export function PlanetPanel({
               <div className="pp-coords">
                 {p.retro && <span className="deg">℞</span>}
                 <span className="deg">{p.degree}</span>
-                <span>{p.signName}</span>
+                <FcLink onClick={() => onOpenCard("sign", p.signName)}>{p.signName}</FcLink>
                 {vargaLabel ? (
                   <>
                     <span className="dot">·</span>

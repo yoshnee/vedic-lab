@@ -14,8 +14,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/flashcards/Card";
 import { DiagramCard } from "@/components/flashcards/DiagramCard";
-import { Svg } from "@/components/Svg";
-import { diamond } from "@/celestial/celestial";
+import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
 import type { FlashcardTarget } from "@/lib/flashcardLink";
 import type { CardDiagramLink } from "@/data/decks/types";
 
@@ -93,7 +92,7 @@ export function FlashcardPopover({
       >
         <header className="fcpop-bar">
           <span className="fcpop-title">
-            <Svg html={diamond(20, { glow: true })} /> Flashcard
+            <FlashcardIcon size={20} /> Flashcard
           </span>
           <span className="fcpop-kind">{deck.title}</span>
           <button className="fcpop-close" onClick={onClose} aria-label="Close flashcard">

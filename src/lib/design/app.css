@@ -32,28 +32,107 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .app-wordmark { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(32px, 5.5vw, 52px); letter-spacing: -.02em; }
 .app-tagline { font-family: var(--font-mono), monospace; font-size: clamp(11px, 1.4vw, 13px); letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); margin: 0; }
 
-/* ---------- ANALYZER HERO (primary tool) ---------- */
+/* ---------- ANALYZER HERO (primary tool · Birth Chart Workspace) ----------
+   A full-width title header over a two-column body: pitch + moments + CTA on the
+   left, the auto-playing chart→card→note demo on the right. See AnalyzerHero.tsx. */
 .analyzer { max-width: 980px; margin: 0 auto; padding: clamp(34px, 5vw, 52px) clamp(20px, 5vw, 40px) 0; }
 .analyzer-tile {
-  display: grid; grid-template-columns: 1.3fr .9fr; gap: 24px; align-items: center; width: 100%; text-align: left; cursor: pointer;
+  display: grid; grid-template-columns: 1.12fr .88fr;
+  grid-template-areas: "head head" "copy demo" "cta cta";
+  column-gap: clamp(24px, 4vw, 44px); row-gap: clamp(18px, 3vw, 26px);
+  align-items: start; width: 100%; text-align: left;
   border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--border)); border-radius: 24px; padding: clamp(26px, 4vw, 44px);
   background: radial-gradient(120% 140% at 88% 0%, rgba(228, 194, 87, .14), transparent 55%), linear-gradient(150deg, var(--surface-2), var(--bg-2));
   box-shadow: 0 30px 70px -34px #000, inset 0 0 0 1px rgba(228, 194, 87, .08);
-  transition: transform .28s cubic-bezier(.2, .7, .2, 1), box-shadow .28s, border-color .28s; color: var(--text); position: relative; overflow: hidden;
+  color: var(--text); position: relative; overflow: hidden;
 }
-.analyzer-tile:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 70%, var(--border)); box-shadow: 0 40px 84px -34px #000, inset 0 0 0 1px rgba(228, 194, 87, .18); }
-.analyzer-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.analyzer-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.analyzer-head { grid-area: head; display: flex; flex-direction: column; gap: 10px; }
 .analyzer-eyebrow { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
-.analyzer-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -.02em; line-height: 1.05; }
-.analyzer-desc { color: var(--text-2); font-size: 15.5px; line-height: 1.55; max-width: 46ch; }
-.analyzer-cta {
-  display: inline-flex; align-items: center; gap: 9px; margin-top: 6px; padding: 12px 22px; border-radius: 999px;
-  background: var(--accent); color: #15110a; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 15px; box-shadow: 0 8px 24px -10px var(--accent-deep);
+/* sized to sit on one line across the tile at desktop widths; wraps gracefully below */
+.analyzer-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(21px, 2.85vw, 29px); letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
+
+.analyzer-copy { grid-area: copy; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; align-self: center; }
+.analyzer-desc { color: var(--text-2); font-size: 15.5px; line-height: 1.55; max-width: 46ch; margin: 0; }
+
+/* study cues restyled as tappable product "moments": hook question → answer.
+   Uniform gold-accent treatment across all three. Decorative; the CTA + demo
+   are the click targets. */
+.az-moments { list-style: none; margin: 2px 0; padding: 0; display: flex; flex-direction: column; gap: 9px; width: 100%; max-width: 420px; }
+.az-moment {
+  display: flex; align-items: center; gap: 13px; padding: 9px 13px; border-radius: 13px;
+  border: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 55%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
+  transition: border-color .2s, background .2s;
 }
-.analyzer-tile:hover .analyzer-cta { filter: brightness(1.06); }
-.analyzer-art { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 10px 44px rgba(228, 194, 87, .32)); }
-.analyzer-art svg { width: min(220px, 40vw); height: auto; }
+.analyzer-tile:hover .az-moment { border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+.az-moment-thumb {
+  flex: none; width: 40px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent), 0 3px 8px -4px #000;
+}
+.az-moment--note .az-moment-thumb { background: transparent; box-shadow: none; padding: 0; }
+.az-moment-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.az-moment-q { font-family: var(--font-body), sans-serif; font-style: italic; font-size: 14px; color: var(--text-2); line-height: 1.25; }
+.az-moment-a { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .03em; color: var(--accent); line-height: 1.25; }
+
+/* centered across the whole tile (its own full-width grid row below both columns) */
+.analyzer-cta {
+  grid-area: cta; justify-self: center; margin-top: 4px; display: inline-flex; align-items: center; padding: 12px 26px; border-radius: 999px; cursor: pointer; border: 0;
+  background: var(--accent); color: #15110a; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 15px; box-shadow: 0 8px 24px -10px var(--accent-deep);
+  transition: filter .2s, transform .2s;
+}
+.analyzer-cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.analyzer-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* ---- the animated chart → card → note demo (the right column) ---- */
+.analyzer-demo-btn { grid-area: demo; border: 0; background: transparent; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; align-self: center; width: 100%; }
+.analyzer-demo-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 16px; }
+.az-demo { position: relative; display: block; width: min(340px, 100%); aspect-ratio: 1 / .92; margin: 0 auto; }
+.az-chart { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 58%; animation: az-pulse .9s ease; }
+.az-chart-svg, .az-chart-svg svg { display: block; width: 100%; height: auto; }
+@keyframes az-pulse {
+  0% { filter: drop-shadow(0 12px 34px color-mix(in srgb, var(--accent) 10%, transparent)); }
+  40% { filter: drop-shadow(0 12px 42px color-mix(in srgb, var(--accent) 34%, transparent)); }
+  100% { filter: drop-shadow(0 12px 34px color-mix(in srgb, var(--accent) 20%, transparent)); }
+}
+.az-artifact {
+  position: absolute; right: 0; top: 50%; width: 52%; display: flex; align-items: center; justify-content: center;
+  animation: az-art-in .55s cubic-bezier(.2, .7, .2, 1) both;
+}
+@keyframes az-art-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(-10px) scale(.92); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
+}
+/* the REAL flashcard, rendered at natural proportions then optically scaled to
+   fit the demo (vector scale keeps it crisp). */
+.az-card-wrap { position: relative; width: 178px; height: 240px; overflow: hidden; }
+.az-card-wrap .fc-card { position: absolute; top: 0; left: 0; width: 300px; height: 404px; transform: scale(.5933); transform-origin: top left; }
+
+/* miniature of our reading-notes sticky note (StickyNote / .sn) */
+.az-note {
+  display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border);
+  box-shadow: 0 14px 30px -18px #000, inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+.az-note::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 1;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 85%, transparent), transparent); opacity: .6;
+}
+.az-note-head { display: flex; align-items: center; gap: 7px; padding: 8px 9px 6px; border-bottom: 1px solid var(--border-soft); }
+.az-note-dot { flex: none; width: 7px; height: 7px; border-radius: 2px; transform: rotate(45deg); background: var(--accent); box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent); }
+.az-note-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 11px; color: var(--text-2); }
+.az-note-body { display: flex; flex-direction: column; gap: 6px; padding: 10px 10px 12px; }
+.az-note-body i { display: block; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--text-3) 55%, transparent); }
+.az-note-body i:nth-child(1) { width: 82%; }
+.az-note-body i:nth-child(2) { width: 60%; }
+.az-note-cursor { width: 38%; background: color-mix(in srgb, var(--accent) 70%, transparent); animation: az-type 1.3s steps(1) infinite; }
+@keyframes az-type { 0%, 100% { opacity: .3; } 50% { opacity: .9; } }
+.az-note--demo { width: 150px; }
+.az-note--chip { width: 100%; height: 100%; border-radius: 6px; }
+.az-note--chip .az-note-head { padding: 4px 5px 3px; gap: 4px; }
+.az-note--chip .az-note-dot { width: 5px; height: 5px; }
+.az-note--chip .az-note-title { display: none; }
+.az-note--chip .az-note-body { padding: 4px 5px 5px; gap: 3px; }
+.az-note--chip .az-note-body i { height: 2px; }
 
 /* ============================================================
    BIRTH DETAILS MODAL — ported from design-reference/birth-modal/birth-modal.css.
@@ -171,6 +250,116 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 
 .home .fc-landing { padding-top: clamp(40px, 6vw, 64px); }
 
+/* ---------- ROTATING HERO (home centrepiece) ----------
+   A sequence of pain → promise phrases cross-fading in place. Rendered by
+   HeroRotator.tsx; ported from the design-reference prototype. */
+.hero {
+  max-width: 1000px; margin: 0 auto; width: 100%;
+  padding: clamp(36px, 6vw, 64px) clamp(20px, 5vw, 40px) clamp(8px, 2vw, 20px);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+/* Brand lockup — restored above the rotating panel, centered (mirrors the prod
+   identity block). The global header keeps a smaller mark; this is the hero. */
+.hero-lockup { display: flex; flex-direction: column; align-items: center; gap: 13px; margin-bottom: clamp(22px, 4vw, 38px); text-align: center; }
+.hero-mark { flex: none; filter: drop-shadow(0 6px 28px rgba(228, 194, 87, .34)); display: flex; }
+.hero-wordmark { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(32px, 5.5vw, 52px); letter-spacing: -.02em; margin: 0; line-height: 1.05; }
+.hero-tagline { font-family: var(--font-mono), monospace; font-size: clamp(11px, 1.4vw, 13px); letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); margin: 0; }
+.hero-stage {
+  position: relative; width: 100%; max-width: min(600px, 92vw); min-height: clamp(150px, 19vw, 172px);
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-phrase {
+  position: absolute; inset: 0; margin: 0; display: flex; flex-direction: column; gap: clamp(12px, 1.8vw, 18px);
+  align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1);
+}
+.hero-phrase.is-active { opacity: 1; transform: none; pointer-events: auto; }
+.hero-pain {
+  font-family: var(--font-body), sans-serif; font-style: italic; font-weight: 400;
+  font-size: clamp(15px, 2vw, 20px); line-height: 1.4; color: var(--text-3); max-width: 34ch; text-wrap: balance;
+}
+/* Constrained so each punch line sits at 1–2 lines: smaller display size + a
+   width that fits the longest phrase (~47 chars) in two balanced lines. */
+.hero-promise {
+  font-family: var(--font-display), sans-serif; font-weight: 600;
+  font-size: clamp(25px, 3.4vw, 34px); line-height: 1.12; letter-spacing: -.02em;
+  color: var(--accent); max-width: 24ch; text-wrap: balance;
+  text-shadow: 0 4px 40px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.hero-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.hero-dots { display: flex; align-items: center; gap: 9px; margin-top: clamp(10px, 1.4vw, 16px); }
+.hero-dot {
+  width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; cursor: pointer;
+  background: color-mix(in srgb, var(--text-3) 60%, transparent); transition: width .3s, background .3s;
+}
+.hero-dot:hover { background: var(--text-2); }
+.hero-dot.is-active { width: 26px; background: var(--accent); }
+.hero-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- FLASHCARDS TEASER (home) ----------
+   Sells the study method, then previews the featured decks + a "…and more"
+   card linking to /flashcards. Rendered by FCTeaser.tsx. */
+.teaser {
+  max-width: 1000px; margin: 0 auto; width: 100%;
+  padding: clamp(48px, 8vw, 90px) clamp(20px, 5vw, 40px) clamp(40px, 6vw, 60px);
+}
+.teaser-head {
+  max-width: 56ch; margin: 0 auto clamp(34px, 5vw, 52px); text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.teaser-eyebrow { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.teaser-title {
+  font-family: var(--font-display), sans-serif; font-weight: 600; letter-spacing: -.02em;
+  font-size: clamp(26px, 4vw, 40px); line-height: 1.08; max-width: 18ch;
+}
+.teaser-lede { margin: 18px 0 0; color: var(--text-2); font-size: clamp(15px, 1.7vw, 17px); line-height: 1.62; text-wrap: pretty; }
+.teaser-stat {
+  margin: 20px auto 0; max-width: 44ch; text-align: center; line-height: 1.6;
+  font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .06em; color: var(--text-3);
+}
+.teaser-stat b { color: var(--accent); font-weight: 700; }
+
+.teaser-grid {
+  /* 230px min caps the capped 1000px container at 3 columns, so the five
+     featured decks + the "…and more" tile land as two rows of three; still
+     auto-fills down to 2 then 1 on tablet/mobile. */
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: clamp(18px, 2.6vw, 26px); align-items: stretch;
+}
+.teaser-grid .fc-deckback { width: 100%; min-height: 300px; padding: 28px 22px; }
+.teaser-grid .fc-deckback::before { transform: translate(6px, 7px) rotate(1.8deg); }
+.teaser-grid .fc-deckback::after { transform: translate(11px, 14px) rotate(3.4deg); }
+
+/* "…and more" card — links to the full flashcards page */
+.deck-more {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  min-height: 300px; border-radius: 18px; text-decoration: none; text-align: center; color: var(--text);
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+  transition: transform .28s cubic-bezier(.2, .7, .2, 1), border-color .28s, background .28s;
+}
+.deck-more:hover { transform: translateY(-5px); border-color: var(--accent); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.deck-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.deck-more-dots { display: flex; gap: 8px; }
+.deck-more-dots span { width: 9px; height: 9px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 55%, transparent); }
+.deck-more:hover .deck-more-dots span { background: var(--accent); }
+.deck-more-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 22px; letter-spacing: -.01em; }
+.deck-more-cta {
+  display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono), monospace; font-size: 11.5px;
+  letter-spacing: .08em; color: var(--accent); transition: gap .2s;
+}
+.deck-more:hover .deck-more-cta { gap: 11px; }
+
+@media (max-width: 600px) {
+  .hero-stage { min-height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-phrase { transition: opacity .3s ease; }
+  .hero-dot, .deck-more, .deck-more-cta { transition: none; }
+}
+
 /* ---------- FLASHCARDS: LANDING / DECKS ---------- */
 .fc-landing { max-width: 980px; margin: 0 auto; padding: clamp(40px, 7vw, 84px) clamp(20px, 5vw, 40px) 80px; }
 .fc-landing-head { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(34px, 6vw, 56px); }
@@ -186,7 +375,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   position: relative; width: 236px; min-height: 344px; border: 0; cursor: pointer;
   border-radius: 18px; padding: 30px 24px;
   background: linear-gradient(158deg, var(--surface-2), var(--bg-2));
-  box-shadow: inset 0 0 0 1px rgba(228, 194, 87, .16), 0 18px 40px -22px #000;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--deck-accent, var(--accent)) 18%, transparent), 0 18px 40px -22px #000;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
   transition: transform .28s cubic-bezier(.2, .7, .2, 1), box-shadow .28s;
   color: var(--text); text-align: center;
@@ -199,15 +388,15 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 }
 .fc-deckback::before { transform: translate(7px, 9px) rotate(2.2deg); opacity: .5; }
 .fc-deckback::after { transform: translate(13px, 17px) rotate(4.2deg); opacity: .28; }
-.fc-deckback:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px rgba(228, 194, 87, .4), 0 26px 50px -22px #000; }
+.fc-deckback:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--deck-accent, var(--accent)) 42%, transparent), 0 26px 50px -22px #000; }
 .fc-deckback:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.fc-deckback-kicker { display: block; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--accent); }
+.fc-deckback-kicker { display: block; font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--deck-accent, var(--accent)); }
 .fc-deckback-title { display: flex; align-items: center; justify-content: center; min-height: 2.5em; margin-top: 6px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; line-height: 1.2; text-align: center; }
 .fc-deckback-count { display: block; font-family: var(--font-mono), monospace; font-size: 11px; color: var(--text-3); letter-spacing: .06em; margin-top: 7px; }
 
 /* coming-soon deck tiles (non-interactive roadmap entries) */
 .fc-deckback--soon { cursor: default; }
-.fc-deckback--soon:hover { transform: none; box-shadow: inset 0 0 0 1px rgba(228, 194, 87, .16), 0 18px 40px -22px #000; }
+.fc-deckback--soon:hover { transform: none; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--deck-accent, var(--accent)) 18%, transparent), 0 18px 40px -22px #000; }
 .fc-deckback--soon .fc-deckback-art { opacity: .45; }
 .fc-deckback--soon .fc-deckback-title { color: var(--text-2); }
 .fc-soon-pill { display: inline-block; margin-top: 9px; font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; }
@@ -348,6 +537,13 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   margin: 0; font-family: var(--font-mono), monospace; font-size: 11.5px;
   color: var(--text-2); line-height: 1.4;
 }
+/* a small clarifying note under the front facts (e.g. the zodiac cards'
+   functional benefics/malefics apply only when the sign is the ascendant) */
+.fc-fn {
+  width: 100%; max-width: 270px; margin: 7px auto 0;
+  font-size: 8px; line-height: 1.45; color: var(--text-3);
+  text-align: left; text-wrap: pretty; font-style: italic;
+}
 
 /* characteristics on the card BACK as a bulleted list */
 .fc-points {
@@ -384,6 +580,33 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .sig-term--medium { font-size: 14px; font-weight: 500; color: var(--text-2); }
 .sig-term--small { font-size: 11.5px; font-weight: 400; color: var(--text-3); letter-spacing: .01em; }
 
+/* ---------- TRAIT CLOUD (Zodiacs back: positive / negative two-group cloud) ----------
+   Reuses the significations cloud's flex-wrap + size tiers, split into two
+   color-coded, labeled groups — Positive (green, --good) / Negative (red,
+   --bad). Unlike the significations cloud, the back head (sign + Sanskrit)
+   stays; --traits just centers it to match the cloud look. */
+.fc-back--traits .fc-back-head { align-items: center; text-align: center; }
+.trait-cloud { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+.trait-group { display: flex; flex-direction: column; gap: 8px; }
+.trait-label {
+  font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .18em;
+  text-transform: uppercase; text-align: center;
+}
+.trait-group[data-tone="pos"] .trait-label { color: var(--good); }
+.trait-group[data-tone="neg"] .trait-label { color: var(--bad); }
+.trait-terms {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  column-gap: 13px; row-gap: 6px;
+  list-style: none; margin: 0; padding: 0;
+}
+.trait-term { white-space: nowrap; line-height: 1.15; }
+/* size tiers mirror the significations cloud; color comes from the group tone */
+.trait-term--big { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; }
+.trait-term--medium { font-size: 13.5px; font-weight: 500; }
+.trait-term--small { font-size: 11.5px; font-weight: 400; letter-spacing: .01em; }
+.trait-group[data-tone="pos"] .trait-term { color: var(--good); }
+.trait-group[data-tone="neg"] .trait-term { color: var(--bad); }
+
 /* empty (not-yet-written) card body → tasteful "coming soon" */
 .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; flex: 1; text-align: center; }
 .fc-empty-mark { opacity: .5; display: flex; }
@@ -396,10 +619,12 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 720px) {
-  .analyzer-tile { grid-template-columns: 1fr; text-align: center; }
+  /* stack: title header, then the demo, then the pitch (demo leads the copy) */
+  .analyzer-tile { grid-template-columns: 1fr; grid-template-areas: "head" "demo" "copy" "cta"; text-align: center; }
+  .analyzer-head { align-items: center; text-align: center; }
   .analyzer-copy { align-items: center; }
-  .analyzer-art { order: -1; }
-  .analyzer-art svg { width: 148px; }
+  .az-moments { text-align: left; }
+  .az-demo { width: min(320px, 86vw); }
   .bd-row2, .bd-manual-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
@@ -422,7 +647,9 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 @media (prefers-reduced-motion: reduce) {
   .fc-inner { transition: none; }
   .fc-face { transition: none; }
-  .fc-deckback, .analyzer-tile { transition: none; }
+  .fc-deckback { transition: none; }
+  .az-chart, .az-artifact { animation: none; }
+  .az-note-cursor { animation: none; }
   .fc-progbar i { transition: none; }
   .bd-spin { animation-duration: 1.4s; }
   .bd-cta, .bd-input, .bd-close { transition: none; }
