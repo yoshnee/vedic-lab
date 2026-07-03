@@ -10,7 +10,7 @@
    callbacks passed down from useReadingNotes.
    ============================================================ */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Tenet, NoteState } from "@/lib/chart/readingNotes";
+import type { NoteView, NoteState } from "@/lib/chart/readingNotes";
 
 /** Keep notes clear of the sticky global header (the rails dock at top:78px;
     the workspace also sits below the nav's z-index, so this is belt-and-braces). */
@@ -47,7 +47,7 @@ const Chevron = () => (
 );
 
 export interface StickyNoteProps {
-  tenet: Tenet;
+  view: NoteView;
   note: NoteState;
   focused: boolean;
   speechSupported: boolean;
@@ -59,11 +59,13 @@ export interface StickyNoteProps {
   onSetText: (text: string) => void;
   onTogglePrompts: () => void;
   onToggleRecording: () => void;
+  /** Retitle a custom note (ignored for the fixed-title tenets). */
+  onRename: (title: string) => void;
 }
 
 export function StickyNote({
-  tenet, note, focused, speechSupported, recording, micError,
-  onMove, onFocus, onClose, onSetText, onTogglePrompts, onToggleRecording,
+  view, note, focused, speechSupported, recording, micError,
+  onMove, onFocus, onClose, onSetText, onTogglePrompts, onToggleRecording, onRename,
 }: StickyNoteProps) {
   // `drag` holds the transient position only WHILE dragging; when null the
   // rendered position derives straight from the committed note.x/note.y, so
@@ -139,7 +141,8 @@ export function StickyNote({
 
   const onHeadPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return; // primary button only
-    if ((e.target as HTMLElement).closest(".sn-close")) return; // let the close button click
+    // let the close button click and the rename field take the pointer (no drag)
+    if ((e.target as HTMLElement).closest(".sn-close, .sn-rename")) return;
     const el = rootRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -188,7 +191,7 @@ export function StickyNote({
       className={cls}
       style={{ left: pos.x, top: pos.y, zIndex: note.z }}
       role="group"
-      aria-label={`${tenet.title} note`}
+      aria-label={`${view.title} note`}
       onPointerDownCapture={onFocus}
     >
       <div
@@ -207,7 +210,20 @@ export function StickyNote({
         >
           <Grip />
         </span>
-        <span className="sn-title"><span className="sn-dot" aria-hidden="true" />{tenet.title}</span>
+        <span className="sn-title">
+          <span className="sn-dot" aria-hidden="true" />
+          {view.custom ? (
+            <input
+              className="sn-rename"
+              value={note.title ?? ""}
+              placeholder="Untitled note"
+              aria-label="Note title"
+              maxLength={60}
+              onChange={(e) => onRename(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); }}
+            />
+          ) : view.title}
+        </span>
         <button type="button" className="sn-close" aria-label="Close note" onClick={onClose}>✕</button>
       </div>
 
@@ -215,18 +231,18 @@ export function StickyNote({
           its max-height (long text / many questions) — the header stays a fixed
           handle and the note never runs off the fixed workspace. */}
       <div className="sn-body">
-      {tenet.questions.length > 0 && (
+      {view.questions.length > 0 && (
         <button type="button" className="sn-toggle" aria-expanded={!collapsed} onClick={onTogglePrompts}>
           <span className="eye"><Eye /></span>
           <span className="lbl">Guiding questions</span>
-          <span className="ct">{tenet.questions.length}</span>
+          <span className="ct">{view.questions.length}</span>
           <span className="chev"><Chevron /></span>
         </button>
       )}
 
       <div className="sn-q-wrap">
         <ul className="sn-q-list">
-          {tenet.questions.map((q) => (
+          {view.questions.map((q) => (
             <li className="sn-q" key={q}><i aria-hidden="true" />{q}</li>
           ))}
         </ul>
@@ -239,7 +255,7 @@ export function StickyNote({
           rows={4}
           value={note.text}
           placeholder="Begin your reading…"
-          aria-label={`${tenet.title} notes`}
+          aria-label={`${view.title} notes`}
           onChange={(e) => { onSetText(e.target.value); autoGrow(e.currentTarget); }}
         />
       </div>
@@ -259,7 +275,7 @@ export function StickyNote({
           title={
             !speechSupported
               ? "Voice dictation isn't supported in this browser"
-              : recording ? "Stop dictation" : `Dictate into the ${tenet.title} note`
+              : recording ? "Stop dictation" : `Dictate into the ${view.title} note`
           }
           onClick={onToggleRecording}
         >

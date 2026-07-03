@@ -30,7 +30,7 @@ import { ElementBalance } from "./ElementBalance";
 import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
-import { Instructions } from "./Instructions";
+import { OnboardingTour } from "./onboarding/OnboardingTour";
 import { FlashcardPopover } from "./FlashcardPopover";
 import { resolveFlashcard, type FlashcardType, type FlashcardTarget } from "@/lib/flashcardLink";
 import type { ChartModel } from "@/lib/chart/types";
@@ -40,6 +40,9 @@ const PNAME: Record<PlanetKey, string> = {
   sun: "Sun", moon: "Moon", mars: "Mars", mercury: "Mercury", jupiter: "Jupiter",
   venus: "Venus", saturn: "Saturn", rahu: "Rahu", ketu: "Ketu",
 };
+
+/** Set once the guided tour has been seen, so it auto-opens only on first visit. */
+const TOUR_SEEN_KEY = "vedic:chartTourSeen";
 
 function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"], v = n % 100;
@@ -127,8 +130,24 @@ export function ChartView({ model }: { model: ChartModel }) {
   const { chart, meta, panchanga, transit } = model;
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
-  const [instrOpen, setInstrOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false); // guided-tour / instructions popup
   const [dashaOpen, setDashaOpen] = useState(false); // mobile daśā drawer
+
+  // Auto-open the guided tour on the FIRST /chart visit (remembered in
+  // localStorage); the header Instructions button reopens it anytime. Runs
+  // client-only (effect) to avoid a hydration mismatch, and the open is
+  // deferred a frame so it isn't a synchronous setState in the effect body.
+  useEffect(() => {
+    let seen = true;
+    try { seen = !!localStorage.getItem(TOUR_SEEN_KEY); } catch { /* private mode */ }
+    if (seen) return;
+    const raf = requestAnimationFrame(() => setTourOpen(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const closeTour = () => {
+    setTourOpen(false);
+    try { localStorage.setItem(TOUR_SEEN_KEY, "1"); } catch { /* private mode */ }
+  };
   // reading-notes workspace — ONE state instance feeding the launcher dock and
   // the floating sticky notes (desktop-only; hidden on mobile)
   const notesApi = useReadingNotes(model);
@@ -195,10 +214,10 @@ export function ChartView({ model }: { model: ChartModel }) {
 
   // Lock body scroll while any overlay is open.
   useEffect(() => {
-    const anyOverlay = fc || legendOpen || instrOpen || dashaOpen;
+    const anyOverlay = fc || legendOpen || tourOpen || dashaOpen;
     document.body.style.overflow = anyOverlay ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [fc, legendOpen, instrOpen, dashaOpen]);
+  }, [fc, legendOpen, tourOpen, dashaOpen]);
 
   const openCard = (type: FlashcardType, id?: string | number) => {
     const target = resolveFlashcard(type, id);
@@ -293,7 +312,7 @@ export function ChartView({ model }: { model: ChartModel }) {
             <button type="button" className="chart-legend-btn" onClick={() => setLegendOpen(true)}>
               <span aria-hidden="true">?</span> Legend
             </button>
-            <button type="button" className="chart-legend-btn" onClick={() => setInstrOpen(true)}>
+            <button type="button" className="chart-legend-btn" onClick={() => setTourOpen(true)}>
               <span aria-hidden="true">?</span> Instructions
             </button>
           </div>
@@ -456,8 +475,8 @@ export function ChartView({ model }: { model: ChartModel }) {
         <Legend onClose={() => setLegendOpen(false)} />
       )}
 
-      {instrOpen && (
-        <Instructions onClose={() => setInstrOpen(false)} />
+      {tourOpen && (
+        <OnboardingTour onClose={closeTour} />
       )}
 
       {fc && <FlashcardPopover target={fc} onClose={() => setFc(null)} />}
