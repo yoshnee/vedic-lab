@@ -7,11 +7,15 @@
    the .res-section / .res-head section pattern) so it needs no new
    CSS. Owner copy, edit freely; no em-dashes (house style).
    ============================================================ */
+import type { ReactNode } from "react";
 import { PageHero } from "./PageHero";
 import { SITE } from "@/lib/site";
 
+/** When this policy was last revised. Bump on any material change. */
+const LAST_UPDATED = "2 July 2026";
+
 /** External link, opens in a new tab. */
-function Ext({ href, children }: { href: string; children: React.ReactNode }) {
+function Ext({ href, children }: { href: string; children: ReactNode }) {
   return (
     <a className="about-link" href={href} target="_blank" rel="noopener noreferrer">
       {children}
@@ -29,7 +33,7 @@ export function PrivacyPage() {
       />
 
       <div className="about">
-        <p><span className="muted">Last updated 2 July 2026.</span></p>
+        <p><span className="muted">Last updated {LAST_UPDATED}.</span></p>
 
         <section className="res-section">
           <div className="res-head"><h2>Runs in your browser</h2></div>
