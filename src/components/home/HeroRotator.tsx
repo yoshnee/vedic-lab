@@ -1,9 +1,11 @@
 "use client";
 
-/* The landing hero — a rotating sequence of pain → promise phrases, the
-   centrepiece of the page. It auto-advances, pauses on hover/focus, respects
-   prefers-reduced-motion, and mirrors the live phrase into an aria-live region
-   for screen readers. Dots let the reader jump between messages.
+/* The landing identity + rotating hero, split into two pieces that live in
+   different spots: the static HeroLockup (mark + wordmark + tagline) stays at the
+   TOP of the page, while the rotating pain → promise phrases (HeroRotator) sit
+   BELOW the workspace panel. The rotator auto-advances, pauses on hover/focus,
+   respects prefers-reduced-motion, and mirrors the live phrase into an aria-live
+   region for screen readers. Dots let the reader jump between messages.
    Ported from the design-reference prototype (flashcards/home.jsx HeroRotator). */
 import { useState, useEffect, useRef } from "react";
 import { diamond } from "@/celestial/celestial";
@@ -12,24 +14,24 @@ import { SITE } from "@/lib/site";
 
 const HERO_PHRASES = [
   {
-    pain: "A hundred tabs, twelve books, one confused student.",
-    promise: "Crystallize the foundation first.",
+    pain: "Information overload. So many books, so many resources.",
+    promise: "Learn it all in one place, one flashcard at a time.",
   },
   {
-    pain: "Jyotish is a science, but reading a chart takes intuition.",
-    promise: "Intuition doesn’t flow from a shaky foundation.",
+    pain: "Jyotish is both science and intuition.",
+    promise: "Strong intuition starts with a solid foundation.",
   },
   {
-    pain: "Planets, houses, nakshatras, dashas. You know the pieces.",
-    promise: "Synthesis is the hard part.",
+    pain: "Planets, houses, nakshatras, dashas.",
+    promise: "Reading a chart gets easier when everything lives in one place.",
   },
   {
-    pain: "No teacher looking over your shoulder?",
+    pain: "Self-study can feel lonely.",
     promise: "The Lab is your study hall.",
   },
   {
     pain: "You can’t synthesize what you haven’t internalized.",
-    promise: "Drill it until it’s yours.",
+    promise: "Drill it until it’s second nature.",
   },
   {
     pain: "Jyotish means light. Scattered light illuminates nothing.",
@@ -38,6 +40,20 @@ const HERO_PHRASES = [
 ];
 const HERO_INTERVAL = 6200;
 
+/* The static identity lockup — kept at the very top of the page. */
+export function HeroLockup() {
+  return (
+    <header className="hero hero--lockup">
+      <div className="hero-lockup">
+        <Svg className="hero-mark" html={diamond(60, { glow: true })} />
+        <h1 className="hero-wordmark">{SITE.name}</h1>
+        <p className="hero-tagline">{SITE.tagline}</p>
+      </div>
+    </header>
+  );
+}
+
+/* The rotating pain → promise phrases — placed below the workspace panel. */
 export function HeroRotator() {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -59,13 +75,7 @@ export function HeroRotator() {
   }, [paused]);
 
   return (
-    <header className="hero">
-      <div className="hero-lockup">
-        <Svg className="hero-mark" html={diamond(60, { glow: true })} />
-        <h1 className="hero-wordmark">{SITE.name}</h1>
-        <p className="hero-tagline">{SITE.tagline}</p>
-      </div>
-
+    <section className="hero hero--rotator">
       <div
         className="hero-stage"
         onMouseEnter={() => setPaused(true)}
@@ -101,6 +111,6 @@ export function HeroRotator() {
           />
         ))}
       </div>
-    </header>
+    </section>
   );
 }

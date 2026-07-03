@@ -38,8 +38,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .analyzer { max-width: 980px; margin: 0 auto; padding: clamp(34px, 5vw, 52px) clamp(20px, 5vw, 40px) 0; }
 .analyzer-tile {
   display: grid; grid-template-columns: 1.12fr .88fr;
-  grid-template-areas: "head head" "copy demo" "cta cta";
-  column-gap: clamp(24px, 4vw, 44px); row-gap: clamp(18px, 3vw, 26px);
+  grid-template-areas: "head head" "desc desc" "copy demo" "cta cta";
+  column-gap: clamp(24px, 4vw, 44px); row-gap: clamp(14px, 2.2vw, 20px);
   align-items: start; width: 100%; text-align: left;
   border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--border)); border-radius: 24px; padding: clamp(26px, 4vw, 44px);
   background: radial-gradient(120% 140% at 88% 0%, rgba(228, 194, 87, .14), transparent 55%), linear-gradient(150deg, var(--surface-2), var(--bg-2));
@@ -52,7 +52,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .analyzer-title { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(21px, 2.85vw, 29px); letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
 
 .analyzer-copy { grid-area: copy; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; align-self: center; }
-.analyzer-desc { color: var(--text-2); font-size: 15.5px; line-height: 1.55; max-width: 46ch; margin: 0; }
+/* full-width lede spanning both the pill column and the demo column */
+.analyzer-desc { grid-area: desc; color: var(--text-2); font-size: 15.5px; line-height: 1.55; max-width: 66ch; margin: 0; }
 
 /* study cues restyled as tappable product "moments": hook question → answer.
    Uniform gold-accent treatment across all three. Decorative; the CTA + demo
@@ -86,7 +87,9 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 /* ---- the animated chart → card → note demo (the right column) ---- */
 .analyzer-demo-btn { grid-area: demo; border: 0; background: transparent; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; align-self: center; width: 100%; }
 .analyzer-demo-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 16px; }
-.az-demo { position: relative; display: block; width: min(340px, 100%); aspect-ratio: 1 / .92; margin: 0 auto; }
+/* sized (not transform-scaled) so its box hugs the art — the row collapses to ≈ the
+   pill-stack height, keeping it centered against the three pills with a tight gap above */
+.az-demo { position: relative; display: block; width: min(286px, 100%); aspect-ratio: 1 / .77; margin: 0 auto; }
 .az-chart { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 58%; animation: az-pulse .9s ease; }
 .az-chart-svg, .az-chart-svg svg { display: block; width: 100%; height: auto; }
 @keyframes az-pulse {
@@ -104,8 +107,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 }
 /* the REAL flashcard, rendered at natural proportions then optically scaled to
    fit the demo (vector scale keeps it crisp). */
-.az-card-wrap { position: relative; width: 178px; height: 240px; overflow: hidden; }
-.az-card-wrap .fc-card { position: absolute; top: 0; left: 0; width: 300px; height: 404px; transform: scale(.5933); transform-origin: top left; }
+.az-card-wrap { position: relative; width: 149px; height: 201px; overflow: hidden; }
+.az-card-wrap .fc-card { position: absolute; top: 0; left: 0; width: 300px; height: 404px; transform: scale(.497); transform-origin: top left; }
 
 /* miniature of our reading-notes sticky note (StickyNote / .sn) */
 .az-note {
@@ -126,7 +129,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .az-note-body i:nth-child(2) { width: 60%; }
 .az-note-cursor { width: 38%; background: color-mix(in srgb, var(--accent) 70%, transparent); animation: az-type 1.3s steps(1) infinite; }
 @keyframes az-type { 0%, 100% { opacity: .3; } 50% { opacity: .9; } }
-.az-note--demo { width: 150px; }
+.az-note--demo { width: 128px; }
 .az-note--chip { width: 100%; height: 100%; border-radius: 6px; }
 .az-note--chip .az-note-head { padding: 4px 5px 3px; gap: 4px; }
 .az-note--chip .az-note-dot { width: 5px; height: 5px; }
@@ -168,6 +171,22 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .bd-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .bd-input:disabled { opacity: .5; cursor: not-allowed; }
 .bd-input.is-error { border-color: var(--bad); box-shadow: 0 0 0 3px var(--bad-soft); }
+
+/* CHART STYLE radio group — two selectable chips; South Indian is disabled/greyed for now */
+.bd-style { display: flex; flex-direction: column; gap: 7px; margin-top: 16px; }
+.bd-style-opts { display: flex; gap: 11px; }
+.bd-style-opt {
+  flex: 1; display: flex; align-items: center; gap: 9px; padding: 11px 13px; border-radius: 11px;
+  border: 1px solid var(--border-field); background: var(--field);
+  font-family: var(--font-body), sans-serif; font-size: 14px; color: var(--text); cursor: pointer;
+  transition: border-color .16s, background .16s, box-shadow .16s;
+}
+.bd-style-opt:hover:not(.is-disabled) { border-color: color-mix(in srgb, var(--accent) 36%, var(--border-field)); }
+.bd-style-opt:has(input:checked) { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.bd-style-opt.is-disabled { cursor: not-allowed; opacity: .55; }
+.bd-style-opt input { flex: none; width: 15px; height: 15px; margin: 0; accent-color: var(--accent); }
+.bd-style-opt input:disabled { cursor: not-allowed; }
+.bd-soon { color: var(--text-3); font-size: 11px; letter-spacing: .02em; white-space: nowrap; }
 .bd-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .7; filter: invert(.8) sepia(.5) saturate(3) hue-rotate(5deg); }
 .bd-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
@@ -243,6 +262,15 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 @media (prefers-reduced-motion: reduce) { .bd-spin { animation-duration: 1.5s; } }
 .bd-foot-err { justify-content: center; text-align: center; }
 .bd-attrib { text-align: center; font-size: 10.5px; color: var(--text-3); margin: 0; }
+/* method disclaimer — sidereal / Lahiri ayanamsha; a clear bordered note callout */
+.bd-disclaimer {
+  display: flex; align-items: flex-start; gap: 8px; margin: 3px 0 0; padding: 10px 12px; text-align: left;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border)); border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  font-size: 11.5px; line-height: 1.5; color: var(--text-2);
+}
+.bd-disclaimer svg { flex: none; margin-top: 1px; color: var(--accent-text); }
+.bd-disclaimer strong { color: var(--text); font-weight: 600; }
 .bd-attrib a { color: var(--accent-text); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 2px; }
 .bd-attrib a:hover { text-decoration-color: var(--accent); }
 .bd-attrib a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
@@ -258,7 +286,12 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   padding: clamp(36px, 6vw, 64px) clamp(20px, 5vw, 40px) clamp(8px, 2vw, 20px);
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
-/* Brand lockup — restored above the rotating panel, centered (mirrors the prod
+/* Two placements of .hero (split, owner-directed): the identity lockup sits at the
+   very top; the rotating phrases drop below the workspace panel. */
+.hero--lockup { padding-bottom: clamp(4px, 1.5vw, 10px); }
+.hero--lockup .hero-lockup { margin-bottom: 0; }
+.hero--rotator { padding-top: clamp(30px, 4.5vw, 48px); }
+/* Brand lockup — the top-of-page identity block, centered (mirrors the prod
    identity block). The global header keeps a smaller mark; this is the hero. */
 .hero-lockup { display: flex; flex-direction: column; align-items: center; gap: 13px; margin-bottom: clamp(22px, 4vw, 38px); text-align: center; }
 .hero-mark { flex: none; filter: drop-shadow(0 6px 28px rgba(228, 194, 87, .34)); display: flex; }
@@ -298,12 +331,53 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .hero-dot.is-active { width: 26px; background: var(--accent); }
 .hero-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
+/* ---------- SELF-LEARN HOOK (between the identity lockup and the workspace) ----------
+   An eye-drawing question in gold, lit by a slow specular shimmer swept across the
+   text plus a soft glow pulse, over a calm two-tone sub-hook. CSS-only, tasteful in
+   the verdant-night + gold system, and it goes fully static under reduced-motion. */
+.selflearn {
+  max-width: 760px; margin: 0 auto; width: 100%;
+  padding: clamp(10px, 2vw, 22px) clamp(20px, 5vw, 40px) clamp(6px, 1.4vw, 14px);
+  display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 1.3vw, 13px);
+  text-align: center;
+}
+.selflearn-q {
+  margin: 0; text-wrap: balance;
+  font-family: var(--font-display), sans-serif; font-weight: 600;
+  font-size: clamp(21px, 3.5vw, 35px); line-height: 1.15; letter-spacing: -.015em;
+  /* UNIFORM gold base so the text is always fully painted (never transparent) — only
+     a soft specular band travels across it. The image is 3x the text width and the
+     sweep stays within 0–100%, so the whole box stays covered at every frame. */
+  background-image: linear-gradient(100deg,
+    var(--accent) 0%, var(--accent) 40%,
+    color-mix(in srgb, var(--accent) 45%, #fff) 50%,
+    var(--accent) 60%, var(--accent) 100%);
+  background-size: 300% 100%; background-position: 0 0; background-repeat: no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  animation: sl-shimmer 7s linear infinite, sl-glow 4.5s ease-in-out infinite;
+}
+/* band sweeps left → right within the covered range; both ends park the sheen just
+   off the text, so the loop restart is seamless (no pop) and nothing ever vanishes */
+@keyframes sl-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0% 0; } }
+@keyframes sl-glow {
+  0%, 100% { filter: drop-shadow(0 2px 16px color-mix(in srgb, var(--accent) 15%, transparent)); }
+  50%      { filter: drop-shadow(0 2px 26px color-mix(in srgb, var(--accent) 34%, transparent)); }
+}
+.selflearn-hook {
+  margin: 0; max-width: 54ch;
+  font-family: var(--font-body), sans-serif; font-size: clamp(13.5px, 1.7vw, 16.5px);
+  line-height: 1.5; color: var(--text-2);
+}
+.selflearn-nb { white-space: nowrap; }
+.selflearn-hook-emph { color: var(--text); font-weight: 500; }
+
 /* ---------- FLASHCARDS TEASER (home) ----------
    Sells the study method, then previews the featured decks + a "…and more"
    card linking to /flashcards. Rendered by FCTeaser.tsx. */
 .teaser {
   max-width: 1000px; margin: 0 auto; width: 100%;
-  padding: clamp(48px, 8vw, 90px) clamp(20px, 5vw, 40px) clamp(40px, 6vw, 60px);
+  padding: clamp(36px, 6.5vw, 75px) clamp(20px, 5vw, 40px) clamp(40px, 6vw, 60px);
 }
 .teaser-head {
   max-width: 56ch; margin: 0 auto clamp(34px, 5vw, 52px); text-align: center;
@@ -330,6 +404,18 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 }
 .teaser-grid .fc-deckback { width: 100%; min-height: 300px; padding: 28px 22px; }
 .teaser-grid .fc-deckback::before { transform: translate(6px, 7px) rotate(1.8deg); }
+
+/* closing CTA band at the foot of the landing page — opens the Birth Details popup */
+.final-cta { display: flex; justify-content: center; padding: clamp(8px, 2vw, 18px) clamp(20px, 5vw, 40px) clamp(52px, 9vw, 92px); }
+.final-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center; text-align: center;
+  padding: 16px 36px; border-radius: 999px; border: 0; cursor: pointer;
+  background: var(--accent); color: #15110a;
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: clamp(15px, 2vw, 18px);
+  box-shadow: 0 12px 34px -12px var(--accent-deep); transition: filter .2s, transform .2s;
+}
+.final-cta-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.final-cta-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .teaser-grid .fc-deckback::after { transform: translate(11px, 14px) rotate(3.4deg); }
 
 /* "…and more" card — links to the full flashcards page */
@@ -358,6 +444,12 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 @media (prefers-reduced-motion: reduce) {
   .hero-phrase { transition: opacity .3s ease; }
   .hero-dot, .deck-more, .deck-more-cta { transition: none; }
+  /* no shimmer/pulse — solid gold with a static soft glow, fully readable */
+  .selflearn-q {
+    animation: none; background: none;
+    color: var(--accent); -webkit-text-fill-color: var(--accent);
+    filter: drop-shadow(0 2px 16px color-mix(in srgb, var(--accent) 20%, transparent));
+  }
 }
 
 /* ---------- FLASHCARDS: LANDING / DECKS ---------- */
@@ -620,7 +712,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 720px) {
   /* stack: title header, then the demo, then the pitch (demo leads the copy) */
-  .analyzer-tile { grid-template-columns: 1fr; grid-template-areas: "head" "demo" "copy" "cta"; text-align: center; }
+  .analyzer-tile { grid-template-columns: 1fr; grid-template-areas: "head" "demo" "desc" "copy" "cta"; text-align: center; }
   .analyzer-head { align-items: center; text-align: center; }
   .analyzer-copy { align-items: center; }
   .az-moments { text-align: left; }

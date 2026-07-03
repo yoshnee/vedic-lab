@@ -43,7 +43,7 @@ const BEATS: Beat[] = [
 // FlashcardIcon (the brand diamond used everywhere on the chart page), the note
 // moment shows our sticky-note mark.
 const MOMENTS: { q: string; a: string; note?: boolean }[] = [
-  { q: "Ascendant in Ashwinī?", a: "Flip its nakshatra card to recall its ruler" },
+  { q: "Ascendant in Ashwinī?", a: "Tap its nakshatra card to recall its ruler" },
   { q: "Mars in the 10th?", a: "Flip the 10th house card to recall its affairs" },
   { q: "Śani daśā ahead?", a: "Jot the activated houses on a sticky note", note: true },
 ];
@@ -113,12 +113,13 @@ export function AnalyzerHero({ onOpen }: { onOpen: (btn: HTMLButtonElement) => v
           </h2>
         </div>
 
-        <div className="analyzer-copy">
-          <p className="analyzer-desc">
-            This one teaches while you analyze a chart, flashcards for quick recall and sticky
-            notes to jot down your scattered thoughts.
-          </p>
+        <p className="analyzer-desc">
+          Analyzing a chart as a beginner means constantly looking things up. This workspace has
+          everything built in. Numerous chart-reading concepts, all a flashcard away. A single place
+          to understand the chart and put all the pieces together.
+        </p>
 
+        <div className="analyzer-copy">
           <ul className="az-moments">
             {MOMENTS.map((m) => (
               <li className={"az-moment" + (m.note ? " az-moment--note" : "")} key={m.q}>

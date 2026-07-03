@@ -33,6 +33,12 @@ export const icons: Record<string, ReactElement> = {
       <path d="M4.7 6.2V4.8a2.3 2.3 0 0 1 4.6 0v1.4" />
     </svg>
   ),
+  info: (
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <circle cx="7" cy="7" r="5.7" />
+      <path d="M7 6.6v3.1M7 4.5v.01" />
+    </svg>
+  ),
   back: (
     <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M8 3L4 7l4 4" />
