@@ -4,33 +4,35 @@
    NotesWorkspace.tsx — the fixed full-viewport layer that holds the open
    reading-notes. It is pointer-transparent (pointer-events:none) so it never
    blocks the scrolling chart page; each StickyNote re-enables pointer events on
-   itself. Notes are mapped in TENETS order with stable keys so raising the
-   stack never remounts a note (and never drops the caret).
+   itself. Notes are mapped in stable order (tenets in reading order, then any
+   freestanding custom notes) with stable keys so raising the stack never
+   remounts a note (and never drops the caret).
    ============================================================ */
-import { TENETS } from "@/lib/chart/readingNotes";
+import { openNoteViews } from "@/lib/chart/readingNotes";
 import { StickyNote } from "./StickyNote";
 import type { ReadingNotesApi } from "./useReadingNotes";
 
 export function NotesWorkspace({ api }: { api: ReadingNotesApi }) {
-  const open = TENETS.filter((t) => api.doc.notes[t.id]?.open);
-  if (!open.length) return null;
+  const views = openNoteViews(api.doc);
+  if (!views.length) return null;
   return (
     <div className="notes-workspace" aria-label="Reading notes workspace">
-      {open.map((t) => (
+      {views.map((v) => (
         <StickyNote
-          key={t.id}
-          tenet={t}
-          note={api.doc.notes[t.id]}
-          focused={api.focusedId === t.id}
+          key={v.id}
+          view={v}
+          note={api.doc.notes[v.id]}
+          focused={api.focusedId === v.id}
           speechSupported={api.speechSupported}
-          recording={api.recordingId === t.id}
-          micError={api.focusedId === t.id ? api.micError : null}
-          onMove={(x, y) => api.moveNote(t.id, x, y)}
-          onFocus={() => api.focusNote(t.id)}
-          onClose={() => api.closeNote(t.id)}
-          onSetText={(text) => api.setText(t.id, text)}
-          onTogglePrompts={() => api.togglePrompts(t.id)}
-          onToggleRecording={() => api.toggleRecording(t.id)}
+          recording={api.recordingId === v.id}
+          micError={api.focusedId === v.id ? api.micError : null}
+          onMove={(x, y) => api.moveNote(v.id, x, y)}
+          onFocus={() => api.focusNote(v.id)}
+          onClose={() => api.closeNote(v.id)}
+          onSetText={(text) => api.setText(v.id, text)}
+          onTogglePrompts={() => api.togglePrompts(v.id)}
+          onToggleRecording={() => api.toggleRecording(v.id)}
+          onRename={(title) => api.renameNote(v.id, title)}
         />
       ))}
     </div>

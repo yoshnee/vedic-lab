@@ -17,7 +17,7 @@
    ============================================================ */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  TENETS, notesKey, loadDoc, saveDoc, openNotesCount,
+  notesKey, loadDoc, saveDoc, openNotesCount, writtenNotesCount, writtenNoteViews, homePosition,
   type NotesDoc,
 } from "@/lib/chart/readingNotes";
 import type { ChartModel } from "@/lib/chart/types";
@@ -83,9 +83,18 @@ function slugify(s: string): string {
 export interface ReadingNotesApi {
   doc: NotesDoc;
   openCount: number;
+  /** Notes carrying text — how many Download-all will compile. */
+  downloadCount: number;
   focusedId: string | null;
   openNote: (id: string) => void;
+  /** Spawn a fresh freestanding (untitled) note — as many as the user wants. */
+  addNote: () => void;
+  /** Close (hide) a note WITHOUT discarding it — reopen from the launcher. */
   closeNote: (id: string) => void;
+  /** Permanently remove a freestanding custom note (launcher trash affordance). */
+  deleteNote: (id: string) => void;
+  /** Retitle a freestanding custom note (tenet titles are fixed and ignored). */
+  renameNote: (id: string, title: string) => void;
   focusNote: (id: string) => void;
   setText: (id: string, text: string) => void;
   togglePrompts: (id: string) => void;
@@ -197,12 +206,63 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
     setFocusedId(id);
   }, [mutate]);
 
+  /** Spawn a freestanding note: monotonic id/title from customSeq, opened + on
+      top, cascaded off the current stack so it doesn't land pixel-exact. The id
+      is derived OUTSIDE the updater (docRef mirrors the live doc — the only
+      writer is this hook, so it's fresh between clicks) so we can focus the new
+      note synchronously; the updater then commits customSeq to match. */
+  const addNote = useCallback(() => {
+    const seq = docRef.current.customSeq + 1;
+    const id = `custom-${seq}`;
+    mutate((prev) => {
+      const z = prev.z + 1;
+      const openN = Object.values(prev.notes).filter((n) => n.open).length;
+      const { x, y } = homePosition(openN % 8);
+      return {
+        ...prev,
+        z,
+        customSeq: Math.max(prev.customSeq + 1, seq),
+        notes: {
+          ...prev.notes,
+          [id]: { open: true, x, y, z, text: "", promptsCollapsed: false, custom: true, title: `Note ${seq}` },
+        },
+      };
+    });
+    setFocusedId(id);
+  }, [mutate]);
+
+  // Close = hide, never discard. A custom note's text and slot survive so it can
+  // be reopened from the launcher and still downloaded; deleteNote is the only
+  // path that actually removes a note.
   const closeNote = useCallback((id: string) => {
     if (recordingIdRef.current === id) recRef.current?.stop(); // stop dictation on close
     mutate((prev) => {
       const note = prev.notes[id];
       if (!note || !note.open) return prev;
       return { ...prev, notes: { ...prev.notes, [id]: { ...note, open: false } } };
+    });
+    setFocusedId((f) => (f === id ? null : f));
+  }, [mutate]);
+
+  // Retitle a custom note. Tenet titles are fixed, so a non-custom id is a
+  // no-op. The stored title may be empty (the UI falls back to "Note N").
+  const renameNote = useCallback((id: string, title: string) => {
+    mutate((prev) => {
+      const note = prev.notes[id];
+      if (!note || !note.custom || note.title === title) return prev;
+      return { ...prev, notes: { ...prev.notes, [id]: { ...note, title } } };
+    });
+  }, [mutate]);
+
+  // Permanently remove a freestanding custom note (the launcher trash button).
+  // Tenets can't be deleted — they always exist, closed by default.
+  const deleteNote = useCallback((id: string) => {
+    if (recordingIdRef.current === id) recRef.current?.stop();
+    mutate((prev) => {
+      if (!prev.notes[id]) return prev;
+      const rest = { ...prev.notes };
+      delete rest[id];
+      return { ...prev, notes: rest };
     });
     setFocusedId((f) => (f === id ? null : f));
   }, [mutate]);
@@ -252,14 +312,15 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
 
   const downloadAll = useCallback((m: ChartModel) => {
     const cur = docRef.current;
-    if (TENETS.every((t) => !cur.notes[t.id]?.open)) return;
+    // every note WITH TEXT, open or closed (tenets in reading order, then custom
+    // notes) — X-ing a note shut never removes it from the export.
+    const views = writtenNoteViews(cur);
+    if (!views.length) return;
     const name = m.meta.name?.trim() || "Birth Chart";
     const sub = [m.chart.birth.dateLabel, m.chart.birth.placeLabel].filter(Boolean).join(" · ");
-    const body = TENETS.flatMap((t, i) => {
-      const note = cur.notes[t.id];
-      if (!note?.open) return [];
+    const body = views.flatMap((v, i) => {
       const num = String(i + 1).padStart(2, "0");
-      return [`## ${num} ${t.title}`, "", note.text.trim(), ""];
+      return [`## ${num} ${v.title}`, "", (cur.notes[v.id]?.text ?? "").trim(), ""];
     });
     const md = [`# Reading Notes — ${name}`, ...(sub ? [sub] : []), "", ...body].join("\n");
     try {
@@ -399,10 +460,11 @@ export function useReadingNotes(model: ChartModel): ReadingNotesApi {
   }, []);
 
   const openCount = openNotesCount(doc);
+  const downloadCount = writtenNotesCount(doc);
 
   return {
-    doc, openCount, focusedId,
-    openNote, closeNote, focusNote, setText, togglePrompts, moveNote, downloadAll,
+    doc, openCount, downloadCount, focusedId,
+    openNote, addNote, closeNote, deleteNote, renameNote, focusNote, setText, togglePrompts, moveNote, downloadAll,
     speechSupported: !!speechCtor(), recordingId, micError, toggleRecording,
   };
 }

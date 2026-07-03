@@ -5,10 +5,16 @@
    Map-backed fake injected through the StorageLike param). */
 import { describe, it, expect } from "vitest";
 import {
-  TENETS, notesKey, emptyDoc, loadDoc, saveDoc, openNotesCount,
-  type NotesDoc,
+  TENETS, notesKey, emptyDoc, loadDoc, saveDoc, openNotesCount, openNoteViews, isTenetId,
+  writtenNotesCount, writtenNoteViews, customNotes, customTitle,
+  type NotesDoc, type NoteState,
 } from "../readingNotes";
 import type { ChartModel } from "../types";
+
+/** A custom note state (freestanding) for the tests below. */
+function custom(partial: Partial<NoteState> & { title: string }): NoteState {
+  return { open: false, x: 400, y: 200, z: 1, text: "", promptsCollapsed: false, custom: true, ...partial };
+}
 
 function fakeModel(computedUtcISO: string, lat: number, lon: number): ChartModel {
   return {
@@ -153,5 +159,131 @@ describe("loadDoc / saveDoc", () => {
     };
     expect(loadDoc("k", throwing)).toEqual(emptyDoc());
     expect(() => saveDoc("k", emptyDoc(), throwing)).not.toThrow();
+  });
+});
+
+describe("freestanding custom notes", () => {
+  it("preserves custom-flagged notes across a round-trip (and keeps customSeq)", () => {
+    const store = fakeStorage();
+    const doc: NotesDoc = emptyDoc();
+    doc.z = 4;
+    doc.customSeq = 2;
+    doc.notes["custom-1"] = { open: true, x: 400, y: 200, z: 3, text: "a loose thought", promptsCollapsed: false, custom: true, title: "Note 1" };
+    doc.notes["custom-2"] = { open: true, x: 430, y: 230, z: 4, text: "", promptsCollapsed: false, custom: true, title: "Note 2" };
+    saveDoc("k", doc, store);
+    expect(loadDoc("k", store)).toEqual(doc);
+    expect(openNotesCount(loadDoc("k", store))).toBe(2);
+  });
+
+  it("keeps custom-flagged notes but still drops genuinely-unknown ids", () => {
+    const store = fakeStorage();
+    store.setItem("mixed", JSON.stringify({
+      v: 2, z: 3, customSeq: 1,
+      notes: {
+        "custom-1": { open: true, x: 400, y: 200, z: 3, text: "kept", custom: true, title: "Note 1" },
+        junk: { open: true, x: 10, y: 10, z: 2, text: "no custom flag" },
+      },
+    }));
+    const got = loadDoc("mixed", store);
+    expect(got.notes).toHaveProperty("custom-1");
+    expect(got.notes["custom-1"].text).toBe("kept");
+    expect(got.notes["custom-1"].custom).toBe(true);
+    expect(got.notes).not.toHaveProperty("junk"); // no custom flag → dropped
+    expect(got.customSeq).toBe(1);
+  });
+
+  it("a custom note missing a title stores raw empty; the display falls back to Note N", () => {
+    const store = fakeStorage();
+    store.setItem("untitled", JSON.stringify({
+      v: 2, z: 1, customSeq: 1,
+      notes: { "custom-1": { open: true, x: 400, y: 200, z: 1, text: "", custom: true } },
+    }));
+    const doc = loadDoc("untitled", store);
+    expect(doc.notes["custom-1"].title).toBe("");            // raw title preserved (empty)
+    expect(customNotes(doc)[0].title).toBe("Note 1");        // numbered default at the display layer
+  });
+
+  it("isTenetId distinguishes tenets from custom ids", () => {
+    expect(isTenetId("lagna")).toBe(true);
+    expect(isTenetId("synthesis")).toBe(true);
+    expect(isTenetId("custom-1")).toBe(false);
+    expect(isTenetId("junk")).toBe(false);
+  });
+
+  it("customTitle uses the user's title, else the numbered default from the id", () => {
+    expect(customTitle("custom-8", "Marriage themes")).toBe("Marriage themes");
+    expect(customTitle("custom-8", "  spaced  ")).toBe("spaced"); // trimmed
+    expect(customTitle("custom-8", "")).toBe("Note 8");           // emptied → numbered default
+    expect(customTitle("custom-8", "   ")).toBe("Note 8");        // whitespace-only → numbered default
+    expect(customTitle("custom-8")).toBe("Note 8");               // never titled
+    expect(customTitle("weird-id")).toBe("Note");                 // no number to recover
+  });
+
+  it("a renamed custom note surfaces its title in the launcher and export; emptied falls back to Note N", () => {
+    const doc = emptyDoc();
+    doc.notes["custom-8"] = custom({ title: "Career", open: false, text: "10th lord strong" });
+    doc.notes["custom-9"] = custom({ title: "", open: true, text: "loose thought" }); // title cleared
+    expect(customNotes(doc)).toEqual([
+      { id: "custom-8", title: "Career", open: false, hasText: true },
+      { id: "custom-9", title: "Note 9", open: true, hasText: true }, // fallback to numbered default
+    ]);
+    expect(writtenNoteViews(doc).map((v) => v.title)).toEqual(["Career", "Note 9"]);
+  });
+
+  it("customNotes lists every custom note (open or closed) with its state", () => {
+    const doc = emptyDoc();
+    doc.notes["custom-1"] = custom({ title: "Note 1", open: false, text: "kept while closed" });
+    doc.notes["custom-2"] = custom({ title: "Note 2", open: true, text: "" });
+    const rows = customNotes(doc);
+    expect(rows).toEqual([
+      { id: "custom-1", title: "Note 1", open: false, hasText: true },
+      { id: "custom-2", title: "Note 2", open: true, hasText: false },
+    ]);
+    // tenets are never listed as custom rows
+    expect(rows.some((r) => isTenetId(r.id))).toBe(false);
+  });
+});
+
+describe("writtenNoteViews / writtenNotesCount (download by text, open or closed)", () => {
+  it("includes any note with text whether it is open or X-ed shut, in reading order then customs", () => {
+    const doc = emptyDoc();
+    // a CLOSED tenet that still holds text — must still be downloadable
+    doc.notes.lagna = { ...doc.notes.lagna, open: false, text: "Scorpio rising" };
+    // an OPEN but EMPTY tenet — nothing to download
+    doc.notes.houses = { ...doc.notes.houses, open: true, text: "   " };
+    // a CLOSED custom note with text, and an OPEN empty custom note
+    doc.notes["custom-1"] = custom({ title: "Note 1", open: false, text: "a loose thought" });
+    doc.notes["custom-2"] = custom({ title: "Note 2", open: true, text: "" });
+    expect(writtenNoteViews(doc).map((v) => v.id)).toEqual(["lagna", "custom-1"]);
+    expect(writtenNotesCount(doc)).toBe(2);
+    // openNoteViews (what the workspace renders) is unchanged: open notes only
+    expect(openNoteViews(doc).map((v) => v.id)).toEqual(["houses", "custom-2"]);
+  });
+
+  it("counts nothing when every note is blank, even with notes open", () => {
+    const doc = emptyDoc();
+    doc.notes.lagna = { ...doc.notes.lagna, open: true };
+    doc.notes["custom-1"] = custom({ title: "Note 1", open: true });
+    expect(writtenNotesCount(doc)).toBe(0);
+    expect(writtenNoteViews(doc)).toEqual([]);
+    expect(openNotesCount(doc)).toBe(2); // open, just empty
+  });
+});
+
+describe("openNoteViews", () => {
+  it("returns only open notes: tenets in reading order, then custom notes", () => {
+    const doc = emptyDoc();
+    doc.notes.houses = { ...doc.notes.houses, open: true };
+    doc.notes.lagna = { ...doc.notes.lagna, open: true };
+    doc.notes["custom-1"] = { open: true, x: 400, y: 200, z: 5, text: "", promptsCollapsed: false, custom: true, title: "Note 1" };
+    const views = openNoteViews(doc);
+    expect(views.map((v) => v.id)).toEqual(["lagna", "houses", "custom-1"]); // reading order, custom last
+    expect(views[0].questions.length).toBeGreaterThan(0); // tenet carries its guiding questions
+    expect(views[0].custom).toBe(false); // tenets are not renamable
+    expect(views[2]).toEqual({ id: "custom-1", title: "Note 1", questions: [], custom: true }); // custom: own title, no questions, renamable
+  });
+
+  it("is empty when nothing is open", () => {
+    expect(openNoteViews(emptyDoc())).toEqual([]);
   });
 });

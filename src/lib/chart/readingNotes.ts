@@ -110,7 +110,12 @@ export const TENETS: Tenet[] = [
 
 /** One sticky note's persisted state. Positions are viewport pixels (the
     workspace is a fixed full-viewport layer); StickyNote re-clamps on mount,
-    so a note saved off-screen always comes back into view. */
+    so a note saved off-screen always comes back into view.
+
+    A FREESTANDING note (spawned by the launcher's "New sticky note" button,
+    not tied to any tenet) carries `custom: true` + its own `title`. The flag is
+    what lets normalizeV2 keep it while still dropping genuinely-unknown/corrupt
+    ids — a tenet note leaves both fields unset. */
 export interface NoteState {
   open: boolean;
   x: number;
@@ -118,15 +123,26 @@ export interface NoteState {
   z: number;
   text: string;
   promptsCollapsed: boolean;
+  /** true for a freestanding "New sticky note" (id not in TENETS). */
+  custom?: boolean;
+  /** the freestanding note's own heading (custom notes only). */
+  title?: string;
 }
 export type ReadingNotesState = Record<string, NoteState>;
 
-/** Versioned storage envelope. `z` is the monotonic top-of-stack counter,
-    persisted so stacking order survives reload. */
+/** Versioned storage envelope. `z` is the monotonic top-of-stack counter and
+    `customSeq` the monotonic counter behind freestanding note ids/titles — both
+    persisted so stacking order and note numbering survive reload. */
 export interface NotesDoc {
   v: 2;
   z: number;
+  customSeq: number;
   notes: ReadingNotesState;
+}
+
+/** Is this note id one of the fixed tenets (vs. a freestanding custom note)? */
+export function isTenetId(id: string): boolean {
+  return TENETS.some((t) => t.id === id);
 }
 
 /* Deterministic cascade for a never-placed note's home position, so reopened
@@ -163,13 +179,15 @@ export function emptyDoc(): NotesDoc {
   TENETS.forEach((t, i) => {
     notes[t.id] = defaultNote(i);
   });
-  return { v: 2, z: 0, notes };
+  return { v: 2, z: 0, customSeq: 0, notes };
 }
 
 const isFiniteNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 
-/** Normalize a v2 envelope: coerce each known tenet's fields, drop unknown ids,
-    recompute the top z-counter. */
+/** Normalize a v2 envelope: coerce each known tenet's fields, preserve any
+    freestanding `custom` notes (dropping genuinely-unknown/corrupt ids),
+    recompute the top z-counter. Custom notes are appended after the tenets in
+    their stored (insertion) order, so the workspace order is stable. */
 function normalizeV2(obj: Record<string, unknown>): NotesDoc {
   const stored = obj.notes as Record<string, unknown>;
   const notes: ReadingNotesState = {};
@@ -193,8 +211,30 @@ function normalizeV2(obj: Record<string, unknown>): NotesDoc {
       notes[t.id] = base;
     }
   });
+  // freestanding notes: keep only entries explicitly flagged custom (a real
+  // "New sticky note"), so foreign/corrupt ids are still dropped.
+  Object.keys(stored).forEach((id) => {
+    if (isTenetId(id)) return;
+    const e = stored[id];
+    if (!e || typeof e !== "object" || (e as Record<string, unknown>).custom !== true) return;
+    const o = e as Record<string, unknown>;
+    const n: NoteState = {
+      open: o.open === true,
+      x: isFiniteNum(o.x) ? o.x : BASE_X,
+      y: isFiniteNum(o.y) ? o.y : BASE_Y,
+      z: isFiniteNum(o.z) ? o.z : 0,
+      text: typeof o.text === "string" ? o.text : "",
+      promptsCollapsed: o.promptsCollapsed === true,
+      custom: true,
+      // keep the raw title (empty allowed); customTitle() owns the numbered fallback
+      title: typeof o.title === "string" ? o.title : "",
+    };
+    notes[id] = n;
+    if (n.z > maxZ) maxZ = n.z;
+  });
   const docZ = isFiniteNum(obj.z) ? obj.z : 0;
-  return { v: 2, z: Math.max(docZ, maxZ), notes };
+  const customSeq = isFiniteNum(obj.customSeq) ? obj.customSeq : 0;
+  return { v: 2, z: Math.max(docZ, maxZ), customSeq, notes };
 }
 
 /** Migrate the OLD bare `Record<id, {done, notes}>` checklist shape: carry the
@@ -218,7 +258,7 @@ function migrateLegacy(obj: Record<string, unknown>): NotesDoc {
       notes[t.id] = base;
     }
   });
-  return { v: 2, z, notes };
+  return { v: 2, z, customSeq: 0, notes };
 }
 
 /** Restore from storage — missing key, corrupt JSON, or unavailable storage
@@ -246,7 +286,83 @@ export function saveDoc(key: string, doc: NotesDoc, storage?: StorageLike): void
   }
 }
 
-/** How many notes are currently open (the launcher badge / Download-all count). */
+/** How many notes are currently open (tenets AND freestanding custom notes). */
 export function openNotesCount(doc: NotesDoc): number {
-  return TENETS.reduce((n, t) => n + (doc.notes[t.id]?.open ? 1 : 0), 0);
+  return Object.values(doc.notes).reduce((n, note) => n + (note.open ? 1 : 0), 0);
+}
+
+const hasText = (note: NoteState): boolean => note.text.trim().length > 0;
+
+/** How many notes carry text — i.e. how many Download-all would compile. A note
+    counts whether it is open or closed (closing a note keeps its text), so you
+    can always download written work even after X-ing every note shut. */
+export function writtenNotesCount(doc: NotesDoc): number {
+  return Object.values(doc.notes).reduce((n, note) => n + (hasText(note) ? 1 : 0), 0);
+}
+
+/** A custom note's display title: the user's title if set, else the numbered
+    default derived from its id (custom-8 → "Note 8") so an emptied title never
+    collapses to a bare "Note". */
+export function customTitle(id: string, title?: string): string {
+  if (title && title.trim()) return title.trim();
+  const m = /^custom-(\d+)$/.exec(id);
+  return m ? `Note ${m[1]}` : "Note";
+}
+
+/** A note resolved to what the sticky-note UI needs: a title, guiding
+    questions, and whether it is a renamable custom note. Tenets read from
+    TENETS (fixed title, no rename); custom notes carry their own title. */
+export interface NoteView {
+  id: string;
+  title: string;
+  questions: string[];
+  /** true for a freestanding custom note — its title is user-editable. */
+  custom: boolean;
+}
+
+/** Notes as render/export views in stable order — the tenets in reading order,
+    then the freestanding custom notes in insertion order — kept by `keep`. */
+function orderedViews(doc: NotesDoc, keep: (n: NoteState) => boolean): NoteView[] {
+  const out: NoteView[] = [];
+  TENETS.forEach((t) => {
+    const n = doc.notes[t.id];
+    if (n && keep(n)) out.push({ id: t.id, title: t.title, questions: t.questions, custom: false });
+  });
+  Object.keys(doc.notes).forEach((id) => {
+    if (isTenetId(id)) return;
+    const n = doc.notes[id];
+    if (n && keep(n)) out.push({ id, title: customTitle(id, n.title), questions: [], custom: true });
+  });
+  return out;
+}
+
+/** Every OPEN note as a view — what the workspace renders. */
+export function openNoteViews(doc: NotesDoc): NoteView[] {
+  return orderedViews(doc, (n) => n.open);
+}
+
+/** Every note WITH TEXT as a view (open or closed) — what Download-all compiles.
+    Closing a note never discards its text, so written work is always exportable. */
+export function writtenNoteViews(doc: NotesDoc): NoteView[] {
+  return orderedViews(doc, hasText);
+}
+
+/** A freestanding custom note as the launcher lists it (open or closed), so a
+    closed one can be reopened or deleted. */
+export interface CustomNoteRow {
+  id: string;
+  title: string;
+  open: boolean;
+  hasText: boolean;
+}
+
+/** Every freestanding custom note (open or closed), in insertion order — the
+    launcher rows that let you reopen or delete a note after X-ing it shut. */
+export function customNotes(doc: NotesDoc): CustomNoteRow[] {
+  return Object.keys(doc.notes)
+    .filter((id) => !isTenetId(id))
+    .map((id) => {
+      const n = doc.notes[id];
+      return { id, title: customTitle(id, n.title), open: n.open, hasText: hasText(n) };
+    });
 }
