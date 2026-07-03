@@ -13,24 +13,23 @@ import { diamond } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
 import { SITE } from "@/lib/site";
 
-/* Home returns to the landing page (analyzer hero + flashcards); About /
-   Resources / FAQ are their own routes. */
+/* The brand mark (top-left) returns to the landing page; Flashcards / About /
+   Resources / FAQ are their own routes. (No "Home" tab, owner-directed: the
+   logo is the home affordance.) */
 const SITE_NAV = [
-  { label: "Home", href: "/" },
   { label: "Flashcards", href: "/flashcards" },
   { label: "About", href: "/about" },
   { label: "Resources", href: "/resources" },
   { label: "FAQ", href: "/faq" },
 ] as const;
 
-/* The landing page (and the live /chart route) light up "Home"; the
-   content routes light up their own tab. */
+/* Each content route lights up its own tab; the landing page and the live
+   /chart route have no active tab (the brand mark is the home affordance). */
 function activeLabel(pathname: string): string | null {
   if (pathname === "/flashcards") return "Flashcards";
   if (pathname === "/about") return "About";
   if (pathname === "/resources") return "Resources";
   if (pathname === "/faq") return "FAQ";
-  if (pathname === "/" || pathname.startsWith("/chart")) return "Home";
   return null;
 }
 

@@ -26,6 +26,7 @@ export function Footer() {
           <Link href="/about">About</Link>
           <Link href="/resources">Resources</Link>
           <Link href="/faq">FAQ</Link>
+          <Link href="/privacy">Privacy</Link>
         </nav>
 
         <div className="foot-col">
