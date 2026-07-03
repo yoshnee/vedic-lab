@@ -39,7 +39,7 @@ export function Footer() {
       </div>
 
       <div className="site-foot-base">
-        <span>© {SITE.year} {SITE.owner}</span>
+        <span>© {SITE.year} {SITE.owner}. All rights reserved.</span>
       </div>
     </footer>
   );

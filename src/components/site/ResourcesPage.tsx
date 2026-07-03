@@ -5,6 +5,8 @@
    ============================================================ */
 import { type ReactNode } from "react";
 import { SITE } from "@/lib/site";
+import { diamond } from "@/celestial/celestial";
+import { Svg } from "@/components/Svg";
 import { PageHero } from "./PageHero";
 
 interface BookItem {
@@ -172,6 +174,21 @@ export function ResourcesPage() {
           <span className="res-sub">The texts and teachers this study tool is built from</span>
         </div>
         <div className="res-list">
+          <a
+            className="res-spotlight"
+            href="https://www.amazon.com/s?k=Brihat+Parasara+Hora+Sastra+R+Santhanam"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Svg className="res-spotlight-mark" html={diamond(24, { glow: true })} />
+            <span className="res-spotlight-body">
+              <span className="res-spotlight-label">Foundational text</span>
+              <span className="res-spotlight-title">Brihat Parashara Hora Shastra</span>
+              <span className="res-spotlight-note">
+                The fundamentals of Jyotish, studied through R. Santhanam&apos;s English translation.
+              </span>
+            </span>
+          </a>
           {BOOKS.map((b, i) => (
             <Book key={b.title} b={b} i={i} />
           ))}

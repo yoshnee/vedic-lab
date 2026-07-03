@@ -44,9 +44,14 @@ export function FlashcardsApp() {
           </span>
           <h1 className="page-title">Flashcards</h1>
           <p className="page-lede">
-            One deck for each corner of Jyotish. Flip a card, reveal its meaning, drill until recall
-            is instant. Then the real work begins: seeing how the pieces speak to one another. Free,
-            entirely in your browser.
+            Flashcard decks for every core concept in Jyotish. Flip, learn, repeat until it sticks.
+          </p>
+          <p className="page-lede">
+            <b>
+              These decks may evolve over time. Some may feel dense right now, and they may
+              eventually get refined. More decks will be added as new concepts make their way into
+              the Lab.
+            </b>
           </p>
           <p className="fc-page-stat">
             <b>{decks.length}</b> decks<span>·</span>

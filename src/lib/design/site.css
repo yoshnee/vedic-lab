@@ -102,6 +102,7 @@ a{color:inherit;}
 .about{max-width:680px;}
 .about p{font-size:clamp(16.5px,2vw,18.5px); line-height:1.72; color:var(--text); margin:0 0 1.35em; text-wrap:pretty;}
 .about p .muted{color:var(--text-2);}
+.about p.about-close{font-style:italic; color:var(--text-2);}
 .about-pull{margin:clamp(34px,5vw,52px) 0; padding:0 0 0 clamp(22px,4vw,34px);
   border-left:2px solid color-mix(in srgb,var(--accent) 55%, var(--border));
   font-family:var(--font-display),sans-serif; font-weight:500; letter-spacing:-.01em;
@@ -119,6 +120,23 @@ a{color:inherit;}
 .about-link:focus-visible{outline:2px solid var(--accent); outline-offset:4px; border-radius:4px;}
 
 /* ---- RESOURCES ---- */
+/* BPHS spotlight: the root text everything stems from — gold border, gold-lit */
+.res-spotlight{display:flex; align-items:flex-start; gap:clamp(14px,2.4vw,20px); text-decoration:none;
+  border:1px solid var(--border); border-radius:18px;
+  padding:clamp(20px,2.8vw,26px) clamp(22px,3vw,30px);
+  background:linear-gradient(150deg, color-mix(in srgb,var(--accent) 10%, var(--surface)), var(--bg-2));
+  box-shadow:0 26px 58px -40px #000;
+  transition:border-color .22s, box-shadow .22s;}
+.res-spotlight:hover{border-color:var(--accent); box-shadow:0 30px 64px -38px #000;}
+.res-spotlight:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+.res-spotlight-mark{flex:none; line-height:0; margin-top:3px;}
+.res-spotlight-body{display:flex; flex-direction:column; gap:6px; min-width:0;}
+.res-spotlight-label{font-family:var(--font-mono),monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent);}
+.res-spotlight-title{font-family:var(--font-display),sans-serif; font-weight:600;
+  font-size:clamp(19px,2.6vw,24px); line-height:1.2; letter-spacing:-.015em; color:var(--text);}
+.res-spotlight-note{color:var(--text-2); font-size:15px; line-height:1.6; max-width:62ch; text-wrap:pretty;}
+.res-spotlight:hover .res-spotlight-title{color:var(--accent);}
+
 .res-section{margin-bottom:clamp(44px,6vw,72px);}
 .res-head{display:flex; align-items:baseline; gap:14px; margin-bottom:clamp(20px,3vw,28px); flex-wrap:wrap;}
 .res-head h2{font-family:var(--font-display),sans-serif; font-weight:600; font-size:clamp(22px,3.2vw,28px); letter-spacing:-.015em;}
