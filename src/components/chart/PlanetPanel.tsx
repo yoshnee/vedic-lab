@@ -17,6 +17,7 @@ import { FcLink } from "./FcLink";
 import { body } from "@/celestial/celestial";
 import type { PlanetData, PlanetKey, SadePeriod, Maitri, Avastha, ShadbalaScore } from "@/core/types";
 import { tierOf, type ShadbalaTier } from "@/core/shadbala";
+import { KARAKA_LABELS, type KarakaRole } from "@/core/karaka";
 import { inMooltrikonaDegrees } from "@/core/vedic";
 import type { FlashcardType } from "@/lib/flashcardLink";
 
@@ -284,6 +285,7 @@ export function PlanetPanel({
   onOpenCard,
   onOpenDasha,
   vargaLabel,
+  karaka,
 }: {
   planet: PlanetData;
   defaultOpen?: boolean;
@@ -293,6 +295,8 @@ export function PlanetPanel({
   /** Set when the panel shows a divisional chart's placements (e.g. "Navāṁśa · D9"):
       hides the nakshatra/pada line — a real-longitude concept the varga doesn't have. */
   vargaLabel?: string;
+  /** Chara-karaka role for this planet (natal D1 only): Atmakaraka / Amatyakaraka, or null. */
+  karaka?: KarakaRole | null;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const p = planet;
@@ -332,13 +336,45 @@ export function PlanetPanel({
               <FlashcardIcon size={16} />
             </button>
           </span>
-          {(p.dasha.length > 0 || p.lagnaLord || p.gandanta || p.maitriToDispositor) && (
+          {(karaka || p.dasha.length > 0 || p.lagnaLord || p.gandanta || p.maitriToDispositor) && (
             <span className="pp-pills">
+              {/* Dignity/condition ALWAYS leads (owner-directed): exalted /
+                  debilitated / mooltrikona, else the maitri-to-dispositor relation
+                  (Great Friend … Own Sign). These are INFORMATIONAL — not clickable,
+                  so no flashcard diamond (owner-directed). Every other pill follows. */}
+              {p.maitriToDispositor && (
+                dignityKey ? (
+                  <span className="pp-pill" data-kind="dignity" data-static
+                    data-dignity={dignityKey}
+                    title={`${DIGNITY_LABEL[dignityKey]} in ${p.signName} — its dignity in this sign`}>
+                    {DIGNITY_LABEL[dignityKey]}
+                  </span>
+                ) : (
+                  <span className="pp-pill" data-kind="maitri" data-static
+                    data-maitri={p.maitriToDispositor}
+                    title={p.dispositor
+                      ? `Toward its dispositor ${PNAME[p.dispositor]} (lord of ${p.signName})`
+                      : "In its own sign — its own dispositor"}>
+                    {MAITRI_LABEL[p.maitriToDispositor]}
+                  </span>
+                )
+              )}
+              {karaka && (
+                <button type="button" className="pp-pill" data-kind="karaka"
+                  title={karaka === "atmakaraka"
+                    ? "Atmakaraka — highest degree, the soul significator (Jaimini Chara Karaka). Open the Karakas deck."
+                    : "Amatyakaraka — second highest degree, the mind and career significator (Jaimini Chara Karaka). Open the Karakas deck."}
+                  onClick={(e) => { e.stopPropagation(); onOpenCard("deck", "karakas"); }}>
+                  {KARAKA_LABELS[karaka]}
+                  <FlashcardIcon size={11} className="pp-pill-ico" />
+                </button>
+              )}
               {p.lagnaLord && (
                 <button type="button" className="pp-pill" data-kind="lagna"
                   title="Rules the ascendant sign"
                   onClick={(e) => { e.stopPropagation(); onOpenCard("deck", "ascendants"); }}>
                   Ascendant Lord
+                  <FlashcardIcon size={11} className="pp-pill-ico" />
                 </button>
               )}
               {p.dasha.includes("maha") && (
@@ -355,26 +391,8 @@ export function PlanetPanel({
                   title={`${p.gandantaDistance.toFixed(2)}° from the water→fire junction${p.gandantaDeep ? " — inside the 28°20′→1°40′ true gandanta zone" : ""}`}
                   onClick={(e) => { e.stopPropagation(); onOpenCard("gandanta"); }}>
                   {p.gandantaDeep ? "True Gandanta" : "Gandanta"}
+                  <FlashcardIcon size={11} className="pp-pill-ico" />
                 </button>
-              )}
-              {p.maitriToDispositor && (
-                dignityKey ? (
-                  <button type="button" className="pp-pill" data-kind="dignity"
-                    data-dignity={dignityKey}
-                    title={`${DIGNITY_LABEL[dignityKey]} in ${p.signName} — its dignity in this sign`}
-                    onClick={(e) => { e.stopPropagation(); onOpenCard("planet", PNAME[p.key]); }}>
-                    {DIGNITY_LABEL[dignityKey]}
-                  </button>
-                ) : (
-                  <button type="button" className="pp-pill" data-kind="maitri"
-                    data-maitri={p.maitriToDispositor}
-                    title={p.dispositor
-                      ? `Toward its dispositor ${PNAME[p.dispositor]} (lord of ${p.signName})`
-                      : "In its own sign — its own dispositor"}
-                    onClick={(e) => { e.stopPropagation(); onOpenCard("maitri", "panchadha"); }}>
-                    {MAITRI_LABEL[p.maitriToDispositor]}
-                  </button>
-                )
               )}
             </span>
           )}

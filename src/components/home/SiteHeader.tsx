@@ -3,9 +3,10 @@
 /* ============================================================
    SiteHeader — the global sticky top nav, shared by every route.
    Brand mark + wordmark on the left, primary nav on the right with
-   the active route highlighted (resolved from the pathname). Home
-   returns to the landing page; About / Resources / FAQ are their own
-   routes. Mounted once in app/layout.tsx.
+   the active route highlighted (resolved from the pathname). The brand
+   mark returns to the landing page; Flashcards / About / Resources are
+   their own routes (FAQ lives in the footer only). Mounted once in
+   app/layout.tsx.
    ============================================================ */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,13 +15,12 @@ import { Svg } from "@/components/Svg";
 import { SITE } from "@/lib/site";
 
 /* The brand mark (top-left) returns to the landing page; Flashcards / About /
-   Resources / FAQ are their own routes. (No "Home" tab, owner-directed: the
-   logo is the home affordance.) */
+   Resources are their own routes. (No "Home" tab, owner-directed: the logo is
+   the home affordance. FAQ is intentionally footer-only, not in the top nav.) */
 const SITE_NAV = [
   { label: "Flashcards", href: "/flashcards" },
   { label: "About", href: "/about" },
   { label: "Resources", href: "/resources" },
-  { label: "FAQ", href: "/faq" },
 ] as const;
 
 /* Each content route lights up its own tab; the landing page and the live
@@ -29,7 +29,6 @@ function activeLabel(pathname: string): string | null {
   if (pathname === "/flashcards") return "Flashcards";
   if (pathname === "/about") return "About";
   if (pathname === "/resources") return "Resources";
-  if (pathname === "/faq") return "FAQ";
   return null;
 }
 

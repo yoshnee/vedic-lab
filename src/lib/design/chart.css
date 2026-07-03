@@ -31,11 +31,13 @@
 .chart-birth { color: var(--text-2); font-size: 14px; margin: 0; }
 .chart-asc { color: var(--text); font-family: var(--font-mono), monospace; font-size: 13px; margin: 5px 0 0; }
 .chart-asc b { color: var(--accent); font-weight: 600; }
-.chart-moon { margin: 6px 0 0; display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono), monospace; font-size: 12px; color: var(--text-2); }
-.chart-moon-glyph { flex: none; color: var(--p-moon); }
+/* inline flashcard-link icons in the hero ascendant line (deck diamond + rashi glyph) */
+.chart-asc-link { display: inline-flex; vertical-align: middle; align-items: center; padding: 2px; margin: 0 1px;
+  border: 0; background: none; cursor: pointer; border-radius: 6px; line-height: 0; opacity: .9; transition: opacity .18s, transform .18s; }
+.chart-asc-link:hover { opacity: 1; transform: translateY(-1px); }
+.chart-asc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* the Legend + Instructions launchers, side by side, on their OWN line below the
-   panchanga line. Must be block-level (display:flex, not inline-flex): .chart-moon
-   is itself inline-flex, so an inline-flex group would ride up onto the moon line. */
+   ascendant line. */
 .chart-hero-btns { display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; gap: 10px; margin-top: clamp(14px, 2vw, 18px); }
 
 /* ============================================================
@@ -610,13 +612,25 @@
 .pp-name { display: inline-flex; align-items: center; gap: 3px; }
 .pp-name .nm { font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.1; }
 .pp-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-.pp-pill { font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+.pp-pill { display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono), monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
   padding: 4px 9px; border-radius: 999px; white-space: nowrap; cursor: pointer; transition: filter .18s;
   color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); background: color-mix(in srgb, var(--accent) 11%, transparent); }
 .pp-pill:hover { filter: brightness(1.12); }
+/* informational (non-clickable) pills — dignity + maitri. No pointer, no hover
+   lift, out of the tab order (rendered as a <span>). */
+.pp-pill[data-static] { cursor: default; }
+.pp-pill[data-static]:hover { filter: none; }
+/* the shared FlashcardIcon riding inside a clickable pill — signals "opens a
+   flashcard" (karaka/ascendant-lord/gandanta). The daśā-lord pills open the
+   rail (not a card) and dignity/maitri are informational, so neither shows one. */
+.pp-pill-ico { display: inline-flex; flex: none; margin-right: -1px; }
+.pp-pill-ico svg { display: block; width: 11px; height: 11px; }
 .pp-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pp-pill[data-kind="antar"] { color: #CFE0D2; border-color: color-mix(in srgb, #CFE0D2 30%, transparent); background: color-mix(in srgb, #CFE0D2 8%, transparent); }
 .pp-pill[data-kind="lagna"] { color: var(--select); border-color: color-mix(in srgb, var(--select) 38%, transparent); background: color-mix(in srgb, var(--select) 11%, transparent); }
+/* chara karaka (Atmakaraka / Amatyakaraka) — violet for the Jaimini soul/mind significators */
+.pp-pill[data-kind="karaka"] { color: #C29BEA; border-color: color-mix(in srgb, #C29BEA 38%, transparent); background: color-mix(in srgb, #C29BEA 12%, transparent); }
 /* gandanta — ember tone for the water→fire knot; "deep" (within ~1°) is brighter + ringed */
 .pp-pill[data-kind="gandanta"] { color: #E08A5A; border-color: color-mix(in srgb, #E08A5A 40%, transparent); background: color-mix(in srgb, #E08A5A 12%, transparent); }
 .pp-pill[data-kind="gandanta"][data-deep] { color: #F0A06E; border-color: color-mix(in srgb, #E08A5A 72%, transparent); background: color-mix(in srgb, #E08A5A 20%, transparent); font-weight: 700;

@@ -15,9 +15,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { Svg } from "@/components/Svg";
-import { diamond, body } from "@/celestial/celestial";
+import { FlashcardIcon } from "@/components/flashcards/FlashcardIcon";
+import { diamond, body, zodiac } from "@/celestial/celestial";
 import { VARGAS, VARGA_KEYS, isVargaKey, buildVargaChart, buildVargaPanels, type VargaKey } from "@/lib/chart/varga";
 import { transitFor } from "@/lib/chart/generateChart";
+import { charaKarakas } from "@/core/karaka";
 import { activatedHousesFor } from "@/lib/chart/activation";
 import { isValidZone } from "@/lib/time";
 import { useDebounce } from "@/lib/hooks/useDebounce";
@@ -43,21 +45,6 @@ const PNAME: Record<PlanetKey, string> = {
 
 /** Set once the guided tour has been seen, so it auto-opens only on first visit. */
 const TOUR_SEEN_KEY = "vedic:chartTourSeen";
-
-function ordinal(n: number): string {
-  const s = ["th", "st", "nd", "rd"], v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-/** Small crescent — opens one way for waxing, mirrored for waning (matches the panel). */
-function MoonGlyph({ waxing }: { waxing: boolean }) {
-  return (
-    <svg className="chart-moon-glyph" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
-      style={waxing ? undefined : { transform: "scaleX(-1)", transformOrigin: "center" }}>
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" />
-    </svg>
-  );
-}
 
 /** A real modal slide-in drawer (the daśā + reading-notes drawers): focus
     moves in on open, Tab is trapped, Esc closes, and focus returns to the
@@ -127,7 +114,7 @@ const CHART2_OPTIONS: ChartOption[] = [
 ];
 
 export function ChartView({ model }: { model: ChartModel }) {
-  const { chart, meta, panchanga, transit } = model;
+  const { chart, meta, transit } = model;
   const [fc, setFc] = useState<FlashcardTarget | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false); // guided-tour / instructions popup
@@ -237,6 +224,11 @@ export function ChartView({ model }: { model: ChartModel }) {
 
   const frame = { ascSign: chart.ascendant.sign, ascDegree: chart.ascendant.degree };
 
+  // Hero ascendant links: the rashi glyph opens the sign's Zodiacs card; its
+  // symbol/color are read from that card so there's no second lookup table.
+  const ascZodiac = resolveFlashcard("sign", chart.ascendant.signName);
+  const ascZodiacIcon = ascZodiac?.card.icon?.kind === "zodiac" ? ascZodiac.card.icon : null;
+
   /* Chart 1 is the DRIVER: toggling it re-derives the planet panels for that
      varga (avasthas, maitri, dignity … recomputed — see buildVargaPanels);
      toggling back restores the natal detail. Chart 2 never affects the grid. */
@@ -250,6 +242,9 @@ export function ChartView({ model }: { model: ChartModel }) {
   );
   const vargaMode = !!vargaPanels;
   const panelPlanets = vargaPanels ? vargaPanels.planets : chart.planets;
+  // Chara karakas (Atmakaraka / Amatyakaraka) are a natal D1 read — computed
+  // from the rasi degrees and hidden in varga mode, like nakshatra/pada.
+  const karakas = useMemo(() => charaKarakas(chart.planets), [chart.planets]);
   const vargaLabel = varga1 ? VARGAS[varga1].short : undefined;
   // D2 (Horā) is the two-column wealth view, not a full chart — it carries no
   // per-planet panels and no element balance (owner-directed: the planet panels
@@ -288,7 +283,29 @@ export function ChartView({ model }: { model: ChartModel }) {
             {chart.birth.placeLabel ? ` · ${chart.birth.placeLabel}` : ""}
           </p>
           <p className="chart-asc">
-            Ascendant <b>{chart.ascendant.signName}</b> {chart.ascendant.degree}
+            Ascendant
+            <button
+              type="button"
+              className="chart-asc-link"
+              title="Open the Ascendant (Lagna) deck"
+              aria-label="Open the Ascendant deck"
+              onClick={() => openCard("deck", "ascendants")}
+            >
+              <Svg html={diamond(15, { glow: true })} />
+            </button>
+            <b>{chart.ascendant.signName}</b>
+            {ascZodiacIcon && (
+              <button
+                type="button"
+                className="chart-asc-link"
+                title={`Open the ${chart.ascendant.signName} rashi card`}
+                aria-label={`Open the ${chart.ascendant.signName} rashi card`}
+                onClick={() => openCard("sign", chart.ascendant.signName)}
+              >
+                <Svg html={zodiac(ascZodiacIcon.symbol, 20, ascZodiac?.card.accentColor)} />
+              </button>
+            )}{" "}
+            {chart.ascendant.degree}
             {chart.ascendant.gandanta && (
               <button
                 type="button"
@@ -299,15 +316,10 @@ export function ChartView({ model }: { model: ChartModel }) {
                 onClick={() => openCard("gandanta")}
               >
                 {chart.ascendant.gandantaDeep ? "True Gandanta" : "Gandanta"}
+                <FlashcardIcon size={11} className="pp-pill-ico" />
               </button>
             )}
           </p>
-          {panchanga.tithiNumber != null && (
-            <p className="chart-moon">
-              <MoonGlyph waxing={!!panchanga.waxing} />
-              {panchanga.waxing ? "Waxing" : "Waning"} Moon · {ordinal(panchanga.tithiNumber)} tithi
-            </p>
-          )}
           <div className="chart-hero-btns">
             <button type="button" className="chart-legend-btn" onClick={() => setLegendOpen(true)}>
               <span aria-hidden="true">?</span> Legend
@@ -428,6 +440,7 @@ export function ChartView({ model }: { model: ChartModel }) {
                     onOpenCard={openCard}
                     onOpenDasha={openDasha}
                     vargaLabel={vargaLabel}
+                    karaka={vargaMode ? null : (karakas[p.key] ?? null)}
                   />
                 ))}
               </section>
