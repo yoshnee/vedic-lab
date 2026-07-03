@@ -1,8 +1,9 @@
 /* ============================================================
    Footer — the global site footer, shared by every route.
-   Brand + tagline, an Explore column, and an Open-source column whose
-   GitHub repository link + "Licensed AGPL-3.0." must stay present and
-   visible (AGPL-3.0 compliance). Mounted once in app/layout.tsx.
+   Brand + tagline, and a single inline nav row (FAQ · Privacy · GitHub
+   repository). "Licensed AGPL-3.0." sits on the base bar beside the
+   copyright. The repo link and the license must stay present and visible
+   (AGPL-3.0 compliance). Mounted once in app/layout.tsx.
    ============================================================ */
 import Link from "next/link";
 import { diamond } from "@/celestial/celestial";
@@ -21,25 +22,18 @@ export function Footer() {
           <p className="foot-tag">Learn the science of light.</p>
         </div>
 
-        <nav className="foot-col" aria-label="Explore">
-          <span className="foot-h">Explore</span>
-          <Link href="/about">About</Link>
-          <Link href="/resources">Resources</Link>
+        <nav className="foot-links" aria-label="Footer">
           <Link href="/faq">FAQ</Link>
           <Link href="/privacy">Privacy</Link>
-        </nav>
-
-        <div className="foot-col">
-          <span className="foot-h">Open source</span>
           <a href={SITE.repoUrl} target="_blank" rel="noopener noreferrer">
             GitHub repository ↗
           </a>
-          <span className="foot-lic">Licensed AGPL-3.0.</span>
-        </div>
+        </nav>
       </div>
 
       <div className="site-foot-base">
-        <span>© {SITE.year} {SITE.owner}</span>
+        <span>© {SITE.year} {SITE.owner}. All rights reserved.</span>
+        <span className="foot-lic">Licensed AGPL-3.0.</span>
       </div>
     </footer>
   );

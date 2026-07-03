@@ -14,7 +14,7 @@ export function AboutPage() {
     <main className="page">
       <PageHero
         eyebrow="About"
-        title="A study tool I built to stop dabbling and start learning Vedic astrology properly"
+        title="Why I built this tool"
       />
 
       <article className="about">
@@ -29,19 +29,23 @@ export function AboutPage() {
 
         <p>
           Not long ago I decided to stop dabbling and start learning it properly. These days that
-          means pulling from everything I can - YouTube, books, and, most of all, a teacher walking
-          me through it.
+          means pulling from everything I can: books, YouTube, and most of all, a teacher walking
+          me through the basics.
         </p>
 
         <blockquote className="about-pull">
-          <em>Jyotish </em> means the science of light, and that&apos;s the whole spirit of this lab.
+          <em>Jyotish </em> means the science of light, and that&apos;s the whole spirit of the Vedic Astrology Lab.
         </blockquote>
 
         <p>
-          Vedic Astrology Lab is where I put what I&apos;m learning to work. I built it as a study
-          tool: somewhere to generate a chart and watch the pieces come together, and to refresh a
-          concept the moment it shows up on screen, so it actually sticks. A place to learn it, one
-          layer at a time. If it helps you do the same, even better.
+          I came to <J /> wanting to understand myself. What I found is a body of knowledge so vast
+          that the studying never really ends. The Lab is my study desk made public. A chart on one
+          side, flashcards and notes on the other, so every session builds the foundation instead of
+          scattering it.
+        </p>
+
+        <p className="about-close">
+          If you&apos;re on the same path, I hope it serves your study as well as it serves mine.
         </p>
 
         <div className="about-sign">

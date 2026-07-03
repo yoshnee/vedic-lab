@@ -3,6 +3,7 @@
    keyboard-accessible). First item open by default. Data-driven.
    ============================================================ */
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { PageHero } from "./PageHero";
 
 interface Faq {
@@ -15,7 +16,8 @@ const FAQS: Faq[] = [
     q: "Is my birth data stored anywhere?",
     a: (
       <>
-        No. All calculations run in your browser; your birth details are never sent to a server.
+        No. Everything runs in your browser. Your birth details never leave your device or touch a
+        server. For more, read our <Link href="/privacy">Privacy Policy</Link>.
       </>
     ),
   },
@@ -23,8 +25,8 @@ const FAQS: Faq[] = [
     q: "How are charts calculated?",
     a: (
       <>
-        Swiss Ephemeris (via swisseph-wasm) for the astronomy, with the Lahiri ayanamsa and
-        whole-sign houses, following the Hora Prakash reference for derived techniques.
+        Swiss Ephemeris for the astronomy, Lahiri ayanamsa, whole-sign houses. For the full list of
+        sources and references, see the <Link href="/resources">Resources</Link> tab.
       </>
     ),
   },
@@ -32,10 +34,9 @@ const FAQS: Faq[] = [
     q: "Why might results differ from another site?",
     a: (
       <>
-        Usually a different ayanamsa or house system, or different conventions (e.g. combustion
-        orbs, node aspects). This site uses <em>sidereal</em> calculations for the zodiac — not
-        tropical — with <em>Lahiri + whole-sign</em>. If you are convinced that there is a mistake,
-        please feel free to reach out to get it fixed.
+        Usually a different ayanamsa or house system, or different conventions like combustion orbs
+        and node aspects. This site uses sidereal calculations (not tropical) with Lahiri and
+        whole-sign houses. Convinced something&apos;s wrong? Reach out and we&apos;ll fix it.
       </>
     ),
   },
@@ -47,11 +48,7 @@ const FAQS: Faq[] = [
         the planets truly sit against the constellations, while the tropical zodiac has drifted
         about 24° off the real stars over the centuries. Jyotish itself is built on genuine stellar
         positions (its nakshatras are named after real stars, its dasha timing seeded from the
-        Moon&apos;s place among them). For more on the debate, see{" "}
-        <a href="https://astrosight.ai/blog/sidereal-vs-tropical-zodiac" target="_blank" rel="noopener noreferrer">
-          this article
-        </a>
-        .
+        Moon&apos;s place among them).
       </>
     ),
   },
@@ -59,8 +56,21 @@ const FAQS: Faq[] = [
     q: "Is this professional advice?",
     a: (
       <>
-        No. The Vedic Lab is a study tool for learning the concepts of Vedic astrology,
-        built to be approachable for beginners.
+        No. The Vedic Astrology Lab is a study tool for learning Jyotish, built to be approachable
+        for beginners. See the <Link href="/about">About</Link> page to learn more.
+      </>
+    ),
+  },
+  {
+    q: "Who built the Vedic Astrology Lab?",
+    a: (
+      <>
+        A lifelong seeker, self-learning Jyotish like so many others. Read the full story on the{" "}
+        <Link href="/about">About</Link> page, or come say hello at{" "}
+        <a href="https://yoshnee-raveendran.com" target="_blank" rel="noopener noreferrer">
+          yoshnee-raveendran.com
+        </a>
+        .
       </>
     ),
   },
@@ -86,7 +96,6 @@ export function FaqPage() {
       <PageHero
         eyebrow="FAQ"
         title="Questions & answers"
-        lede="How the charts are built, what happens to your data, and where this site sits among other tools."
       />
 
       <div className="faq-list">
