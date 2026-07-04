@@ -4,8 +4,10 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      // schema.org payload is our own static data, not user input
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      // schema.org payload is our own static data, but escape "<" defensively so a
+      // future "</script>" substring can't break out of the tag (JSON.stringify
+      // does not escape it). Standard JSON-LD hardening.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
   );
 }
