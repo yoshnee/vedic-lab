@@ -67,7 +67,7 @@ export const ascendants: Deck = {
           ],
         },
       ],
-      tabsFootnote: "See the Zodiac & Four Elements deck for more details",
+      tabsFootnote: "See the Zodiacs and The Four Elements decks for more details",
     },
 
     /* 1st-lord house placements (the Lagnesha through each bhava) — the full
