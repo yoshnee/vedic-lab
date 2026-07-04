@@ -26,12 +26,10 @@ function rescuerRow(p: PlanetKey): string {
   const debSign = DEBILITATION[p]!;
   const dispositor = SIGN_RULER[debSign - 1];
   const exaltLord = SIGN_RULER[EXALTATION[p]! - 1];
-  const occupant = SEVEN.find((q) => EXALTATION[q] === debSign);
   return (
     `${PLANET_NAMES[p]} (${SIGN_NAMES[debSign - 1]})` +
     ` · Dispositor: ${PLANET_NAMES[dispositor]}` +
-    ` · Exaltation-lord: ${PLANET_NAMES[exaltLord]}${exaltLord === p ? " (self)" : ""}` +
-    ` · Exalted occupant: ${occupant ? PLANET_NAMES[occupant] : "None"}`
+    ` · Exaltation-lord: ${PLANET_NAMES[exaltLord]}${exaltLord === p ? " (self)" : ""}`
   );
 }
 
@@ -261,11 +259,6 @@ export const yogas: Deck = {
       points: [
         "Common, in roughly 40% of charts, since Mercury never strays far from the Sun",
         "The truly effective version, where both planets are strong and unafflicted, is much rarer",
-        "Jupiter aspect: wisdom, ethics, expanded scope",
-        "Venus aspect: creativity, social grace",
-        "Saturn aspect: delays, but discipline, depth, longevity",
-        "Mars aspect: debate, technical or engineering skill, sometimes aggressive speech",
-        "Rahu or Ketu aspect: unconventional paths, foreign links, research into hidden subjects",
       ],
     },
     // ---- Neecha Bhanga Raja Yoga ----
@@ -280,25 +273,22 @@ export const yogas: Deck = {
         },
         {
           label: "Rescuers",
-          value: "Dispositor (debilitation-sign lord) · exaltation-lord (lord of the sign where it exalts) · exalted occupant (the planet exalted in the debilitation sign)",
+          value: "Dispositor (debilitation-sign lord) · exaltation-lord (lord of the sign where the planet exalts)",
         },
       ],
-      // the numbered conditions live on the BACK (scrollable) — the front was
-      // clipping; the chart's per-condition pills land here via prefix-matched
-      // point highlight ("Major 3-4" etc., flashcardLink.ts)
+      // the four rules live on the BACK (scrollable) — the front was clipping;
+      // the chart's per-rule pills land here via prefix-matched point highlight
+      // ("R1:" … "R4:", flashcardLink.ts)
       points: [
-        "Major 1-2: Dispositor conjunct the planet, or in a Kendra from Lagna or Moon",
-        "Major 3-4: Exaltation-lord conjunct the planet, or in a Kendra from Lagna or Moon",
-        "Major 5: Exalted occupant conjunct the planet",
-        "Minor 6-7: Dispositor or exaltation-lord aspects the planet",
-        "Saturn debilitated in Aries; Mars, the Aries lord, sits with it (1) or sits in a Kendra (2)",
-        "Saturn debilitated in Aries is exalted in Libra; Venus, the Libra lord, sits with it (3) or sits in a Kendra (4)",
-        "Mercury debilitated in Pisces; Venus, which is exalted in Pisces, sits with it (5)",
+        "R1: The debilitation-sign lord sits in a Kendra (1, 4, 7, 10) from the Lagna or the Moon",
+        "R2: The exaltation-sign lord sits in a Kendra from the Lagna or the Moon",
+        "R3: The debilitated planet is conjunct or aspected by its own sign lord or its exaltation-sign lord",
+        "R4: The debilitated planet is in parivartana (exchange) with the lord of the sign it occupies",
+        "Any one rule cancels the debilitation; more than one only reinforces it",
         "Cancellation does not guarantee a full Raja Yoga: the rescuer ideally avoids ties to the 6th, 8th, or 12th, and dignity plus dasha decide the real outcome",
-        "Disambiguation: conditions 3 and 4 key off the exaltation sign's lord, while condition 5 keys off the planet exalted in the debilitation sign. Different lookups that can coincidentally both land on the same planet",
+        "For Mercury, the exaltation-sign lord is Mercury itself, so R2 and the exaltation-lord half of R3 do not apply",
         "Resolved rescuers per debilitated planet:",
         ...SEVEN.map(rescuerRow),
-        "Moon in Scorpio has no exalted occupant, since nothing exalts in Scorpio. For Mercury, the exaltation-lord is Mercury itself, so the exaltation-lord conditions do not apply",
       ],
     },
     // ---- Grahana Yoga ----

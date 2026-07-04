@@ -1,6 +1,10 @@
-/* The 27 Nakshatras — lunar mansions. Content from nakshatras_flashcards.md:
-   FRONT = span + Vimshottari ruler + general nature (facts), BACK = personality
-   traits & significations (points). Each card's icon and accent are its ruling
+/* The 27 Nakshatras — lunar mansions. Content from nakshatras_flashcards.md.
+   FRONT = Span + Vimshottari Ruler facts, then a significations WORD CLOUD (the
+   migration owner-directed 2026-07: the "Life aim" and "Nature" fact rows were
+   dropped deck-wide — the cloud carries the meaning going forward). BACK =
+   personality traits & significations (points) for now; being converted card by
+   card to the reusable TABBED back (Ashwini is the first — planets-in-nakshatra
+   + the four padas across tabs). Each card's icon and accent are its ruling
    planet (the Vimshottari lord), so flipping the deck walks the 9-lord cycle ×3.
 
    Spans are contiguous 13°20′ arcs from 0° Aries; rulers match the engine's
@@ -8,33 +12,104 @@
    the intercalary 28th (Abhijit) is intentionally omitted; add it later only if
    a 28-fold treatment is wanted.
 
-   The "Life aim" fact is each nakshatra's own main purushartha, read straight
-   from the engine's NAKSHATRA_PURUSHARTHA table (Sutton, vendored verbatim) so
-   the card and the engine can't diverge. Rows align by index — both lists run
-   Ashwini → Revati.
-
-   "General nature" is the traditional muhurta activity-nature (gentle Mridu /
-   swift Kshipra / fixed Sthira / movable Chara / mixed Mishra / fierce Ugra /
-   sharp Tikshna) — a starting point to refine later, per the source note. */
-import type { Deck } from "./types";
+   `nature` (the traditional muhurta activity-nature — gentle Mridu / swift
+   Kshipra / fixed Sthira / movable Chara / mixed Mishra / fierce Ugra / sharp
+   Tikshna) is KEPT as latent reference data per row but is no longer shown on
+   the card front. Front clouds + tabs are only on Ashwini so far; the other 26
+   still show Span + Ruler and their old points back until their content lands. */
+import type { Deck, Card, CardTab, CloudTerm } from "./types";
 import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
-import { NAKSHATRA_PURUSHARTHA } from "@/core/constants";
 
 type Lord = keyof typeof PLANET_COLORS;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
-const DATA: { name: string; lord: Lord; span: string; nature: string; points: string[] }[] = [
+/* Ashwini (nakshatra 01) is the first card converted to the new format
+   (owner-provided): a significations word cloud on the FRONT (below Span/Ruler)
+   + a TABBED back that fans planets-in-Ashwini and the four padas (Pada 1 is
+   vargottama). Its front-cloud terms and tabs live in these consts; the other
+   26 keep the old points back until their content lands. Each pada tab opens
+   with its navamsa sign as the first bullet (owner-directed). */
+const ASHWINI_CLOUD: CloudTerm[] = [
+  { label: "Healer", weight: "big" },
+  { label: "Idealist", weight: "big" },
+  { label: "Pioneer", weight: "big" },
+  { label: "Courage", weight: "big" },
+  { label: "Impatient", weight: "medium" },
+  { label: "Adventurous", weight: "medium" },
+  { label: "Self-mastery", weight: "medium" },
+  { label: "Honors tradition", weight: "medium" },
+  { label: "Ascetic to sensuous", weight: "medium" },
+  { label: "Craves perfection", weight: "small" },
+  { label: "Innocence misread", weight: "small" },
+  { label: "Moksha-seeking", weight: "small" },
+  { label: "Protective", weight: "small" },
+  { label: "New soul", weight: "small" },
+];
+
+const ASHWINI_TABS: CardTab[] = [
+  {
+    label: "Planets",
+    bullets: [
+      "Sun: exalted. Powerful, idealistic leader, but not easy to get along with. Must learn to temper power.",
+      "Moon: fiery mind, endless ideas needing expression. Boredom is the enemy. Can turn selfish and passionate, or become a healer.",
+      "Mars: own sign. Courage, leadership, idealism amplified. Ready to take on the world.",
+      "Mercury: fiery, impulsive, independent intellect. Impressionable, absorbs Ashwini's qualities. Check pada.",
+      "Jupiter: new wisdom, born to advise. Embraces new ways of teaching.",
+      "Venus: poorly placed. Can leave relationships hastily and regret it.",
+      "Saturn: debilitated. Anger, frustration, impulsiveness where caution should be. May feel rejected by the father.",
+      "Rahu/Ketu: the final knot. Truly karmic, patterns repeat until understood. Feels all-knowing yet everything stays hidden.",
+    ],
+  },
+  {
+    label: "Pada 1",
+    tag: "Vargottama",
+    bullets: [
+      "Navamsa: Aries",
+      "Sun exalted in rashi and pada: a very powerful idealistic leader.",
+      "Saturn debilitated but gains strength through vargottama. Frustration can remain.",
+      "Lagna here is vargottama and strong.",
+      "Nodes exit Aries into Pisces: the end of the soul journey.",
+    ],
+  },
+  {
+    label: "Pada 2",
+    bullets: [
+      "Navamsa: Taurus",
+      "Moon exalted by pada: adventure and passion gain steadiness.",
+      "Rahu exalted: strength to understand its message as a cycle ends.",
+      "Ketu debilitated: confusion and guilt.",
+    ],
+  },
+  {
+    label: "Pada 3",
+    bullets: [
+      "Navamsa: Gemini",
+      "No exaltations or debilitations.",
+      "Sexuality, couples, and relationships emphasized. Questions Ashwini's spiritual side.",
+      "Mercury strong in its own pada, supported in a difficult sign.",
+    ],
+  },
+  {
+    label: "Pada 4",
+    bullets: [
+      "Navamsa: Cancer",
+      "Mars depleted despite own rashi: the impulse can drown in emotion.",
+      "Jupiter in an exalted pada and friendly sign: wisdom guides the soul in the right direction.",
+    ],
+  },
+];
+
+const DATA: {
+  name: string; lord: Lord; span: string; nature: string;
+  points?: string[];
+  frontCloud?: CloudTerm[];
+  tabs?: CardTab[];
+}[] = [
   {
     name: "Ashwini", lord: "ketu", span: "0°00′–13°20′ Aries",
     nature: "Auspicious (swift / Kshipra)",
-    points: [
-      "Fast-moving, action-oriented; first to initiate ideas and journeys",
-      "Pioneering, ambitious, innovative; thrives where spontaneity is needed",
-      "Drawn to medicine, therapy, and healing",
-      "Values autonomy; dislikes being controlled",
-      "Affinity for animals, horses, and motion",
-      "Seeks freedom in relationships; partners who respect space and adventure",
-    ],
+    frontCloud: ASHWINI_CLOUD,
+    tabs: ASHWINI_TABS,
   },
   {
     name: "Bharani", lord: "venus", span: "13°20′–26°40′ Aries",
@@ -330,18 +405,21 @@ export const nakshatras: Deck = {
   motif: "diamond",
   accent: ACCENT,
   status: "available",
-  cards: DATA.map((d, i) => ({
+  cards: DATA.map((d, i): Card => ({
     title: d.name,
     badge: String(i + 1).padStart(2, "0"),
     accentColor: PLANET_COLORS[d.lord],
     icon: { kind: "planet" as const, id: d.lord },
     body: "",
+    // FRONT facts trimmed to Span + Ruler (owner-directed); the "Life aim" and
+    // "Nature" rows were dropped now that a significations word cloud carries the
+    // meaning going forward. (`d.nature` stays as latent reference data.)
     facts: [
       { label: "Span", value: d.span },
       { label: "Ruler", value: cap(d.lord) },
-      { label: "Life aim", value: NAKSHATRA_PURUSHARTHA[i] },
-      { label: "Nature", value: d.nature },
     ],
-    points: d.points,
+    // Ashwini leads with a front word cloud + a tabbed back; the rest keep points.
+    ...(d.frontCloud ? { frontCloud: { terms: d.frontCloud } } : {}),
+    ...(d.tabs ? { tabs: d.tabs } : { points: d.points }),
   })),
 };

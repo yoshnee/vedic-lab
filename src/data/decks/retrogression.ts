@@ -17,6 +17,7 @@ export const retrogression: Deck = {
       sanskrit: "Vakri",
       icon: { kind: "planet", id: "mercury", retro: true },
       body: "",
+      hideBackTitle: true,
       points: [
         "A planet appears to move backward through the zodiac (from Earth's viewpoint)",
         "An optical illusion, not an actual reversal",
@@ -31,6 +32,7 @@ export const retrogression: Deck = {
       sanskrit: "& How Often",
       icon: { kind: "planet", id: "saturn", retro: true },
       body: "",
+      hideBackTitle: true,
       facts: [
         { label: "Mercury", value: "~3–4×/yr · 3 wks" },
         { label: "Venus", value: "~18 mo · 40–43 days" },
@@ -50,6 +52,7 @@ export const retrogression: Deck = {
       sanskrit: "Turned Inward",
       icon: { kind: "planet", id: "mars", retro: true },
       body: "",
+      hideBackTitle: true,
       points: [
         "Turns the planet's expression inward",
         "Retrograde does NOT mean weak",
@@ -65,6 +68,7 @@ export const retrogression: Deck = {
       sanskrit: "By Planet",
       icon: { kind: "planet", id: "venus", retro: true },
       body: "",
+      hideBackTitle: true,
       points: [
         "Mercury Rx: reflective deep thinker; unconventional communication",
         "Venus Rx: unique values in love and money; inward processing of relationships",
@@ -78,6 +82,7 @@ export const retrogression: Deck = {
       sanskrit: "Revisit & Realign",
       icon: { kind: "planet", id: "jupiter", retro: true },
       body: "",
+      hideBackTitle: true,
       points: [
         "A time to revisit unfinished business",
         "Setbacks are often opportunities in disguise",

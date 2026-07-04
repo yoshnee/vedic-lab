@@ -6,7 +6,7 @@ export function SelfLearnHook() {
   return (
     <section className="selflearn">
       <h2 className="selflearn-q">
-        Are you attempting to <span className="selflearn-nb">self-learn</span> Vedic astrology?
+        Are you attempting to <span className="selflearn-nb">self-learn</span> astrology?
       </h2>
       <p className="selflearn-hook">
         Other tools render a chart and leave you alone.{" "}

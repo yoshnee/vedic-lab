@@ -242,7 +242,7 @@ describe("grahana", () => {
 });
 
 describe("neechaBhanga", () => {
-  const conditions = (yogas: ReturnType<typeof neechaBhanga>) => yogas.map((y) => y.condition);
+  const rules = (yogas: ReturnType<typeof neechaBhanga>) => yogas.map((y) => y.condition);
 
   it("returns [] unless the planet is debilitated, and never for nodes", () => {
     expect(neechaBhanga("mars", dignityOf("mars", 10), signsWith({ mars: 10 }), 1)).toEqual([]); // exalted
@@ -251,58 +251,65 @@ describe("neechaBhanga", () => {
     expect(neechaBhanga("rahu", "debilitated", signsWith({}), 1)).toEqual([]); // defensive: yoga doesn't apply
   });
 
-  it("rescuer table behaves per row — Sun in Libra: Venus C1, Mars C3, Saturn C5", () => {
-    // each rescuer conjunct D, isolated (others parked in 3/5/9-ish neutral spots)
-    const base = { sun: 7, moon: 12, venus: 3, mars: 5, saturn: 11, jupiter: 9, mercury: 9 };
-    const lagna = 2; // Libra is 6th from lagna; from Moon (12) it's 8th — no stray kendras
-    expect(conditions(neechaBhanga("sun", "debilitated", signsWith({ ...base, venus: 7 }), lagna))).toContain(1);
-    expect(conditions(neechaBhanga("sun", "debilitated", signsWith({ ...base, mars: 7 }), lagna))).toContain(3);
-    expect(conditions(neechaBhanga("sun", "debilitated", signsWith({ ...base, saturn: 7 }), lagna))).toContain(5);
+  it("R1: the debilitation-sign lord in a Kendra from the Lagna", () => {
+    // Sun debilitated in Libra (7); dispositor Venus in Cancer (4) = 4th from an Aries lagna.
+    // Venus in Cancer neither conjuncts nor opposes Libra, so R3 stays quiet.
+    const signs = signsWith({ sun: 7, venus: 4, moon: 11, mars: 3, saturn: 9, jupiter: 9, mercury: 9 });
+    expect(rules(neechaBhanga("sun", "debilitated", signs, 1))).toEqual([1]);
   });
 
-  it("C1 + C2 are separate pills — conjunct AND in a Kendra are different mechanisms", () => {
-    // Saturn debilitated in Aries; Mars (dispositor) conjunct in Aries, which is also house 1 from the lagna
-    const signs = signsWith({ saturn: 1, mars: 1, moon: 12, venus: 2, jupiter: 9, sun: 9, mercury: 9 });
-    const yogas = neechaBhanga("saturn", dignityOf("saturn", 1), signs, 1);
-    expect(conditions(yogas)).toEqual([1, 2]);
-    expect(yogas.map((y) => y.tier)).toEqual(["major", "major"]);
-    expect(yogas[1]).toMatchObject({
-      key: "neecha-bhanga-c2",
-      name: "Neecha Bhanga C2",
-      flashcard: { type: "yoga", id: "neecha-bhanga-c2" },
+  it("R1 counts a Moon-only Kendra, not just the Lagna", () => {
+    // Sun debilitated in Libra; Venus (dispositor) in Taurus (2): 2nd from lagna (no), 4th from Moon in Aquarius (11) → yes
+    const signs = signsWith({ sun: 7, venus: 2, moon: 11, mars: 3, saturn: 4, jupiter: 6, mercury: 6 });
+    expect(rules(neechaBhanga("sun", "debilitated", signs, 1))).toEqual([1]);
+  });
+
+  it("R2: the exaltation-sign lord in a Kendra", () => {
+    // Sun debilitated in Libra; Sun exalts in Aries → exalt-lord Mars in Capricorn (10) = 10th from lagna,
+    // aspecting nothing onto Libra. Dispositor Venus parked in Scorpio (no Kendra, no exchange).
+    const signs = signsWith({ sun: 7, mars: 10, venus: 8, moon: 12, saturn: 3, jupiter: 3, mercury: 3 });
+    expect(rules(neechaBhanga("sun", "debilitated", signs, 1))).toEqual([2]);
+  });
+
+  it("R3: conjunct by the dispositor is one rule, one pill (id r3), no tier field", () => {
+    // Saturn debilitated in Aries; Mars (dispositor) conjunct in Aries. Lagna 5 so Aries isn't a Kendra.
+    const signs = signsWith({ saturn: 1, mars: 1, moon: 8, venus: 3, jupiter: 6, sun: 6, mercury: 6 });
+    const yogas = neechaBhanga("saturn", dignityOf("saturn", 1), signs, 5);
+    expect(rules(yogas)).toEqual([3]);
+    expect(yogas[0]).toMatchObject({
+      key: "neecha-bhanga-r3",
+      name: "Neecha Bhanga R3",
+      flashcard: { type: "yoga", id: "neecha-bhanga-r3" },
     });
+    expect(yogas[0]).not.toHaveProperty("tier");
   });
 
-  it("the Kendra frame is Lagna OR Moon — a Moon-only Kendra fires C2", () => {
-    // Sun debilitated in Libra; Venus (dispositor) in Taurus: 2nd from lagna (no), 4th from Moon (yes)
-    const signs = signsWith({ sun: 7, venus: 2, moon: 11, mars: 3, saturn: 4, jupiter: 9, mercury: 9 });
-    expect(conditions(neechaBhanga("sun", "debilitated", signs, 1))).toEqual([2]);
+  it("R3 fires on aspect alone — Moon in Scorpio, Mars in Aries casts its 8th onto Scorpio", () => {
+    const signs = signsWith({ moon: 8, mars: 1, venus: 3, sun: 6, mercury: 6, jupiter: 6, saturn: 6 });
+    expect(rules(neechaBhanga("moon", dignityOf("moon", 8), signs, 5))).toEqual([3]);
   });
 
-  it("debilitated Mercury skips C3/C4/C7 (the exaltation-lord is Mercury itself)", () => {
-    // Jupiter (dispositor) and Venus (exalted occupant) both conjunct in Pisces
-    const signs = signsWith({ mercury: 12, jupiter: 12, venus: 12, moon: 7, sun: 3, mars: 3, saturn: 3 });
+  it("R4: parivartana — the dispositor sits in a sign the debilitated planet rules", () => {
+    // Saturn debilitated in Aries; Mars (Aries lord) in Aquarius, which Saturn rules → exchange.
+    // Mars in Aquarius is in no Kendra here and aspects nothing onto Aries, so only R4 fires.
+    const signs = signsWith({ saturn: 1, mars: 11, venus: 8, moon: 6, sun: 4, mercury: 4, jupiter: 4 });
+    expect(rules(neechaBhanga("saturn", dignityOf("saturn", 1), signs, 3))).toEqual([4]);
+  });
+
+  it("debilitated Mercury: R2 never fires (its exaltation-lord is Mercury itself)", () => {
+    // Jupiter (dispositor) conjunct Mercury in Pisces → R3 only; the exalt-lord half is skipped
+    const signs = signsWith({ mercury: 12, jupiter: 12, moon: 5, venus: 3, sun: 7, mars: 7, saturn: 7 });
     const yogas = neechaBhanga("mercury", dignityOf("mercury", 12), signs, 2);
-    expect(conditions(yogas)).toEqual([1, 5]);
-    expect(conditions(yogas)).not.toContain(3);
-    expect(conditions(yogas)).not.toContain(4);
-    expect(conditions(yogas)).not.toContain(7);
+    expect(rules(yogas)).toEqual([3]);
+    expect(rules(yogas)).not.toContain(2);
   });
 
-  it("Moon in Scorpio: C5 can never fire (nothing exalts in Scorpio); aspect = minor tier", () => {
-    // Mars (dispositor) in Aries casts its 8th onto Scorpio → C6 only
-    const signs = signsWith({ moon: 8, mars: 1, venus: 9, sun: 3, mercury: 3, jupiter: 12, saturn: 3 });
-    const yogas = neechaBhanga("moon", dignityOf("moon", 8), signs, 5);
-    expect(conditions(yogas)).toEqual([6]);
-    expect(yogas[0].tier).toBe("minor");
-  });
-
-  it("dedupe: debilitated Venus with Mercury conjunct collapses C1 + C5 into a single C1", () => {
-    // Mercury is BOTH dispositor and exalted occupant for Venus in Virgo
-    const signs = signsWith({ venus: 6, mercury: 6, jupiter: 3, moon: 5, sun: 12, mars: 12, saturn: 12 });
-    const yogas = neechaBhanga("venus", dignityOf("venus", 6), signs, 1);
-    expect(yogas).toHaveLength(1);
-    expect(yogas[0]).toMatchObject({ condition: 1, tier: "major", key: "neecha-bhanga-c1" });
+  it("surfaces multiple pills when multiple rules fire (R1 + R3)", () => {
+    // Saturn debilitated in Aries; Mars (dispositor) conjunct in Aries AND Aries is house 1 (a Kendra)
+    const signs = signsWith({ saturn: 1, mars: 1, venus: 2, moon: 12, sun: 5, mercury: 5, jupiter: 5 });
+    const yogas = neechaBhanga("saturn", dignityOf("saturn", 1), signs, 1);
+    expect(rules(yogas)).toEqual([1, 3]);
+    expect(yogas.map((y) => y.key)).toEqual(["neecha-bhanga-r1", "neecha-bhanga-r3"]);
   });
 });
 
@@ -389,9 +396,9 @@ describe("computeYogas", () => {
 
   it("Neecha Bhanga rides alongside other yogas — debilitated Moon with Jupiter in a Moon-Kendra", () => {
     // Moon in Scorpio (debilitated) with Jupiter 7th from it → Gaja Kesari + NB pills together;
-    // Mars (dispositor) conjunct the Moon in Scorpio → C1, and Scorpio is a lagna-Kendra → C2
+    // Mars (dispositor) conjunct the Moon in Scorpio → R3, and Scorpio is a lagna-Kendra → R1
     const signs = signsWith({ moon: 8, jupiter: 2, mars: 8, venus: 12, sun: 3, mercury: 3, saturn: 6 });
     const moon = computeYogas("moon", { dignity: dignityOf("moon", 8), house: 1, signs, longitudes: quiet, lagnaSign: 8 });
-    expect(moon.map((y) => y.key)).toEqual(["gaja-kesari", "neecha-bhanga-c1", "neecha-bhanga-c2"]);
+    expect(moon.map((y) => y.key)).toEqual(["gaja-kesari", "neecha-bhanga-r1", "neecha-bhanga-r3"]);
   });
 });

@@ -44,6 +44,34 @@ export interface CardCloud {
 export interface CardTraitCloud {
   positive: CloudTerm[];
   negative: CloudTerm[];
+  /** Drop the visible "Positive" / "Negative" group headings — the green/red
+      coloring already implies polarity. Screen-reader labels are kept. */
+  hideLabels?: boolean;
+}
+
+/** A key/value row in a tabbed card back's heading area. Mirrors `CardFact`
+    but adds an optional color swatch before the value (e.g. the ruling graha's
+    identity color). Rendered by `TabbedCardBack`. */
+export interface CardTabFact {
+  label: string;
+  value: string;
+  /** Optional swatch color shown before the value (e.g. a planet's color). */
+  dot?: string;
+}
+
+/** One tab of a `TabbedCardBack` — a facet of a single topic. The tab row
+    shows `label`; the active tab's panel shows the `facts` heading, the
+    `bullets` list, and (where it applies) one `tag` pill. Everything is
+    optional but `label`, so a tab can be facts-only or bullets-only. */
+export interface CardTab {
+  /** Tab button text — keep it short (it shares row width with the others). */
+  label: string;
+  /** Heading key/value rows for this tab. */
+  facts?: CardTabFact[];
+  /** Short behaviour lines shown as a bullet list. */
+  bullets?: string[];
+  /** Optional pill flagging a special condition (e.g. "Pushkara Navāṁśa"). */
+  tag?: string;
 }
 
 /** A card-back link that pulls up the deck's interactive diagram view
@@ -64,6 +92,10 @@ export interface Card {
       repeat the front (e.g. the Rahu & Ketu axis cards flip to their theme,
       "Self ↔ Other"). Defaults to `title`. */
   backTitle?: string;
+  /** Drop the back-face heading entirely (a non-tabbed back with no title row,
+      just the content). Owner-directed for concept cards whose front already
+      names the topic, so the back need not repeat it. */
+  hideBackTitle?: boolean;
   sanskrit?: string;
   /** Prose meaning on the back. Empty AND no `points`/`cloud` → "coming soon" placeholder. */
   body: string;
@@ -84,9 +116,25 @@ export interface Card {
   points?: string[];
   /** Significations word-cloud BACK (used instead of `points`/`body`). */
   cloud?: CardCloud;
+  /** Significations word-cloud shown on the card FRONT, below the facts (the
+      nakshatra fronts). Distinct from `cloud`, which renders on the BACK. */
+  frontCloud?: CardCloud;
   /** Two-group positive/negative trait cloud BACK (Zodiacs deck; used instead
       of `points`/`body`). Keeps the standard back head. */
   traits?: CardTraitCloud;
+  /** Tabbed BACK face — a row of 2–6 clickable tabs over a content panel
+      (used instead of `points`/`body`/`cloud`). Rendered by `TabbedCardBack`.
+      The back does NOT repeat the front title; a crown (heading + `sanskrit`)
+      shows ONLY when `backTitle` sets a distinct back heading (an answer/theme).
+      Without `backTitle` the back opens straight into the intro/tabs. */
+  tabs?: CardTab[];
+  /** An always-visible lede shown above the tab row on a tabbed back (stays put
+      across tabs) — e.g. a framing note. Only used when `tabs` is present. */
+  tabsIntro?: string;
+  /** An always-visible footnote pinned below the tab body on a tabbed back
+      (persists across tabs) — e.g. a cross-deck pointer. Only used when `tabs`
+      is present. (Distinct from `footnote`, which sits on the card FRONT.) */
+  tabsFootnote?: string;
   /** Back-of-card button opening the deck's interactive diagram view. */
   diagramLink?: CardDiagramLink;
 }

@@ -102,7 +102,7 @@ function AnalyzerDemo() {
   );
 }
 
-export function AnalyzerHero({ onOpen }: { onOpen: (btn: HTMLButtonElement) => void }) {
+export function AnalyzerHero({ onOpen }: { onOpen: (el: HTMLElement) => void }) {
   return (
     <section className="analyzer" id="analyzer" aria-labelledby="analyzer-title">
       <div className="analyzer-tile">
@@ -135,14 +135,24 @@ export function AnalyzerHero({ onOpen }: { onOpen: (btn: HTMLButtonElement) => v
           </ul>
         </div>
 
-        <button
-          type="button"
+        {/* a clickable region, NOT a <button>: it renders a real deck <Card>, whose
+            tabbed backs contain their own <button> tabs — a button-in-button is
+            invalid HTML (hydration error). role=button + key handler keep it accessible. */}
+        <div
           className="analyzer-demo-btn"
+          role="button"
+          tabIndex={0}
           onClick={(e) => onOpen(e.currentTarget)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onOpen(e.currentTarget);
+            }
+          }}
           aria-label="Open the Birth Chart Workspace to enter birth details"
         >
           <AnalyzerDemo />
-        </button>
+        </div>
 
         <button type="button" className="analyzer-cta" onClick={(e) => onOpen(e.currentTarget)}>
           Study a Chart

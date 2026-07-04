@@ -127,15 +127,14 @@ export function resolveFlashcard(
     };
     const deck = DECKS.find((d) => d.id === "yogas");
     if (!deck) return null;
-    // "neecha-bhanga-c<N>" → the Neecha Bhanga card, opened FLIPPED with that
-    // condition's back point highlighted (the conditions live on the scrollable
-    // back, grouped "Major 1-2" … "Minor 6-7")
-    const nb = /^neecha-bhanga-c([1-7])$/.exec(String(id));
+    // "neecha-bhanga-r<N>" → the Neecha Bhanga card, opened FLIPPED with that
+    // rule's back point highlighted (the four rules live on the scrollable back,
+    // each line prefixed "R1:" … "R4:")
+    const nb = /^neecha-bhanga-r([1-4])$/.exec(String(id));
     if (nb) {
       const n = Number(nb[1]);
-      const fact = n <= 2 ? "Major 1-2" : n <= 4 ? "Major 3-4" : n === 5 ? "Major 5" : "Minor 6-7";
       const target = byTitle(deck, "Neecha Bhanga Raja Yoga");
-      return target ? { ...target, highlightFact: fact, flip: true } : null;
+      return target ? { ...target, highlightFact: `R${n}:`, flip: true } : null;
     }
     const title = YOGA_CARDS[String(id)];
     return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };

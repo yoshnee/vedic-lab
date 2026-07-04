@@ -495,11 +495,17 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 
 /* ---------- FLASHCARDS: OVERLAY / DIALOG ---------- */
 .fc-overlay {
-  position: fixed; inset: 0; z-index: 100; background: rgba(4, 10, 7, .76);
+  /* z-index 120 = the modal tier, so the flashcard sits above the chart nav (60)
+     and content when opened from a chart panel link (this modal is now shared
+     with the chart page, replacing the old FlashcardPopover). */
+  position: fixed; inset: 0; z-index: 120; background: rgba(4, 10, 7, .76);
   backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
   display: flex; align-items: center; justify-content: center; padding: 18px;
 }
 .fc-dialog { width: min(540px, 100%); display: flex; flex-direction: column; gap: 14px; }
+/* single-card mode (chart links to one card): no flanking nav arrows, so the
+   dialog hugs the card instead of leaving the browse layout's side gutters. */
+.fc-dialog--single { width: min(380px, 100%); }
 .fc-bar { display: flex; align-items: center; gap: 14px; color: var(--text); }
 .fc-bar-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 15px; }
 .fc-bar-title span { display: flex; flex: none; }
@@ -637,6 +643,17 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   text-align: left; text-wrap: pretty; font-style: italic;
 }
 
+/* significations word cloud on the card FRONT (nakshatra fronts) — sits below
+   the facts, fills the remaining height, sized down a touch from the back cloud,
+   and kept clear of the corner flip cue. Reuses the .sig-* renderer. */
+.fc-front-cloud {
+  width: 100%; flex: 1; min-height: 0; display: flex; margin-top: 8px; padding-bottom: 10px;
+}
+.fc-front-cloud .sig-cloud { flex: 1; }
+.fc-front-cloud .sig-term--big { font-size: 17px; }
+.fc-front-cloud .sig-term--medium { font-size: 12.5px; }
+.fc-front-cloud .sig-term--small { font-size: 10.5px; }
+
 /* characteristics on the card BACK as a bulleted list */
 .fc-points {
   margin: 0; padding-left: 20px; flex: 1; min-height: 0; overflow: auto;
@@ -699,6 +716,114 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .trait-group[data-tone="pos"] .trait-term { color: var(--good); }
 .trait-group[data-tone="neg"] .trait-term { color: var(--bad); }
 
+/* ---------- TABBED CARD BACK (reusable tabbed back face) ----------
+   Ported from design-reference ("Tabbed Card Back"): a row of 2–6
+   tappable tabs over a content panel — a small heading of key facts,
+   a short bullet list, and an optional tag pill. The .fc-back face
+   already supplies the outer shell (radius, border, gradient, gold
+   top-bar), so --tabbed only resets the face padding and the interior
+   lays itself out (crown / tabs / body) exactly like the design.
+   Rendered by TabbedCardBack.tsx. */
+.fc-back--tabbed { padding: 0; gap: 0; }
+
+/* crown — the card's identity strip (title left, Sanskrit right) */
+.tcard-crown {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  padding: 20px 22px 14px; flex: none;
+}
+.tcard-crown .t {
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 22px;
+  letter-spacing: -.01em; color: var(--text); line-height: 1.05;
+}
+.tcard-crown .sk {
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .1em;
+  color: var(--accent); white-space: nowrap;
+}
+
+/* always-visible lede above the tabs (stays put across tabs) */
+.tcard-intro {
+  margin: 0; padding: 0 22px 14px; flex: none;
+  font-family: var(--font-body), sans-serif; font-size: 12.5px; line-height: 1.5;
+  color: var(--text-2); text-wrap: pretty;
+}
+/* crownless tabbed backs (no distinct backTitle): the intro or tab row is the
+   first element, so give it the top breathing room the crown used to provide */
+.tcard-intro:first-child { padding-top: 22px; }
+.tcard-tabs:first-child { margin-top: 20px; }
+
+/* tab row — segmented, 2–6 tabs, equal width, one active */
+.tcard-tabs {
+  display: flex; gap: 3px; margin: 0 14px; padding: 4px; flex: none;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  border: 1px solid var(--border-soft); border-radius: 12px;
+}
+.tcard-tab {
+  flex: 1 1 0; min-width: 0; appearance: none; border: 0; cursor: pointer; background: transparent;
+  color: var(--text-3); font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .02em;
+  padding: 8px 3px; border-radius: 8px; line-height: 1.1; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color .15s ease, background .15s ease;
+}
+.tcard-tab:hover { color: var(--text-2); }
+.tcard-tab[aria-selected="true"] {
+  background: var(--accent); color: #15110a; font-weight: 700;
+  box-shadow: 0 2px 12px -4px var(--accent-deep);
+}
+.tcard-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* content panel — flexes to fill the fixed-height face; scrolls if long */
+.tcard-body { position: relative; padding: 18px 22px 24px; flex: 1; min-height: 0; overflow: auto; }
+.tcard-panel { display: flex; flex-direction: column; gap: 15px; }
+.tcard-panel[hidden] { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .tcard-panel:not([hidden]) { animation: tcard-fade .18s ease both; }
+}
+@keyframes tcard-fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+/* heading area: key facts + optional tag pill */
+.tcard-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding-bottom: 14px; border-bottom: 1px solid var(--border-soft);
+}
+.tcard-facts { display: flex; flex-direction: column; gap: 8px; }
+.tcard-fact { display: flex; align-items: center; gap: 10px; }
+.tcard-fact .k {
+  font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--text-3); width: 74px; flex: none;
+}
+.tcard-fact .v {
+  font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 15px; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.tcard-fact .v i { width: 9px; height: 9px; border-radius: 3px; flex: none; background: var(--dot, var(--accent)); }
+
+.tcard-tag {
+  flex: none; align-self: flex-start; font-family: var(--font-mono), monospace; font-size: 9.5px;
+  letter-spacing: .1em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
+  color: var(--accent); white-space: nowrap;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* bullet list */
+.tcard-bullets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.tcard-bullets li {
+  position: relative; padding-left: 18px; font-size: 14.5px; line-height: 1.5;
+  color: var(--text-2); text-wrap: pretty;
+}
+.tcard-bullets li::before {
+  content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px;
+  border-radius: 1.5px; background: color-mix(in srgb, var(--accent) 80%, transparent); transform: rotate(45deg);
+}
+
+/* always-visible footnote pinned below the tab body (e.g. a cross-deck pointer) */
+.tcard-fn {
+  flex: none; margin: 0; padding: 11px 22px 16px;
+  border-top: 1px solid var(--border-soft);
+  font-family: var(--font-body), sans-serif; font-size: 11px; line-height: 1.45;
+  color: var(--text-3); font-style: italic; text-wrap: pretty;
+}
+
 /* empty (not-yet-written) card body → tasteful "coming soon" */
 .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; flex: 1; text-align: center; }
 .fc-empty-mark { opacity: .5; display: flex; }
@@ -735,6 +860,16 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   .fc-front .fc-icon--planets svg { width: 46px; height: 46px; }
   .fc-fact { padding: 4px 0; grid-template-columns: 78px 1fr; }
   .fc-fact-value { font-size: 10.5px; }
+  /* tabbed back at the ~300px mobile card width (design's .tcard--sm) */
+  .tcard-crown { padding: 16px 18px 12px; }
+  .tcard-crown .t { font-size: 19px; }
+  .tcard-intro { padding: 0 18px 12px; font-size: 12px; }
+  .tcard-tabs { margin: 0 12px; }
+  .tcard-tab { font-size: 10px; padding: 7px 3px; }
+  .tcard-body { padding: 16px 18px 20px; }
+  .tcard-fact .k { width: 66px; }
+  .tcard-bullets li { font-size: 13.5px; }
+  .tcard-fn { padding: 10px 18px 14px; font-size: 10.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fc-inner { transition: none; }

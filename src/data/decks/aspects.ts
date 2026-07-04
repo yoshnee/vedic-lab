@@ -13,7 +13,7 @@ import { PLANET_COLORS, ACCENT } from "@/lib/design/colors";
 
 export const aspects: Deck = {
   id: "aspects",
-  title: "Aspects",
+  title: "Planetary Aspects",
   subtitle: "Drishti",
   motif: "diamond",
   accent: ACCENT,
