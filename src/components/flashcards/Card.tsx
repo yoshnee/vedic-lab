@@ -15,6 +15,7 @@ import {
 import { Svg } from "@/components/Svg";
 import { SignificationsCloud } from "./SignificationsCloud";
 import { TraitCloud } from "./TraitCloud";
+import { TabbedCardBack } from "./TabbedCardBack";
 import type { Card as CardData, CardDiagramLink } from "@/data/decks/types";
 
 function CardIcon({
@@ -67,7 +68,9 @@ export function Card({
   const accent = card.accentColor || deckAccent;
   const hasFacts = !!card.facts?.length;
   const hasCloud = !!card.cloud?.terms.length;
+  const hasFrontCloud = !!card.frontCloud?.terms.length;
   const hasTraits = !!(card.traits?.positive.length || card.traits?.negative.length);
+  const hasTabs = !!card.tabs?.length;
   const hasPoints = !!card.points?.length;
   const hasBody = card.body.trim().length > 0;
   const hasBackContent = hasCloud || hasTraits || hasPoints || hasBody;
@@ -102,6 +105,13 @@ export function Card({
             </dl>
           )}
           {card.footnote && <p className="fc-fn">{card.footnote}</p>}
+          {/* a significations word cloud on the FRONT, below the facts (nakshatra
+              fronts). Reuses the back cloud renderer, sized down for the front. */}
+          {hasFrontCloud && (
+            <div className="fc-front-cloud">
+              <SignificationsCloud data={card.frontCloud!} />
+            </div>
+          )}
           {/* always shown — the card's own self-explanatory flip cue. On data
               cards it's pinned to the corner (CSS) so it clears the facts. */}
           <span className="fc-hint" aria-hidden="true">Flip ↻</span>
@@ -109,48 +119,64 @@ export function Card({
         {/* Cloud backs ("wordsmith") show ONLY the title + the weighted words —
             no Sanskrit, no badge, no prose (owner-directed). The front above
             is identical either way. */}
-        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : hasTraits ? " fc-back--traits" : "")}>
-          <div className="fc-back-head">
-            {card.backIcon && <CardIcon icon={card.backIcon} accent={accent} size={26} />}
-            <span className="fc-back-term">{card.backTitle ?? card.title}</span>
-            {card.sanskrit && !hasCloud && <span className="fc-sk">{card.sanskrit}</span>}
-          </div>
-          {hasCloud ? (
-            <SignificationsCloud data={card.cloud!} />
-          ) : hasTraits ? (
-            <TraitCloud data={card.traits!} />
-          ) : hasPoints ? (
+        <div className={"fc-face fc-back" + (hasCloud ? " fc-back--cloud" : hasTraits ? " fc-back--traits" : hasTabs ? " fc-back--tabbed" : "")}>
+          {hasTabs ? (
+            /* Tabbed back: the crown (title + Sanskrit) + tabs own the whole
+               face, so the standard head/badge are skipped. */
+            <TabbedCardBack
+              title={card.backTitle}
+              sanskrit={card.sanskrit}
+              intro={card.tabsIntro}
+              footnote={card.tabsFootnote}
+              tabs={card.tabs!}
+            />
+          ) : (
             <>
-              <ul className="fc-points">
-                {card.points!.map((p, idx) => (
-                  <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
-                    {p}
-                  </li>
-                ))}
-              </ul>
-              {card.diagramLink && onOpenDiagram && (
-                <button
-                  type="button"
-                  className="fcd-open"
-                  onClick={(e) => { e.stopPropagation(); onOpenDiagram(card.diagramLink!); }}
-                >
-                  {card.diagramLink.label} ↗
-                </button>
+              {!card.hideBackTitle && (
+                <div className="fc-back-head">
+                  {card.backIcon && <CardIcon icon={card.backIcon} accent={accent} size={26} />}
+                  <span className="fc-back-term">{card.backTitle ?? card.title}</span>
+                  {card.sanskrit && !hasCloud && <span className="fc-sk">{card.sanskrit}</span>}
+                </div>
+              )}
+              {hasCloud ? (
+                <SignificationsCloud data={card.cloud!} />
+              ) : hasTraits ? (
+                <TraitCloud data={card.traits!} />
+              ) : hasPoints ? (
+                <>
+                  <ul className="fc-points">
+                    {card.points!.map((p, idx) => (
+                      <li key={idx} data-active={(highlightFact && p.startsWith(highlightFact)) || undefined}>
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                  {card.diagramLink && onOpenDiagram && (
+                    <button
+                      type="button"
+                      className="fcd-open"
+                      onClick={(e) => { e.stopPropagation(); onOpenDiagram(card.diagramLink!); }}
+                    >
+                      {card.diagramLink.label} ↗
+                    </button>
+                  )}
+                </>
+              ) : hasBody ? (
+                <p className="fc-body">{card.body}</p>
+              ) : (
+                <div className="fc-empty">
+                  <Svg className="fc-empty-mark" html={diamond(46, { glow: true })} />
+                  <span className="fc-empty-text">Coming soon</span>
+                  <span className="fc-empty-sub">
+                    This card’s meaning hasn’t been written yet.
+                  </span>
+                </div>
+              )}
+              {card.badge && hasBackContent && !hasCloud && (
+                <span className="fc-badge fc-badge--back">{card.badge}</span>
               )}
             </>
-          ) : hasBody ? (
-            <p className="fc-body">{card.body}</p>
-          ) : (
-            <div className="fc-empty">
-              <Svg className="fc-empty-mark" html={diamond(46, { glow: true })} />
-              <span className="fc-empty-text">Coming soon</span>
-              <span className="fc-empty-sub">
-                This card’s meaning hasn’t been written yet.
-              </span>
-            </div>
-          )}
-          {card.badge && hasBackContent && !hasCloud && (
-            <span className="fc-badge fc-badge--back">{card.badge}</span>
           )}
         </div>
       </div>

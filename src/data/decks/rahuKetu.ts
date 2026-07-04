@@ -78,6 +78,49 @@ export const rahuKetu: Deck = {
       diagramLink: { kind: "nodes", frame: "eclipse", label: "View the eclipse" },
     },
     {
+      // Contested nodal exaltation/debilitation theories — READING-LAYER study
+      // content (owner-provided verbatim); the engine still treats the nodes as
+      // neutral dignity, so this never feeds dignity/strength. Tabbed back with
+      // the always-visible "Contested…" lede above the two theory tabs.
+      title: "Where are Rahu and Ketu exalted?",
+      backTitle: "Nodal Exaltation",
+      body: "",
+      icon: { kind: "conjunction", a: "rahu", b: "ketu" }, // both nodes
+      tabsIntro:
+        "Contested. Classical texts disagree, and some give the nodes no dignity at all since they are shadow planets without rulership.",
+      tabs: [
+        {
+          label: "Taurus / Scorpio",
+          bullets: [
+            "Rahu exalted in Taurus, where insatiable material desire finds its fullest, most grounded expression in fixed, Venus-ruled earth, and Venus is a friend of Rahu.",
+            "Ketu exalted in Scorpio, where the detacher thrives in the sign of depth, transformation, and letting go.",
+            "Mirror: Rahu debilitated in Scorpio, Ketu debilitated in Taurus, the most attachment-heavy sign.",
+          ],
+        },
+        {
+          label: "Gemini / Sagittarius",
+          bullets: [
+            "Rahu exalted in Gemini, where the node of worldly cleverness, ambition, and duality suits Mercury-ruled air.",
+            "Ketu exalted in Sagittarius, where the moksha karaka thrives in Jupiter-ruled wisdom and higher truth.",
+            "Mirror: Rahu debilitated in Sagittarius, Ketu debilitated in Gemini.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "How do you assess the dignity of Rahu and Ketu?",
+      backTitle: "Dignity of Rahu and Ketu",
+      body: "",
+      icon: { kind: "planet", id: "ketu" },
+      accentColor: PLANET_COLORS.ketu,
+      points: [
+        "The nodes don't own signs, so there's no standard dignity table; judge them through the chain",
+        "Node → its dispositor (the sign lord) → that lord's dignity + avasthas + conjunctions",
+        "The node can only tap into as much potential as its dispositor can deliver",
+        "Add any conjunctions or aspects landing on the node as a secondary read",
+      ],
+    },
+    {
       title: "Rahu–Ketu on the 1/7 axis",
       backTitle: "Self ↔ Other",
       body: "",
@@ -143,19 +186,6 @@ export const rahuKetu: Deck = {
         "Daily work, health and enemies vs solitude, release and moksha (“doing vs dissolving”)",
         "Rahu 6th / Ketu 12th: strong survival drive, problem-solving and conquering competitors; prone to overwork and hidden rivals; the soul quietly pulls toward retreat and spiritual progress",
         "Rahu 12th / Ketu 6th: drawn to solitude, foreign lands, escape and the mystical; past-life mastery of fighting enemies and daily struggle; the trap is using the 12th to dodge duty",
-      ],
-    },
-    {
-      title: "How do you assess the dignity of Rahu and Ketu?",
-      body: "",
-      icon: { kind: "planet", id: "ketu" },
-      accentColor: PLANET_COLORS.ketu,
-      points: [
-        "The nodes don't own signs, so there's no standard dignity table; judge them through the chain",
-        "Node → its dispositor (the sign lord) → that lord's dignity + avasthas + conjunctions",
-        "The node can only tap into as much potential as its dispositor can deliver",
-        "Add any conjunctions or aspects landing on the node as a secondary read",
-        "Advanced / later: rashi drishti (sign aspects on the node), cover with the teacher first",
       ],
     },
   ],

@@ -17,15 +17,19 @@ function TraitGroup({
   tone,
   label,
   terms,
+  hideLabel,
 }: {
   tone: "pos" | "neg";
   label: string;
   terms: CloudTerm[];
+  /** Hide the visible group heading (green/red already implies polarity). The
+      screen-reader label on the term list is kept regardless. */
+  hideLabel?: boolean;
 }) {
   const sorted = [...terms].sort((a, b) => TIER[a.weight] - TIER[b.weight]);
   return (
     <div className="trait-group" data-tone={tone}>
-      <span className="trait-label">{label}</span>
+      {!hideLabel && <span className="trait-label">{label}</span>}
       <ul className="trait-terms" aria-label={`${label} traits`}>
         {sorted.map((t) => (
           <li key={t.label} className={`trait-term trait-term--${t.weight}`}>
@@ -40,8 +44,8 @@ function TraitGroup({
 export function TraitCloud({ data }: { data: CardTraitCloud }) {
   return (
     <div className="trait-cloud">
-      <TraitGroup tone="pos" label="Positive" terms={data.positive} />
-      <TraitGroup tone="neg" label="Negative" terms={data.negative} />
+      <TraitGroup tone="pos" label="Positive" terms={data.positive} hideLabel={data.hideLabels} />
+      <TraitGroup tone="neg" label="Negative" terms={data.negative} hideLabel={data.hideLabels} />
     </div>
   );
 }

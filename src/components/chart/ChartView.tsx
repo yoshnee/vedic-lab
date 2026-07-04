@@ -33,7 +33,7 @@ import { DashaRail } from "./DashaRail";
 import { PlanetPanel } from "./PlanetPanel";
 import { Legend } from "./Legend";
 import { OnboardingTour } from "./onboarding/OnboardingTour";
-import { FlashcardPopover } from "./FlashcardPopover";
+import { Deck } from "@/components/flashcards/Deck";
 import { resolveFlashcard, type FlashcardType, type FlashcardTarget } from "@/lib/flashcardLink";
 import type { ChartModel } from "@/lib/chart/types";
 import type { PlanetKey, TransitSet } from "@/core/types";
@@ -492,7 +492,20 @@ export function ChartView({ model }: { model: ChartModel }) {
         <OnboardingTour onClose={closeTour} />
       )}
 
-      {fc && <FlashcardPopover target={fc} onClose={() => setFc(null)} />}
+      {/* the SAME flashcard modal the decks use — single-card by default (pin one
+          card), or full-deck browse for targets that ask for it (e.g. maitri
+          pills). Keyed by the target so a new panel link remounts it fresh. */}
+      {fc && (
+        <Deck
+          key={`${fc.deck.id}:${fc.index}:${fc.flip ? 1 : 0}:${fc.highlightFact ?? ""}:${fc.browse ? 1 : 0}`}
+          deck={fc.deck}
+          initialCard={fc.index}
+          flip={fc.flip}
+          highlightFact={fc.highlightFact}
+          browse={!!fc.browse}
+          onClose={() => setFc(null)}
+        />
+      )}
     </>
   );
 }

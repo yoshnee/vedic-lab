@@ -58,12 +58,16 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   **Planetary States** (Avasthas, concept), and **Aspects (Drishti, 7 cards)** have full content;
   **Shadbala (10)** has full content (overview + six balas + BPHS minimums + Ishta/Kashta +
   reading-the-numbers; owner-provided, no em-dashes by request);
-  **Rahu & Ketu (9)** has full content (owner-provided `rahu_ketu_flashcards.md`: how the nodes
-  form (card 1 — owner-retitled "In depth on Rahu and Ketu", 2026-06) · the eclipse rule · the
+  **Rahu & Ketu (10)** has full content (owner-provided `rahu_ketu_flashcards.md`: how the nodes
+  form (card 1 — owner-retitled "In depth on Rahu and Ketu", 2026-06) · the eclipse rule (card 2) ·
+  **contested nodal exaltation/debilitation** (card 3, "Where are Rahu and Ketu exalted?" — the
+  first deck card to use the reusable TABBED back: an always-visible "Contested…" `tabsIntro` lede
+  over two theory tabs, Taurus/Scorpio and Gemini/Sagittarius; READING-LAYER only, the engine still
+  treats the nodes as neutral dignity so it never feeds strength) · assessing nodal dignity through
+  the dispositor chain (card 4) · the
   six house AXES (1/7 … 6/12: statement fronts, no question marks, that FLIP TO THEIR THEME via
   `Card.backTitle` — "Self ↔ Other" etc. (owner-directed); both node placements + any "Shared"
-  line as points; axis icons highlight BOTH houses via `chart` icon `house: number[]`) ·
-  assessing nodal dignity through the dispositor chain; the nodes' NATURE
+  line as points; axis icons highlight BOTH houses via `chart` icon `house: number[]`); the nodes' NATURE
   stays in the Planets deck, deliberately not duplicated. **Cards 1–2 PULL UP the interactive
   "How Rahu & Ketu Form" diagram** via `Card.diagramLink` back buttons opening an in-deck WIDE
   view — owner-SETTLED 2026-06 after trying both: BUTTON-ONLY, never an in-stack card of its
@@ -84,7 +88,7 @@ Vedic astrology (Jyotish)**. It runs entirely in the browser (no backend) and de
   `NODES_DIAGRAM` in `rahuKetu.ts`; styles in `src/lib/design/nodes.css`);
   **Yogas (16)** has full content (owner-provided `yogas-flashcards.md`: Raja ×2, Parivartana +
   Maha Parivartana, Pancha Mahapurusha, Gaja Kesari / Venus–Mercury / Dhana 2-11 / Lakshmi,
-  Budhaditya, Neecha Bhanga with its numbered conditions 1–7 kept verbatim, and the Grahana family —
+  Budhaditya, Neecha Bhanga with its four rules R1–R4 (owner-revised 2026-07), and the Grahana family —
   overview + the four luminary–node pair cards; the cards double as the rule documentation the
   live yoga engine (`src/core/yoga.ts` `computeYogas` + its detectors) is pinned to, no em-dashes);
   **Karakas (8)** has full content (owner-provided `karakas-flashcards.md`: the Jaimini
@@ -192,7 +196,7 @@ src/
   lib/{site.ts, flashcardLink.ts, geo.ts, time.ts, birth.ts, hooks/useDebounce.ts}
   celestial/celestial.ts  SVG art: body({state,retro}) / diamond / glyph / chart / zodiac / combust / conjunction
   components/
-    Svg.tsx, flashcards/{Card,Deck,DeckGrid,SignificationsCloud,DiagramCard,NodesDiagram}
+    Svg.tsx, flashcards/{Card,Deck,DeckGrid,SignificationsCloud,TraitCloud,TabbedCardBack,DiagramCard,NodesDiagram}
     home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
     chart/                ChartView, NorthIndianChart (generic: frame+planets), HoraChart
@@ -200,8 +204,9 @@ src/
                           (title/type-selector wrapper; branches to HoraChart when value==="d2"),
                           ShadbalaGroups (built, currently UNMOUNTED — owner pulled it),
                           ElementBalance (element tally; rail on desktop, inline on mobile),
-                          DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel,
-                          FlashcardPopover
+                          DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel
+                          (panel links open the SHARED flashcards `Deck` modal — see below;
+                          the old chart-only FlashcardPopover was removed 2026-07)
   data/decks/             registry.ts + per-deck data files
 scripts/                  validate-engine.ts, gen-sample-chart.ts (dev: tsx)
 design-reference/         read-only design handoffs (flashcards, planet-panel, birth-modal, chats)
@@ -242,7 +247,17 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   `lib/geo.ts`, `lib/time.ts`, `lib/birth.ts`, `lib/hooks/useDebounce.ts`.
 - **Flashcards** — full reusable `Card` / `Deck` / `DeckGrid` with the prototype's a11y intact
   (←/→ nav, space/enter flip, Esc close, tab-trap, swipe, `aria-live`). Empty card bodies show a
-  tasteful "coming soon"; coming-soon decks render as non-interactive tiles.
+  tasteful "coming soon"; coming-soon decks render as non-interactive tiles. **`Deck` is the ONE
+  flashcard modal** — the /flashcards grid, the landing deck grid, AND the chart page's panel links
+  all open it, so a card looks and behaves identically everywhere (owner-directed 2026-07 — this
+  retired the chart-only `FlashcardPopover`). Two modes off one component: `browse` (default —
+  full deck paging: nav arrows, progress bar, ←/→, swipe; the /flashcards + landing decks) vs
+  single (`browse={false}` — pins one card, no nav/progress; the chart's link to a specific card,
+  with `flip` to open flipped and `highlightFact` to emphasize a deep-linked row). The chart keys
+  the `<Deck>` by its target so a new panel link remounts it fresh. Card SIZE is one shared value
+  (`.fc-stack` 340×468, the taller/narrower deck look); the dialog widens (`.fc-dialog--single`
+  380 vs the browse 540) only to drop the flanking-arrow gutters. Overlay is `.fc-overlay`
+  (z-index 120, the modal tier, above the chart nav).
 - **Decks** — `Planets` + `Houses` + `Ascendants` + `Combustion` + `Conjunctions` + `Retrogression` +
   `Rahu & Ketu` + `Nakshatras` + `Padas` + `Gandanta` + `Elements` + `Maitri` + `Avasthas` +
   `Aspects` + `Shadbala` +
@@ -257,13 +272,20 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   (`readingNotes.ts`), so the launcher's per-tenet deck diamond opens this deck.)
   (The `signs` deck id is the "Ascendants" / Lagna deck — 3 concept cards + the 12 sign cards combined
   into one; mixed card types in a single deck is fine.)
-  (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet** — front facts are
-  span + ruler + **life aim** (the nakshatra's own main purushartha, read from the engine's
-  `NAKSHATRA_PURUSHARTHA` table — Sutton's column vendored verbatim; NB her last four diverge from
-  dirah/Harness, pinned by an invariant test) + general nature; rulers/spans match the engine's
-  validated `NAKSHATRAS` table.)
-  (The `padas` deck is concept-based — 5 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
-  · "The Alternating Cycle" · "Padas & the Navamsa (D9)" · "Why Padas Matter". The chart's
+  (The `Nakshatras` deck icon/accent per card is its Vimshottari **ruling planet**. The front now
+  shows **Span + Ruler** facts then a significations **word cloud** (`Card.frontCloud`, a front-face
+  `SignificationsCloud`; owner-directed 2026-07: the old **"Life aim"** (`NAKSHATRA_PURUSHARTHA`) and
+  **"Nature"** fact rows were dropped deck-wide — the cloud carries the meaning going forward. The
+  `NAKSHATRA_PURUSHARTHA` table still exists, pinned by its invariant test; `nature` stays as latent
+  per-row reference data). Backs are being converted card by card to the reusable **TABBED** back —
+  **Ashwini (01) is the first** (front cloud + a "Planets" tab and one tab per pada, Pada 1 carries a
+  "Vargottama" pill; each pada tab opens with its navamsa sign as a bullet, owner-directed); the
+  other 26 keep their points backs until content lands. The landing `AnalyzerHero` demo pulls the
+  real Ashwini card (front-only) so it auto-reflects this. rulers/spans match the engine's validated
+  `NAKSHATRAS` table.)
+  (The `padas` deck is concept-based — 4 cards: "What a Pada Is" · "The Four Padas & the Purusharthas"
+  · "The Alternating Cycle" · "Why Padas Matter" (the "Padas & the Navamsa (D9)" card was folded into
+  "Why Padas Matter" 2026-07). The chart's
   `pada N (purushartha)` placement link
   opens the mapping card and highlights the tapped pada's fact row. Pada→purushartha is the
   **per-nakshatra alternating cycle** from Komilla Sutton's *The Nakshatras: The Stars Beyond the
@@ -461,7 +483,7 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   the removed ChartRuler card 2026-07); the **chara-karaka computation and its violet Karaka pill were REMOVED entirely**
   (owner-directed 2026-06: `core/karaka.ts`, `PlanetData.karaka`, the flashcard type `"karaka"`,
   the Legend Markers row, and the `--karaka` token are all gone — the **Karakas flashcard deck
-  itself stays**, it's study content), with a single-card flashcard popover
+  itself stays**, it's study content), with a single-card open of the shared flashcards `Deck` modal
   (house/nakshatra/**pada**/sign/ascendant/**gandanta**/maitri/**avastha** → real deck cards). The placement line reads
   `…° Sign · Nakshatra · pada N (Purushartha)`, each of the last three a tappable card link. (The
   square B/M/N/Y functional-nature badge was REMOVED, owner-directed — visually distracting; the
@@ -516,13 +538,28 @@ the reference when building new UI; `HANDOFF-README.md` is the original handoff 
   (Determination of *which* state a planet is in is engine logic; the art only *draws* a known state.)
 - **`src/data/decks/types.ts`** — `Deck = {id,title,subtitle?,motif,accent,status?,hidden?,cards[]}`
   (`hidden: true` = registered + flashcardLink-resolvable but never tiled on the landing grid);
-  `Card = {title,sanskrit?,body,badge?,accentColor?,icon?,backIcon?,facts?,points?,cloud?,diagramLink?}`; `icon = {kind:'planet',id,retro?}
+  `Card = {title,sanskrit?,backTitle?,hideBackTitle?,body,badge?,accentColor?,icon?,backIcon?,facts?,footnote?,points?,cloud?,frontCloud?,traits?,tabs?,tabsIntro?,tabsFootnote?,diagramLink?}`; `icon = {kind:'planet',id,retro?}
   | {kind:'house',n} | {kind:'diamond'} | {kind:'chart',house: n | n[]} | {kind:'zodiac',symbol} |
   {kind:'combust',planet?} | {kind:'conjunction',a,b} | {kind:'planets',ids[]}` (a row of planet
   spheres — the groupings couples/throuples); `backIcon` repeats a small icon on the BACK's head
   (the Planetary Groupings deck shows its planets on both faces); `status?: 'available' | 'coming-soon'`. `facts` (label/value
   pairs) render on the card **front** (e.g. planet placement + natural relationships); `points`
-  (string[]) render on the **back** as a bulleted list (used instead of `body`); `diagramLink =
+  (string[]) render on the **back** as a bulleted list (used instead of `body`); `hideBackTitle`
+  drops the back-face heading row entirely (a non-tabbed back with just the content, for concept
+  cards whose front already names the topic — e.g. the Gandanta deck's Handoff / Why It Matters /
+  Planets & Lagna cards); `tabs`
+  (`CardTab[]` = `{label, facts?: {label,value,dot?}[], bullets?, tag?}`) render the **back** as a
+  reusable **tabbed** face — a row of 2–6 clickable tabs over a panel (key-fact heading with an
+  optional per-value color dot + short bullet list + optional tag pill), ported from
+  design-reference "Tabbed Card Back" and rendered by `TabbedCardBack.tsx` (the `.fc-back` face
+  supplies the outer shell; WAI-ARIA tabs pattern, roving tabindex, ←/→ move tabs; opens on tab 1
+  per card). The tabbed back does NOT repeat the front title: a crown shows ONLY when the card sets
+  a distinct `backTitle` (else it opens straight into the tabs); `tabsIntro` is an always-visible
+  lede above the tabs and `tabsFootnote` an always-visible line pinned below the body (both persist
+  across tab switches). Live users: the **Rahu & Ketu** exaltation card and the Nakshatras'
+  **Ashwini** card. `frontCloud` (`CardCloud`) renders a `SignificationsCloud` on the card **front**
+  below the facts (the nakshatra fronts).
+  `diagramLink =
   {kind:'nodes',frame:'formation'|'eclipse',label}` adds a back button that pulls up the deck's
   interactive diagram view. **Add a deck = new
   data file + one entry in `registry.ts`. No component changes.**
@@ -734,17 +771,21 @@ Build in this order; everything from step 2 down reads from the engine.
   Mercury orb is 14° and the engine's combust flag uses the deck's 1°, so pill and flag
   never contradict; entry lands on BOTH Sun and Mercury, pill label "Budhaditya"; the
   Kendra/Trikona quality tag is a future strength tag, not a gate), and **Neecha Bhanga**
-  (per DEBILITATED classical planet — nodes excluded — one pill PER satisfied condition
-  C1–C7, labeled "Neecha Bhanga C<n>" with `condition` + `tier` on the YogaRef; rescuers
-  (dispositor / exaltation-lord / exalted occupant) resolved from the same canonical
-  dignity tables that generate the deck card's back table; Kendra frame is Lagna OR Moon
-  — wider than Mahapurusha, deliberately; C6/C7 reuse `vedic.aspectsOnto`, never
-  reimplemented; debilitated Mercury skips C3/C4/C7 (self exaltation-lord); deduped by
-  (rescuer, mechanism conjunct|kendra|aspect) keeping the lowest condition — in practice
-  only Venus-in-Virgo's conjunct Mercury, C1+C5 → C1; the pill opens the Neecha Bhanga
-  card PRE-FLIPPED with that condition's back point highlighted via id "neecha-bhanga-c<n>" —
-  the conditions live on the card's scrollable back (the front was clipping), highlighted by
-  prefix-matched `highlightFact` + `FlashcardTarget.flip`), and the
+  (per DEBILITATED classical planet — nodes excluded — one pill PER activated rule
+  R1–R4, labeled "Neecha Bhanga R<n>" with `condition` = the rule number on the YogaRef;
+  the two rescuers (dispositor / exaltation-lord) resolve from the same canonical dignity
+  tables that generate the deck card's back table; Kendra frame is Lagna OR Moon — wider
+  than Mahapurusha, deliberately. The four rules (owner-directed 2026-07, replacing the
+  earlier 7-condition scheme): R1 dispositor in a Kendra · R2 exaltation-lord in a Kendra ·
+  R3 the planet conjunct OR aspected by its dispositor or exaltation-lord (merged into ONE
+  pill; the aspect half reuses `vedic.aspectsOnto`, never reimplemented) · R4 parivartana
+  (the dispositor sits in a sign the debilitated planet rules). Dropped vs before: the
+  exalted-occupant condition and the conjunct/Kendra/aspect pill-splitting; debilitated
+  Mercury skips R2 and the exaltation-lord half of R3 (self exaltation-lord). The pill opens
+  the Neecha Bhanga card PRE-FLIPPED with that rule's back point highlighted via id
+  "neecha-bhanga-r<n>" — the four rules live on the card's scrollable back (the front was
+  clipping), highlighted by prefix-matched `highlightFact` ("R<n>:") + `FlashcardTarget.flip`),
+  and the
   **Venus & Mercury Conjunction** Dhana yoga (whole-sign conjunction, no orb, gated to the
   2nd/5th/9th/11th house from the lagna; entry lands on BOTH, id "venus-mercury"), and
   **Dhana 2/11** (the frame's 2nd and 11th house-lords connected by conjunction (any
@@ -757,10 +798,10 @@ Build in this order; everything from step 2 down reads from the engine.
   FIRST yoga pills; a new-moon triple gives the node two pills; each pill opens ITS pair's deck
   card via id "grahana-<luminary>-<node>"; the card's eclipse layer (~18°/~12° degree-based) is a
   documented future flag, not v1). Each formed yoga lands on `PlanetData.yogas[]` (`YogaRef` = key/name/flashcard + optional
-  condition/tier; `computeYogas(planet, {dignity, house, signs, longitudes, lagnaSign})`)
+  condition (Neecha Bhanga rule) / mode (Dhana) / intensity (Grahana); `computeYogas(planet, {dignity, house, signs, longitudes, lagnaSign})`)
   and renders as a gold pill on the panel's Yogas row opening its deck card via
   `flashcardLink.ts` type `"yoga"` (ids "pancha-mahapurusha" | "gaja-kesari" |
-  "budhaditya" | "neecha-bhanga-c<n>" | "grahana-<lum>-<node>"). Further detectors (Raja, …) follow the same seam:
+  "budhaditya" | "neecha-bhanga-r<n>" | "grahana-<lum>-<node>"). Further detectors (Raja, …) follow the same seam:
   rule pinned to the owner's Yogas deck card (the Hora-Prakash reference has NO yoga
   module), detector in `yoga.ts`, tests in `__tests__/yoga.test.ts`.
 - **Divisional charts beyond D2/D3/D7/D9/D10/D12/D30** — the shipped set is live (`core/divisional.ts` +

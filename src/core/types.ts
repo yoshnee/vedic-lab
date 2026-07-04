@@ -81,12 +81,11 @@ export interface Avastha {
    functions of already-computed placement facts, so it can be reused for
    transit and divisional contexts later. */
 export interface YogaRef {
-  key: string; // stable detector key, e.g. "ruchaka", "neecha-bhanga-c2"
-  name: string; // pill label, e.g. "Ruchaka Mahapurusha Yoga", "Neecha Bhanga C2"
+  key: string; // stable detector key, e.g. "ruchaka", "neecha-bhanga-r3"
+  name: string; // pill label, e.g. "Ruchaka Mahapurusha Yoga", "Neecha Bhanga R3"
   flashcard: { type: "yoga"; id: string }; // tap target → onOpenCard("yoga", id)
-  /* Neecha Bhanga only: which of the seven conditions fired, and its weight */
-  condition?: number; // 1–7
-  tier?: "major" | "minor"; // major = C1–C5 (conjunction/Kendra), minor = C6–C7 (aspect)
+  /* Neecha Bhanga only: which of the four rules (R1–R4) fired */
+  condition?: number; // 1–4
   /* Lord-relationship yogas (Dhana 2/11) only: which connection mode fired */
   mode?: "conjunction" | "mutual-aspect" | "exchange";
   /* Grahana only: intensity by orb (the deck card's tiers — ≤5° / ≤10° / same sign) */

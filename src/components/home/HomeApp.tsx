@@ -29,7 +29,7 @@ const FEATURED_DECK_IDS = ["houses", "planets", "zodiacs", "rahu-ketu", "maitri"
 export function HomeApp() {
   const [openDeck, setOpenDeck] = useState<Deck | null>(null);
   const [analyzer, setAnalyzer] = useState(false);
-  const opener = useRef<HTMLButtonElement | null>(null);
+  const opener = useRef<HTMLElement | null>(null); // opener may be a button OR the demo's role=button div
   const submitSeq = useRef(0); // invalidates an in-flight compute if the modal is closed
   const router = useRouter();
   const { setModel, setLoading, setError, loading, error } = useChart();
@@ -48,8 +48,8 @@ export function HomeApp() {
     opener.current = btn;
     setOpenDeck(deck);
   };
-  const onOpenAnalyzer = (btn: HTMLButtonElement) => {
-    opener.current = btn;
+  const onOpenAnalyzer = (el: HTMLElement) => {
+    opener.current = el;
     setError(null);
     setAnalyzer(true);
   };

@@ -33,7 +33,7 @@ export const padas: Deck = {
       ],
       points: [
         "A pada pinpoints where within a nakshatra a planet actually sits",
-        "Computed straight from the longitude — which 3°20′ quarter it falls in",
+        "Computed straight from the longitude: which 3°20′ quarter it falls in",
         "The finest standard subdivision used in natal reading",
         "108 padas works out to 9 per sign (9 × 12 = 108)",
       ],
@@ -44,16 +44,18 @@ export const padas: Deck = {
       icon: { kind: "diamond" },
       body: "",
       facts: [
-        { label: "Pada 1", value: "Dharma — or Moksha" },
-        { label: "Pada 2", value: "Artha — or Kama" },
-        { label: "Pada 3", value: "Kama — or Artha" },
-        { label: "Pada 4", value: "Moksha — or Dharma" },
+        { label: "Pada 1", value: "Dharma or Moksha" },
+        { label: "Pada 2", value: "Artha or Kama" },
+        { label: "Pada 3", value: "Kama or Artha" },
+        { label: "Pada 4", value: "Moksha or Dharma" },
       ],
       points: [
-        "Every nakshatra's four padas touch all four aims of life — the order depends on the nakshatra",
-        "Dharma — purpose and right action · Artha — wealth and security · Kama — desire and creativity · Moksha — liberation",
+        "Every nakshatra's four padas touch all four aims of life; the order depends on the nakshatra",
+        "Dharma: purpose and right action",
+        "Artha: wealth and security",
+        "Kama: desire and creativity",
+        "Moksha: liberation",
         "The purushartha colors how that planet pursues its agenda: purpose, wealth, desire, or liberation",
-        "Which order a given nakshatra runs is the alternating cycle — see the next card",
       ],
     },
     {
@@ -64,30 +66,13 @@ export const padas: Deck = {
       facts: [
         { label: "Odd nakshatras", value: "Dharma → Artha → Kama → Moksha" },
         { label: "Even nakshatras", value: "Moksha → Kama → Artha → Dharma" },
-        { label: "From Shravana", value: "Parity flips — Abhijit counts" },
+        { label: "From Shravana", value: "Parity flips (Abhijit counts)" },
       ],
       points: [
-        "Ashwini (1st) runs forward — Dharma, Artha, Kama, Moksha; Bharani (2nd) reverses — so Bharani pada 2 is Kama",
+        "Ashwini (1st) runs forward: Dharma, Artha, Kama, Moksha; Bharani (2nd) reverses, so Bharani pada 2 is Kama",
         "The zigzag holds through Uttara Ashadha (21st)",
         "Pada-less Abhijit is next in the cycle, so Shravana restarts forward and the odd/even rule flips for the last six",
         "From Shravana on: Shravana, Shatabhisha and Uttara Bhadrapada run forward; Dhanishta, Purva Bhadrapada and Revati reverse",
-        "Tabled in Komilla Sutton's “The Nakshatras: The Stars Beyond the Zodiac”",
-      ],
-    },
-    {
-      title: "Padas & the Navamsa (D9)",
-      sanskrit: "Navāṁśa · D9",
-      icon: { kind: "diamond" },
-      body: "",
-      facts: [
-        { label: "Each pada", value: "= one navamsa" },
-        { label: "Count", value: "108 padas = 108 navamsas" },
-        { label: "Bridge", value: "Nakshatra system → the D9 chart" },
-      ],
-      points: [
-        "A planet's pada tells you its navamsa (D9) sign",
-        "The navamsa is the most important divisional chart — it refines and stress-tests the natal promise",
-        "Because padas and navamsas share the same 3°20′ grid, knowing the pada places the planet in D9",
       ],
     },
     {
@@ -101,7 +86,8 @@ export const padas: Deck = {
       points: [
         "Two planets in the same nakshatra but different padas express quite differently",
         "The pada narrows the nakshatra's broad traits down to a specific quarter",
-        "It flags the planet's aim-of-life flavor — dharma, artha, kama, or moksha",
+        "It flags the planet's aim-of-life flavor: dharma, artha, kama, or moksha",
+        "A planet's pada tells you its navamsa (D9) sign, because padas and navamsas share the same 3°20′ grid",
         "And it sets the planet's D9 sign, which is essential for any deeper analysis",
       ],
     },

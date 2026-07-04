@@ -502,7 +502,7 @@ export function PlanetPanel({
                             style={{ "--pc": "var(--accent)" } as React.CSSProperties}
                             title={
                               y.condition
-                                ? `${y.tier === "major" ? "Major" : "Minor"} condition ${y.condition} — tap for the rule`
+                                ? `Rule ${y.condition} — tap for the rule`
                                 : y.mode
                                   ? `Formed by ${y.mode === "mutual-aspect" ? "mutual aspect" : y.mode === "exchange" ? "exchange (parivartana)" : "conjunction"} — tap for the rule`
                                   : y.intensity

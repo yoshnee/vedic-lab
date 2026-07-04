@@ -1,7 +1,7 @@
 /* ============================================================
    yoga.ts — yoga detection. Detectors: Pancha Mahapurusha (Lagna frame),
    Gaja Kesari (Moon frame), Budhaditya (degree separation), Neecha Bhanga
-   (per-condition pills on a debilitated planet; Lagna OR Moon Kendras),
+   (per-rule pills R1–R4 on a debilitated planet; Lagna OR Moon Kendras),
    Venus & Mercury Conjunction (house-gated whole-sign conjunction),
    Dhana 2/11 (house-lord relationship: conjunction / mutual aspect / exchange),
    Grahana (luminary + node sharing a sign; orb grades intensity, never gates).
@@ -22,7 +22,6 @@ import { SIGN_RULER, EXALTATION, DEBILITATION } from "./constants";
 import { aspectsOnto } from "./vedic";
 
 const KENDRAS = new Set([1, 4, 7, 10]);
-const SEVEN: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
 /** Whole-sign position of `sign` counted from `fromSign` (1–12). */
 const positionFrom = (sign: number, fromSign: number) => ((sign - fromSign + 12) % 12) + 1;
 
@@ -159,28 +158,27 @@ export function dhana2and11(
   return { key: "dhana-2-11", name: "Dhana Yoga", flashcard: { type: "yoga", id: "dhana-2-11" }, mode };
 }
 
-/** Neecha Bhanga Raja Yoga (the Yogas deck's card; its numbered conditions
-    1–7 are the spec). Runs per DEBILITATED planet (the seven classicals only —
-    nodes are never debilitated, dignityOf gives them "neutral"). Three rescuer
-    identities are resolved from the same canonical dignity tables that
-    generate the card's back-side reference table — dispositor = lord of the
-    debilitation sign, exaltation-lord = lord of the planet's exaltation sign,
-    exalted occupant = the planet exalted in the debilitation sign (none
-    exalts in Scorpio → the Moon's C5 can never fire). Conditions:
-      Major — C1 dispositor conjunct D (same sign) · C2 dispositor in a Kendra
-      from the LAGNA OR THE MOON (wider than Mahapurusha, deliberately) ·
-      C3/C4 the same two for the exaltation-lord · C5 exalted occupant
-      conjunct D.
-      Minor — C6 dispositor casts graha drishti onto D's sign · C7 the
-      exaltation-lord does (reuses vedic.aspectsOnto — never reimplemented).
+/** Neecha Bhanga Raja Yoga (the Yogas deck's card; its four rules R1–R4 are the
+    spec). Runs per DEBILITATED planet (the seven classicals only — nodes are
+    never debilitated, dignityOf gives them "neutral"). Two rescuer identities
+    are resolved from the same canonical dignity tables that generate the card's
+    back-side reference table — dispositor = lord of the debilitation sign,
+    exaltation-lord = lord of the planet's exaltation sign. The rules:
+      R1 the dispositor sits in a Kendra from the LAGNA OR THE MOON (wider than
+         Mahapurusha, deliberately).
+      R2 the exaltation-lord does the same.
+      R3 the debilitated planet is conjunct (same sign) OR aspected (graha
+         drishti, via vedic.aspectsOnto) by its dispositor or exaltation-lord —
+         ONE rule, so ONE pill however many of those four sub-cases hold.
+      R4 parivartana: the debilitated planet and its dispositor exchange signs
+         (the dispositor occupies a sign the debilitated planet rules).
     Mercury self-reference: debilitated Mercury's exaltation-lord is Mercury
-    itself, so C3/C4/C7 are skipped entirely.
-    Dedupe: one pill per (rescuer, mechanism conjunct|kendra|aspect), keeping
-    the LOWEST condition number — in practice only debilitated Venus, where
-    Mercury is both dispositor and exalted occupant, so a conjunct Mercury
-    collapses C1+C5 into C1. Different mechanisms stay separate pills by
-    design (conjunct + Kendra → two pills). Each surviving condition becomes
-    its own YogaRef carrying `condition` + `tier`. */
+    itself, so R2 and the exaltation-lord half of R3 are skipped.
+    One YogaRef per activated rule (carrying `condition` = the rule number 1–4);
+    the chart surfaces one pill each, multiple pills when multiple rules fire.
+    NB vs the earlier 7-condition scheme (owner-directed 2026-07): conjunct /
+    Kendra / aspect are no longer separate pills (merged into R3), the
+    exalted-occupant condition is dropped, and parivartana (R4) is new. */
 export function neechaBhanga(
   planet: PlanetKey,
   dignity: Dignity,
@@ -192,40 +190,32 @@ export function neechaBhanga(
   const dSign = signs[planet]; // === DEBILITATION[planet] when debilitated
   const dispositor = SIGN_RULER[dSign - 1];
   const exaltLord = SIGN_RULER[EXALTATION[planet]! - 1];
-  const occupant = SEVEN.find((q) => EXALTATION[q] === dSign) ?? null;
-  const selfExaltLord = exaltLord === planet; // Mercury only: skip C3/C4/C7
+  const selfExaltLord = exaltLord === planet; // Mercury only: its exaltation-lord is itself
 
   const moonSign = signs.moon;
   const inKendra = (s: number) =>
     KENDRAS.has(positionFrom(s, lagnaSign)) || KENDRAS.has(positionFrom(s, moonSign));
   const aspectingD = new Set(aspectsOnto(dSign, signs).map((a) => a.planet));
+  const conjunctOrAspects = (rescuer: PlanetKey) =>
+    signs[rescuer] === dSign || aspectingD.has(rescuer);
 
-  type Mechanism = "conjunct" | "kendra" | "aspect";
-  const fired: { n: number; rescuer: PlanetKey; mechanism: Mechanism }[] = [];
-  if (signs[dispositor] === dSign) fired.push({ n: 1, rescuer: dispositor, mechanism: "conjunct" });
-  if (inKendra(signs[dispositor])) fired.push({ n: 2, rescuer: dispositor, mechanism: "kendra" });
-  if (!selfExaltLord && signs[exaltLord] === dSign) fired.push({ n: 3, rescuer: exaltLord, mechanism: "conjunct" });
-  if (!selfExaltLord && inKendra(signs[exaltLord])) fired.push({ n: 4, rescuer: exaltLord, mechanism: "kendra" });
-  if (occupant && signs[occupant] === dSign) fired.push({ n: 5, rescuer: occupant, mechanism: "conjunct" });
-  if (aspectingD.has(dispositor)) fired.push({ n: 6, rescuer: dispositor, mechanism: "aspect" });
-  if (!selfExaltLord && aspectingD.has(exaltLord)) fired.push({ n: 7, rescuer: exaltLord, mechanism: "aspect" });
+  const fired: number[] = [];
+  // R1: the debilitation-sign lord (dispositor) sits in a Kendra from Lagna or Moon
+  if (inKendra(signs[dispositor])) fired.push(1);
+  // R2: the exaltation-sign lord sits in a Kendra from Lagna or Moon (n/a for Mercury)
+  if (!selfExaltLord && inKendra(signs[exaltLord])) fired.push(2);
+  // R3: the planet is conjunct OR aspected by its dispositor or exaltation-lord (one rule)
+  if (conjunctOrAspects(dispositor) || (!selfExaltLord && conjunctOrAspects(exaltLord)))
+    fired.push(3);
+  // R4: parivartana — the dispositor occupies a sign the debilitated planet rules
+  if (SIGN_RULER[signs[dispositor] - 1] === planet) fired.push(4);
 
-  // dedupe by (rescuer, mechanism), keeping the lowest condition number
-  const byKey = new Map<string, { n: number; rescuer: PlanetKey; mechanism: Mechanism }>();
-  for (const f of fired) {
-    const k = `${f.rescuer}:${f.mechanism}`;
-    if (!byKey.has(k) || byKey.get(k)!.n > f.n) byKey.set(k, f);
-  }
-
-  return [...byKey.values()]
-    .sort((a, b) => a.n - b.n)
-    .map((f) => ({
-      key: `neecha-bhanga-c${f.n}`,
-      name: `Neecha Bhanga C${f.n}`,
-      flashcard: { type: "yoga" as const, id: `neecha-bhanga-c${f.n}` },
-      condition: f.n,
-      tier: f.n <= 5 ? ("major" as const) : ("minor" as const),
-    }));
+  return fired.map((n) => ({
+    key: `neecha-bhanga-r${n}`,
+    name: `Neecha Bhanga R${n}`,
+    flashcard: { type: "yoga" as const, id: `neecha-bhanga-r${n}` },
+    condition: n,
+  }));
 }
 
 /** Budhaditya (the Yogas deck's "Budhaditya Yoga" card): Sun and Mercury in

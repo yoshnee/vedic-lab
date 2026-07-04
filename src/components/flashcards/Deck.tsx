@@ -1,10 +1,20 @@
 "use client";
 
-/* The open deck — a modal card stack. Ported from the prototype with
-   its accessibility intact: arrow-key nav, space/enter to flip, Esc to
-   close, focus tab-trap, swipe gestures, and an aria-live position
-   announcement. Count-independent, so the 27-card Nakshatra deck works
-   the same as any other. */
+/* The ONE flashcard modal — a single reusable card stack used everywhere a card
+   opens: the /flashcards grid, the landing deck grid, AND the chart page's panel
+   links (this replaced the old separate chart-only FlashcardPopover, so a card
+   looks and behaves identically wherever it launches). Accessibility intact:
+   arrow-key nav, space/enter to flip, Esc to close, focus tab-trap, swipe
+   gestures, aria-live position announcement.
+
+   Two modes off one component:
+   - browse (default, the /flashcards + landing decks): page the whole deck —
+     side nav arrows, progress bar, ←/→ keys, swipe.
+   - single (browse=false, the chart's link to one specific card): pin the
+     `initialCard`, no nav/progress. `flip` opens it already flipped and
+     `highlightFact` emphasizes a row (chart deep-links land on the exact fact).
+     To re-target while open, key the element so it remounts fresh.
+   Count-independent, so the 27-card Nakshatra deck works like any other. */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { diamond } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
@@ -16,14 +26,25 @@ export function Deck({
   deck,
   onClose,
   initialCard = 0,
+  flip = false,
+  highlightFact,
+  browse = true,
 }: {
   deck: DeckData;
   onClose: () => void;
   initialCard?: number;
+  /** Open already flipped — chart deep-links whose highlight lives on the back. */
+  flip?: boolean;
+  /** Emphasize a front fact-row / back point on the INITIAL card only (chart links). */
+  highlightFact?: string;
+  /** Browse the whole deck (nav arrows, progress bar, ←/→, swipe). When false,
+      pin the single `initialCard` with no nav — the chart's link to one specific
+      card. Default true (the /flashcards + landing decks). */
+  browse?: boolean;
 }) {
   const n = deck.cards.length;
   const [i, setI] = useState(() => Math.max(0, Math.min(n - 1, initialCard)));
-  const [flipped, setFlipped] = useState(false);
+  const [flipped, setFlipped] = useState(flip);
   // the in-deck diagram view (opened from a card back's diagramLink button);
   // navigating away or Esc returns to the cards
   const [diagramView, setDiagramView] = useState<CardDiagramLink | null>(null);
@@ -43,10 +64,10 @@ export function Deck({
     },
     [n],
   );
-  const flip = useCallback(() => setFlipped((f) => !f), []);
+  const toggleFlip = useCallback(() => setFlipped((f) => !f), []);
 
-  /* keyboard: arrows nav, space/enter flip (unless on a real button), esc
-     closes the diagram view first, then the deck; tab trap */
+  /* keyboard: arrows nav (browse only), space/enter flip (unless on a real
+     button), esc closes the diagram view first, then the modal; tab trap */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -54,14 +75,9 @@ export function Deck({
         else onClose();
         return;
       }
-      if (e.key === "ArrowRight") {
+      if (browse && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
         e.preventDefault();
-        go(1);
-        return;
-      }
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        go(-1);
+        go(e.key === "ArrowRight" ? 1 : -1);
         return;
       }
       if (e.key === " " || e.key === "Spacebar" || e.key === "Enter") {
@@ -70,7 +86,7 @@ export function Deck({
         if (target.closest && target.closest("button,input,label")) return;
         if (diagramRef.current) return; // the diagram view has no card to flip
         e.preventDefault();
-        flip();
+        toggleFlip();
         return;
       }
       if (e.key === "Tab") {
@@ -93,7 +109,7 @@ export function Deck({
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [go, flip, onClose]);
+  }, [go, toggleFlip, onClose, browse]);
 
   /* focus the card on open; re-focus when the diagram view toggles (the
      clicked button unmounts, so focus would fall to the body) */
@@ -104,31 +120,25 @@ export function Deck({
 
   /* announce position + face */
   useEffect(() => {
-    if (liveRef.current)
-      liveRef.current.textContent = diagramView
-        ? "Diagram: How Rahu and Ketu Form."
-        : "Card " +
-          (i + 1) +
-          " of " +
-          n +
-          ". " +
-          (flipped ? "Meaning" : "Term") +
-          ": " +
-          deck.cards[i].title +
-          ".";
-  }, [i, flipped, n, deck, diagramView]);
+    if (!liveRef.current) return;
+    liveRef.current.textContent = diagramView
+      ? "Diagram: How Rahu and Ketu Form."
+      : (browse ? "Card " + (i + 1) + " of " + n + ". " : "") +
+        (flipped ? "Meaning" : "Term") + ": " + deck.cards[i].title + ".";
+  }, [i, flipped, n, deck, diagramView, browse]);
 
   function onTouchStart(e: React.TouchEvent) {
     const t = e.touches[0];
     touch.current = { x: t.clientX, y: t.clientY };
     swiped.current = false;
   }
-  // Touch only NAVIGATES (horizontal swipe). The flip happens on the click the
-  // browser synthesizes from a tap — see the card's onClick. (Previously a tap
-  // flipped here AND on that synthesized click, double-flipping so the card
+  // Touch only NAVIGATES (horizontal swipe, browse mode). The flip happens on the
+  // click the browser synthesizes from a tap — see the card's onClick. (Previously
+  // a tap flipped here AND on that synthesized click, double-flipping so the card
   // looked like it never flipped on mobile.) A vertical scroll on a long card
   // moves the touch, so the browser fires no click and nothing flips.
   function onTouchEnd(e: React.TouchEvent) {
+    if (!browse) return;
     const t = e.changedTouches[0];
     const dx = t.clientX - touch.current.x;
     const dy = t.clientY - touch.current.y;
@@ -149,7 +159,10 @@ export function Deck({
       }}
     >
       <div
-        className={"fc-dialog" + (diagramView ? " fc-dialog--wide" : "")}
+        className={
+          "fc-dialog" +
+          (diagramView ? " fc-dialog--wide" : browse ? "" : " fc-dialog--single")
+        }
         role="dialog"
         aria-modal="true"
         aria-label={deck.title + " flashcards"}
@@ -160,27 +173,33 @@ export function Deck({
           <span className="fc-bar-title">
             <Svg html={diamond(22, { glow: true })} /> {deck.title}
           </span>
-          <span className="fc-progress" aria-hidden="true">
-            {String(i + 1).padStart(2, "0")}
-            <span> / {String(n).padStart(2, "0")}</span>
-          </span>
+          {browse && (
+            <span className="fc-progress" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+              <span> / {String(n).padStart(2, "0")}</span>
+            </span>
+          )}
           <button className="fc-close" onClick={onClose} aria-label="Close deck">
             ✕
           </button>
         </header>
-        <div className="fc-progbar">
-          <i style={{ width: ((i + 1) / n) * 100 + "%", background: accent }} />
-        </div>
+        {browse && (
+          <div className="fc-progbar">
+            <i style={{ width: ((i + 1) / n) * 100 + "%", background: accent }} />
+          </div>
+        )}
 
         <div className="fc-stage">
-          <button
-            className="fc-nav"
-            onClick={() => go(-1)}
-            disabled={i === 0}
-            aria-label="Previous card"
-          >
-            ‹
-          </button>
+          {browse && (
+            <button
+              className="fc-nav"
+              onClick={() => go(-1)}
+              disabled={i === 0}
+              aria-label="Previous card"
+            >
+              ‹
+            </button>
+          )}
 
           {diagramView ? (
             /* the diagram view (a card-back button, with a preset frame):
@@ -193,8 +212,8 @@ export function Deck({
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
             >
-              <span className="fc-ghost fc-ghost--2" aria-hidden="true" />
-              <span className="fc-ghost fc-ghost--1" aria-hidden="true" />
+              {browse && <span className="fc-ghost fc-ghost--2" aria-hidden="true" />}
+              {browse && <span className="fc-ghost fc-ghost--1" aria-hidden="true" />}
               <div
                 className="fc-cardbtn"
                 role="button"
@@ -211,27 +230,30 @@ export function Deck({
                 onClick={() => {
                   // a swipe just navigated; don't let its trailing click also flip
                   if (swiped.current) { swiped.current = false; return; }
-                  flip();
+                  toggleFlip();
                 }}
               >
                 <Card
                   card={card}
                   deckAccent={deck.accent}
                   flipped={flipped}
+                  highlightFact={i === initialCard ? highlightFact : undefined}
                   onOpenDiagram={setDiagramView}
                 />
               </div>
             </div>
           )}
 
-          <button
-            className="fc-nav"
-            onClick={() => go(1)}
-            disabled={i === n - 1}
-            aria-label="Next card"
-          >
-            ›
-          </button>
+          {browse && (
+            <button
+              className="fc-nav"
+              onClick={() => go(1)}
+              disabled={i === n - 1}
+              aria-label="Next card"
+            >
+              ›
+            </button>
+          )}
         </div>
 
         <div className="fc-sr" aria-live="polite" ref={liveRef} />

@@ -798,40 +798,18 @@ button.pchip--yoga { padding: 5px 11px; font: inherit; font-size: 12.5px; font-w
   .drow .dsk { display: none; }
 }
 
-/* ============================================================
-   FLASHCARD POPOVER (single card; reuses the fc-* card faces from app.css)
-   ============================================================ */
-.fcpop-overlay { position: fixed; inset: 0; z-index: 120; background: rgba(4, 10, 7, .78);
-  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
-  display: flex; align-items: center; justify-content: center; padding: 20px; animation: fcpop-fade .22s ease; }
-@keyframes fcpop-fade { from { opacity: 0; } to { opacity: 1; } }
-.fcpop-dialog { width: min(380px, 100%); display: flex; flex-direction: column; gap: 13px; }
-.fcpop-bar { display: flex; align-items: center; gap: 12px; color: var(--text); }
-.fcpop-title { display: flex; align-items: center; gap: 9px; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 13.5px; }
-.fcpop-title span { display: flex; flex: none; }
-.fcpop-kind { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-left: auto; }
-.fcpop-close { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 14px; cursor: pointer; transition: .2s; line-height: 1; }
-.fcpop-close:hover { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
-.fcpop-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.fcpop-stack { position: relative; width: 100%; height: min(60vh, 420px); padding: 0; border: 0; background: transparent; cursor: pointer; display: block; animation: fcpop-rise .26s cubic-bezier(.2, .8, .2, 1); }
-@keyframes fcpop-rise { from { transform: translateY(10px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
-.fcpop-stack:focus-visible { outline: none; }
-.fcpop-stack:focus-visible .fc-face { outline: 2.5px solid var(--accent); outline-offset: 3px; }
-.fcpop-hint { font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .08em; color: var(--text-3); text-align: center; margin: 0; }
-/* Browse mode (target.browse): prev/next paging through the whole deck */
-.fcpop-nav { display: flex; align-items: center; justify-content: center; gap: 16px; }
-.fcpop-nav-btn { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 18px; cursor: pointer; transition: .2s; line-height: 1; }
-.fcpop-nav-btn:hover:not(:disabled) { color: var(--text); border-color: var(--accent); background: var(--surface-2); }
-.fcpop-nav-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.fcpop-nav-btn:disabled { opacity: .35; cursor: default; }
-.fcpop-count { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .12em; color: var(--text-2); min-width: 44px; text-align: center; }
+/* The chart's flashcards now use the shared Deck modal (app.css .fc-* / .fc-overlay);
+   the old chart-only .fcpop-* popover was removed. This one keyframe survived the
+   deletion because the Legend overlay below animates with it (renamed from
+   fcpop-fade). */
+@keyframes overlay-fade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ============================================================
    LEGEND DRAWER (global symbol key — slide-in from the right)
    ============================================================ */
 .legend-overlay { position: fixed; inset: 0; z-index: 130; background: rgba(4, 10, 7, .62);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; justify-content: flex-end;
-  animation: fcpop-fade .2s ease; }
+  animation: overlay-fade .2s ease; }
 .legend { width: min(420px, 92vw); height: 100%; overflow-y: auto; display: flex; flex-direction: column;
   background: linear-gradient(180deg, var(--surface), var(--bg-2)); border-left: 1px solid var(--border);
   box-shadow: -30px 0 60px -30px #000; animation: drawer-in-right .26s cubic-bezier(.2, .7, .2, 1); }
