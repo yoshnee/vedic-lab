@@ -5,9 +5,9 @@
 export function SelfLearnHook() {
   return (
     <section className="selflearn">
-      <p className="selflearn-q">
-        Are you attempting to <span className="selflearn-nb">self-learn</span> astrology?
-      </p>
+      <h2 className="selflearn-q">
+        Are you attempting to <span className="selflearn-nb">self-learn</span> Vedic astrology?
+      </h2>
       <p className="selflearn-hook">
         Other tools render a chart and leave you alone.{" "}
         <span className="selflearn-hook-emph">This one helps you study it.</span>

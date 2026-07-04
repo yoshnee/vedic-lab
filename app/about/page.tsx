@@ -3,7 +3,9 @@ import { AboutPage } from "@/components/site/AboutPage";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Why I built Vedic Astrology Lab — a study tool for learning Jyotish, one layer at a time.",
+  description:
+    "Why I built Vedic Astrology Lab: a study tool for learning Jyotish, one layer at a time.",
+  alternates: { canonical: "/about" },
 };
 
 export default function Page() {
