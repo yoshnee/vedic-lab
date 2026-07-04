@@ -85,7 +85,7 @@ export interface YogaRef {
   name: string; // pill label, e.g. "Ruchaka Mahapurusha Yoga", "Neecha Bhanga R3"
   flashcard: { type: "yoga"; id: string }; // tap target → onOpenCard("yoga", id)
   /* Neecha Bhanga only: which of the four rules (R1–R4) fired */
-  condition?: number; // 1–4
+  condition?: 1 | 2 | 3 | 4;
   /* Lord-relationship yogas (Dhana 2/11) only: which connection mode fired */
   mode?: "conjunction" | "mutual-aspect" | "exchange";
   /* Grahana only: intensity by orb (the deck card's tiers — ≤5° / ≤10° / same sign) */

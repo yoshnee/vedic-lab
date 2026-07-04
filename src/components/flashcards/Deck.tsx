@@ -179,7 +179,7 @@ export function Deck({
               <span> / {String(n).padStart(2, "0")}</span>
             </span>
           )}
-          <button className="fc-close" onClick={onClose} aria-label="Close deck">
+          <button type="button" className="fc-close" onClick={onClose} aria-label="Close deck">
             ✕
           </button>
         </header>
@@ -192,6 +192,7 @@ export function Deck({
         <div className="fc-stage">
           {browse && (
             <button
+              type="button"
               className="fc-nav"
               onClick={() => go(-1)}
               disabled={i === 0}
@@ -246,6 +247,7 @@ export function Deck({
 
           {browse && (
             <button
+              type="button"
               className="fc-nav"
               onClick={() => go(1)}
               disabled={i === n - 1}

@@ -199,7 +199,7 @@ export function neechaBhanga(
   const conjunctOrAspects = (rescuer: PlanetKey) =>
     signs[rescuer] === dSign || aspectingD.has(rescuer);
 
-  const fired: number[] = [];
+  const fired: (1 | 2 | 3 | 4)[] = [];
   // R1: the debilitation-sign lord (dispositor) sits in a Kendra from Lagna or Moon
   if (inKendra(signs[dispositor])) fired.push(1);
   // R2: the exaltation-sign lord sits in a Kendra from Lagna or Moon (n/a for Mercury)

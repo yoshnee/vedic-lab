@@ -776,9 +776,9 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
 .tcard-panel { display: flex; flex-direction: column; gap: 15px; }
 .tcard-panel[hidden] { display: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .tcard-panel:not([hidden]) { animation: tcardFade .18s ease both; }
+  .tcard-panel:not([hidden]) { animation: tcard-fade .18s ease both; }
 }
-@keyframes tcardFade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes tcard-fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 
 /* heading area: key facts + optional tag pill */
 .tcard-head {
