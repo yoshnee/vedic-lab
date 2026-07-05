@@ -53,6 +53,7 @@ export function Card({
   deckAccent,
   flipped,
   highlightFact,
+  activeTab,
   onOpenDiagram,
 }: {
   card: CardData;
@@ -61,6 +62,9 @@ export function Card({
   /** Emphasize the front fact-row with this exact label (e.g. the tapped "Pada 2"),
       or a BACK point that starts with it (e.g. "Major 3-4" → the condition line). */
   highlightFact?: string;
+  /** Tab to open a tabbed back on (deep-link targets — a chart pill opening its
+      sub-yoga's tab). Ignored for non-tabbed backs. */
+  activeTab?: number;
   /** Handler for the back's diagramLink button (the Deck's in-deck diagram
       view). Omitted (e.g. in the chart popover) → the button hides. */
   onOpenDiagram?: (link: CardDiagramLink) => void;
@@ -129,6 +133,7 @@ export function Card({
               intro={card.tabsIntro}
               footnote={card.tabsFootnote}
               tabs={card.tabs!}
+              initialTab={activeTab}
             />
           ) : (
             <>

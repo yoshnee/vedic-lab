@@ -61,8 +61,9 @@ export interface CardTabFact {
 
 /** One tab of a `TabbedCardBack` — a facet of a single topic. The tab row
     shows `label`; the active tab's panel shows the `facts` heading, the
-    `bullets` list, and (where it applies) one `tag` pill. Everything is
-    optional but `label`, so a tab can be facts-only or bullets-only. */
+    `bullets` list, a `cloud` (significations), and (where it applies) one
+    `tag` pill. Everything is optional but `label`, so a tab can be facts-only,
+    bullets-only, or cloud-only. */
 export interface CardTab {
   /** Tab button text — keep it short (it shares row width with the others). */
   label: string;
@@ -70,6 +71,9 @@ export interface CardTab {
   facts?: CardTabFact[];
   /** Short behaviour lines shown as a bullet list. */
   bullets?: string[];
+  /** A significations word-cloud for this tab (same weighted tiers as
+      `CardCloud`) — e.g. the Vipreet Raja Yoga sub-yogas' results. */
+  cloud?: CardCloud;
   /** Optional pill flagging a special condition (e.g. "Pushkara Navāṁśa"). */
   tag?: string;
 }

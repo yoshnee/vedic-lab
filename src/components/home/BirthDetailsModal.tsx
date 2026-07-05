@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { diamond } from "@/celestial/celestial";
 import { Svg } from "@/components/Svg";
 import type { BirthDetails, BirthPlace } from "@/lib/birth";
+import type { ChartStyle } from "@/lib/chart/types";
 import { PlaceField } from "./PlaceField";
 import { icons } from "./birthIcons";
 
@@ -40,6 +41,7 @@ export function BirthDetailsModal({
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [place, setPlace] = useState<BirthPlace | null>(null);
+  const [chartStyle, setChartStyle] = useState<ChartStyle>("north"); // fixed on /chart once generated
   const [touched, setTouched] = useState<{ date?: boolean; time?: boolean; place?: boolean }>({});
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -83,7 +85,7 @@ export function BirthDetailsModal({
       setTouched({ date: true, time: true, place: true });
       return;
     }
-    onGenerate({ name: name.trim() || undefined, date, time, place });
+    onGenerate({ name: name.trim() || undefined, date, time, place, chartStyle });
   };
 
   return (
@@ -179,21 +181,31 @@ export function BirthDetailsModal({
           />
         </div>
 
-        {/* CHART STYLE — North Indian works today; South Indian ships in a later PR.
-            Kept as a real (uncontrolled) radio group so the choice is visible; South
-            is disabled/greyed for now and nothing is plumbed to the engine yet. */}
+        {/* CHART STYLE — the choice is FIXED once the chart is generated (no
+            in-page toggle on /chart); it drives both charts. Controlled radio
+            group, carried through BirthDetails → the persisted civil → meta. */}
         <div className="bd-style" role="radiogroup" aria-labelledby="bd-chartstyle-label">
           <span className="bd-label" id="bd-chartstyle-label">Chart style</span>
           <div className="bd-style-opts">
             <label className="bd-style-opt">
-              <input type="radio" name="chartStyle" value="north" defaultChecked />
+              <input
+                type="radio"
+                name="chartStyle"
+                value="north"
+                checked={chartStyle === "north"}
+                onChange={() => setChartStyle("north")}
+              />
               <span>North Indian</span>
             </label>
-            <label className="bd-style-opt is-disabled">
-              <input type="radio" name="chartStyle" value="south" disabled />
-              <span>
-                South Indian <span className="bd-soon">(coming soon)</span>
-              </span>
+            <label className="bd-style-opt">
+              <input
+                type="radio"
+                name="chartStyle"
+                value="south"
+                checked={chartStyle === "south"}
+                onChange={() => setChartStyle("south")}
+              />
+              <span>South Indian</span>
             </label>
           </div>
         </div>

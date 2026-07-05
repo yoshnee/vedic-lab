@@ -7,7 +7,7 @@
 import { describe, it, expect } from "vitest";
 import {
   panchaMahapurusha, gajaKesari, budhaditya, venusMercuryConjunction, dhana2and11, grahana,
-  neechaBhanga, computeYogas, MAHAPURUSHA,
+  neechaBhanga, vipreetRaja, rajaYoga, computeYogas, MAHAPURUSHA,
 } from "../yoga";
 import { dignityOf } from "../vedic";
 import { EXALTATION, OWN_SIGNS, PLANET_ORDER } from "../constants";
@@ -313,16 +313,137 @@ describe("neechaBhanga", () => {
   });
 });
 
+describe("vipreetRaja", () => {
+  // Aries lagna: house 6 = Virgo (Mercury), 8 = Scorpio (Mars), 12 = Pisces (Jupiter)
+  const ARIES = 1;
+
+  it("Harsha: the 6th lord in a dusthana (6/8/12) — pill reads 'Vipreet Raja Yoga', tab id 'harsha'", () => {
+    // Mercury (Aries L6) in Scorpio = the 8th house
+    const yoga = vipreetRaja("mercury", signsWith({ mercury: 8 }), ARIES);
+    expect(yoga).toEqual({
+      key: "harsha",
+      name: "Vipreet Raja Yoga",
+      flashcard: { type: "yoga", id: "harsha" },
+    });
+  });
+
+  it("Sarala: the 8th lord in a dusthana → tab id 'sarala'", () => {
+    // Mars (Aries L8) in Virgo = the 6th house
+    expect(vipreetRaja("mars", signsWith({ mars: 6 }), ARIES)).toMatchObject({
+      key: "sarala",
+      name: "Vipreet Raja Yoga",
+      flashcard: { type: "yoga", id: "sarala" },
+    });
+  });
+
+  it("Vimala: the 12th lord in a dusthana → tab id 'vimala' (own-sign counts)", () => {
+    // Jupiter (Aries L12) in Pisces = the 12th house, its own sign
+    expect(vipreetRaja("jupiter", signsWith({ jupiter: 12 }), ARIES)?.key).toBe("vimala");
+  });
+
+  it("never forms when the dusthana lord sits OUTSIDE a dusthana", () => {
+    // Mercury (L6) in Aries = the 1st house (a Kendra, not a dusthana)
+    expect(vipreetRaja("mercury", signsWith({ mercury: 1 }), ARIES)).toBeNull();
+    // Jupiter (L12) in Sagittarius = the 9th (a trikona)
+    expect(vipreetRaja("jupiter", signsWith({ jupiter: 9 }), ARIES)).toBeNull();
+  });
+
+  it("never forms for a non-dusthana lord, even sitting in a dusthana", () => {
+    // Venus rules Taurus (2nd) & Libra (7th) for Aries — no dusthana; parked in Scorpio (8th)
+    expect(vipreetRaja("venus", signsWith({ venus: 8 }), ARIES)).toBeNull();
+    // Saturn rules Capricorn (10th) & Aquarius (11th) for Aries; parked in Pisces (12th)
+    expect(vipreetRaja("saturn", signsWith({ saturn: 12 }), ARIES)).toBeNull();
+  });
+
+  it("never forms for the nodes (they rule nothing)", () => {
+    expect(vipreetRaja("rahu", signsWith({ rahu: 8 }), ARIES)).toBeNull();
+    expect(vipreetRaja("ketu", signsWith({ ketu: 12 }), ARIES)).toBeNull();
+  });
+
+  it("is counted from the lagna — luminaries can form it, and the same placement differs by lagna", () => {
+    // Leo lagna: house 12 = Cancer (Moon), so the Moon is L12. Moon in Pisces = 8th from Leo → Vimala.
+    expect(vipreetRaja("moon", signsWith({ moon: 12 }), 5)?.key).toBe("vimala");
+    // The SAME Moon in Pisces for an Aries lagna: the Moon rules Cancer (the 4th), no dusthana → nothing.
+    expect(vipreetRaja("moon", signsWith({ moon: 12 }), ARIES)).toBeNull();
+  });
+});
+
+describe("rajaYoga", () => {
+  // Aries lagna throughout: Kendra lords = {Mars(L1), Moon(L4), Venus(L7),
+  // Saturn(L10)}, Trikona lords = {Mars(L1), Sun(L5), Jupiter(L9)}. Mars (the
+  // Lagna lord) is BOTH. The RAJA object is the same for every hit.
+  const ARIES = 1;
+  const RAJA = { key: "raja", name: "Raja Yoga", flashcard: { type: "yoga", id: "raja" } };
+
+  it("forms by conjunction — a Kendra lord and a Trikona lord in the same sign", () => {
+    // Sun (Trikona L5) conjunct Saturn (Kendra L10) in Gemini
+    const signs = signsWith({ sun: 3, saturn: 3 });
+    expect(rajaYoga("sun", signs, ARIES)).toEqual(RAJA);
+    expect(rajaYoga("saturn", signs, ARIES)).toEqual(RAJA);
+  });
+
+  it("forms by mutual graha drishti — both directions (Kendra L7 opposite Trikona L5)", () => {
+    // Venus (Kendra L7) in Aries opposite Sun (Trikona L5) in Libra → mutual 7th;
+    // Mars & Jupiter (the other Aries Trikona lords) parked in Gemini so Venus's
+    // ONLY link is this mutual aspect (no incidental conjunction)
+    const signs = signsWith({ venus: 1, sun: 7, mars: 3, jupiter: 3 });
+    expect(rajaYoga("venus", signs, ARIES)).toEqual(RAJA);
+  });
+
+  it("forms by exchange (parivartana) — each in the other's sign", () => {
+    // Moon (Kendra L4) in Leo and Sun (Trikona L5) in Cancer → mutual reception;
+    // the Aries Trikona lords Mars/Jupiter parked in Pisces (no link to Leo)
+    const signs = signsWith({ moon: 5, sun: 4, mars: 12, jupiter: 12 });
+    expect(rajaYoga("moon", signs, ARIES)).toEqual(RAJA);
+  });
+
+  it("the Lagna lord counts as BOTH roles — it pairs with a pure Kendra lord (1 + 10)", () => {
+    // Mars (L1, both) conjunct Saturn (pure Kendra L10) in Taurus
+    expect(rajaYoga("mars", signsWith({ mars: 2, saturn: 2 }), ARIES)).toEqual(RAJA);
+  });
+
+  it("two PURE Kendra lords do not form it — the pair must span both roles", () => {
+    // Saturn (Kendra L10) conjunct Venus (Kendra L7) in Gemini; no Trikona lord linked
+    expect(rajaYoga("saturn", signsWith({ saturn: 3, venus: 3 }), ARIES)).toBeNull();
+  });
+
+  it("two PURE Trikona lords do not form it", () => {
+    // Sun (Trikona L5) conjunct Jupiter (Trikona L9) in Virgo; the Kendra lords
+    // (Mars/Moon/Venus/Saturn, all at the Aries default) do not link to Virgo
+    expect(rajaYoga("sun", signsWith({ sun: 6, jupiter: 6 }), ARIES)).toBeNull();
+  });
+
+  it("nodes never form it (they rule nothing)", () => {
+    const signs = signsWith({ rahu: 3, ketu: 9, saturn: 3, sun: 3 });
+    expect(rajaYoga("rahu", signs, ARIES)).toBeNull();
+    expect(rajaYoga("ketu", signs, ARIES)).toBeNull();
+  });
+
+  it("a non-lord (of any Kendra/Trikona) never forms it", () => {
+    // Mercury rules Gemini (3rd) & Virgo (6th) for Aries — neither a Kendra nor a
+    // Trikona; parked conjunct Saturn (a Kendra lord) it still does not form
+    expect(rajaYoga("mercury", signsWith({ mercury: 3, saturn: 3 }), ARIES)).toBeNull();
+  });
+});
+
 describe("computeYogas", () => {
   const quiet = lonsWith({}); // Sun/Mercury at 0° separation: no Budhaditya
+  // Raja Yoga is pervasive in these all-in-Aries fixtures (Kendra + Trikona
+  // lords pile up conjunct / in reception), so these per-detector assertions
+  // filter it out; rajaYoga is covered in its own suite below.
+  const keys = (ys: ReturnType<typeof computeYogas>) =>
+    ys.map((y) => y.key).filter((k) => k !== "raja");
+
   it("returns [] when nothing forms, one entry per formed yoga otherwise", () => {
     // Jupiter 2nd from Moon: no Gaja Kesari; Saturn placed per its dignity, Venus
-    // parked clear of Saturn so the 2/11-lord Dhana doesn't fire incidentally
-    const noGk = signsWith({ jupiter: 2, moon: 1, saturn: 7, venus: 4 });
-    expect(computeYogas("mars", { dignity: dignityOf("mars", 2), house: 1, signs: noGk, longitudes: quiet, lagnaSign: 2 })).toEqual([]);
-    expect(computeYogas("mars", { dignity: dignityOf("mars", 10), house: 5, signs: noGk, longitudes: quiet, lagnaSign: 6 })).toEqual([]); // exalted but trikona
+    // parked clear of Saturn so the 2/11-lord Dhana doesn't fire incidentally.
+    // Mars placed in Taurus (its own house here) so it doesn't incidentally sit
+    // in a dusthana it rules (Mars is Taurus-lagna L12 / Virgo-lagna L8) → no Vipreet.
+    const noGk = signsWith({ jupiter: 2, moon: 1, saturn: 7, venus: 4, mars: 2 });
+    expect(keys(computeYogas("mars", { dignity: dignityOf("mars", 2), house: 1, signs: noGk, longitudes: quiet, lagnaSign: 2 }))).toEqual([]);
+    expect(keys(computeYogas("mars", { dignity: dignityOf("mars", 10), house: 5, signs: noGk, longitudes: quiet, lagnaSign: 6 }))).toEqual([]); // exalted but trikona
     const formed = computeYogas("saturn", { dignity: dignityOf("saturn", 7), house: 7, signs: noGk, longitudes: quiet, lagnaSign: 1 });
-    expect(formed.map((y) => y.key)).toEqual(["sasa"]);
+    expect(keys(formed)).toEqual(["sasa"]);
   });
 
   it("Gaja Kesari lands on BOTH participants, and only on them", () => {
@@ -330,36 +451,36 @@ describe("computeYogas", () => {
     // Pisces lagna); the nodes parked off the luminaries so no Grahana noise
     const signs = signsWith({ jupiter: 1, moon: 10, saturn: 5, rahu: 6, ketu: 12 });
     const neutral = { dignity: "neutral" as const, house: 2, signs, longitudes: quiet, lagnaSign: 12 };
-    expect(computeYogas("jupiter", neutral).map((y) => y.key)).toEqual(["gaja-kesari"]);
-    expect(computeYogas("moon", neutral).map((y) => y.key)).toEqual(["gaja-kesari"]);
-    expect(computeYogas("sun", neutral)).toEqual([]);
-    expect(computeYogas("mars", neutral)).toEqual([]);
+    expect(keys(computeYogas("jupiter", neutral))).toEqual(["gaja-kesari"]);
+    expect(keys(computeYogas("moon", neutral))).toEqual(["gaja-kesari"]);
+    expect(keys(computeYogas("sun", neutral))).toEqual([]);
+    expect(keys(computeYogas("mars", neutral))).toEqual([]);
   });
 
   it("Budhaditya lands on BOTH the Sun and Mercury, and only on them", () => {
     const signs = signsWith({ sun: 5, mercury: 5 });
     const longitudes = lonsWith({ sun: 125, mercury: 133 }); // 8° apart in Leo
     const inp = { dignity: "neutral" as const, house: 3, signs, longitudes, lagnaSign: 3 };
-    expect(computeYogas("sun", inp).map((y) => y.key)).toEqual(["budhaditya"]);
-    expect(computeYogas("mercury", inp).map((y) => y.key)).toEqual(["budhaditya"]);
-    expect(computeYogas("venus", inp)).toEqual([]);
+    expect(keys(computeYogas("sun", inp))).toEqual(["budhaditya"]);
+    expect(keys(computeYogas("mercury", inp))).toEqual(["budhaditya"]);
+    expect(keys(computeYogas("venus", inp))).toEqual([]);
   });
 
   it("a planet can stack yogas — exalted Jupiter conjunct the Moon in a Kendra forms Hamsa + Gaja Kesari", () => {
     const signs = signsWith({ jupiter: 4, moon: 4 }); // both in Cancer
     const jupiter = computeYogas("jupiter", { dignity: dignityOf("jupiter", 4), house: 1, signs, longitudes: quiet, lagnaSign: 4 });
-    expect(jupiter.map((y) => y.key)).toEqual(["hamsa", "gaja-kesari"]);
+    expect(keys(jupiter)).toEqual(["hamsa", "gaja-kesari"]);
     const moon = computeYogas("moon", { dignity: dignityOf("moon", 4), house: 1, signs, longitudes: quiet, lagnaSign: 4 });
-    expect(moon.map((y) => y.key)).toEqual(["gaja-kesari"]); // own-sign Moon, but no Moon Mahapurusha
+    expect(keys(moon)).toEqual(["gaja-kesari"]); // own-sign Moon, but no Moon Mahapurusha
   });
 
   it("Mercury can stack Bhadra + Budhaditya — own-sign Virgo in a Kendra, 7° from the Sun", () => {
     const signs = signsWith({ sun: 6, mercury: 6 }); // both in Virgo
     const longitudes = lonsWith({ sun: 155, mercury: 162 });
     const mercury = computeYogas("mercury", { dignity: dignityOf("mercury", 6), house: 10, signs, longitudes, lagnaSign: 9 });
-    expect(mercury.map((y) => y.key)).toEqual(["bhadra", "budhaditya"]);
+    expect(keys(mercury)).toEqual(["bhadra", "budhaditya"]);
     const sun = computeYogas("sun", { dignity: dignityOf("sun", 6), house: 10, signs, longitudes, lagnaSign: 9 });
-    expect(sun.map((y) => y.key)).toEqual(["budhaditya"]); // the Sun forms no Mahapurusha
+    expect(keys(sun)).toEqual(["budhaditya"]); // the Sun forms no Mahapurusha
   });
 
   it("Venus & Mercury Conjunction lands on BOTH participants, and stacks with Budhaditya", () => {
@@ -369,18 +490,18 @@ describe("computeYogas", () => {
     const signs = signsWith({ venus: 2, mercury: 2, sun: 2, jupiter: 3, rahu: 5, ketu: 11 });
     const longitudes = lonsWith({ sun: 35, mercury: 43, venus: 50 });
     const inp = { dignity: "neutral" as const, house: 2, signs, longitudes, lagnaSign: 1 };
-    expect(computeYogas("venus", inp).map((y) => y.key)).toEqual(["venus-mercury"]);
-    expect(computeYogas("mercury", inp).map((y) => y.key)).toEqual(["budhaditya", "venus-mercury"]);
-    expect(computeYogas("moon", inp)).toEqual([]);
+    expect(keys(computeYogas("venus", inp))).toEqual(["venus-mercury"]);
+    expect(keys(computeYogas("mercury", inp))).toEqual(["budhaditya", "venus-mercury"]);
+    expect(keys(computeYogas("moon", inp))).toEqual([]);
   });
 
   it("Dhana 2/11 lands on BOTH lords, and only on them", () => {
     // Aries lagna: Venus (L2) and Saturn (L11) conjunct in Gemini; Jupiter parked to avoid Gaja Kesari noise
     const signs = signsWith({ venus: 3, saturn: 3, jupiter: 2 });
     const inp = { dignity: "neutral" as const, house: 3, signs, longitudes: quiet, lagnaSign: 1 };
-    expect(computeYogas("venus", inp).map((y) => y.key)).toEqual(["dhana-2-11"]);
-    expect(computeYogas("saturn", inp).map((y) => y.key)).toEqual(["dhana-2-11"]);
-    expect(computeYogas("mars", inp)).toEqual([]);
+    expect(keys(computeYogas("venus", inp))).toEqual(["dhana-2-11"]);
+    expect(keys(computeYogas("saturn", inp))).toEqual(["dhana-2-11"]);
+    expect(keys(computeYogas("mars", inp))).toEqual([]);
   });
 
   it("Grahana lands on BOTH participants — and a new-moon triple gives the node two pills", () => {
@@ -388,10 +509,10 @@ describe("computeYogas", () => {
     const signs = signsWith({ sun: 4, moon: 4, rahu: 4, ketu: 10, jupiter: 10 });
     const longitudes = lonsWith({ sun: 95, moon: 99, rahu: 102, ketu: 282 });
     const inp = { dignity: "neutral" as const, house: 2, signs, longitudes, lagnaSign: 3 };
-    expect(computeYogas("sun", inp).map((y) => y.key)).toEqual(["grahana-sun-rahu"]);
-    expect(computeYogas("moon", inp).map((y) => y.key)).toEqual(["gaja-kesari", "grahana-moon-rahu"]); // Jupiter 7th from the Moon
-    expect(computeYogas("rahu", inp).map((y) => y.key)).toEqual(["grahana-sun-rahu", "grahana-moon-rahu"]);
-    expect(computeYogas("ketu", inp)).toEqual([]); // the opposite node shares no luminary's sign
+    expect(keys(computeYogas("sun", inp))).toEqual(["grahana-sun-rahu"]);
+    expect(keys(computeYogas("moon", inp))).toEqual(["gaja-kesari", "grahana-moon-rahu"]); // Jupiter 7th from the Moon
+    expect(keys(computeYogas("rahu", inp))).toEqual(["grahana-sun-rahu", "grahana-moon-rahu"]);
+    expect(keys(computeYogas("ketu", inp))).toEqual([]); // the opposite node shares no luminary's sign
   });
 
   it("Neecha Bhanga rides alongside other yogas — debilitated Moon with Jupiter in a Moon-Kendra", () => {
@@ -399,6 +520,31 @@ describe("computeYogas", () => {
     // Mars (dispositor) conjunct the Moon in Scorpio → R3, and Scorpio is a lagna-Kendra → R1
     const signs = signsWith({ moon: 8, jupiter: 2, mars: 8, venus: 12, sun: 3, mercury: 3, saturn: 6 });
     const moon = computeYogas("moon", { dignity: dignityOf("moon", 8), house: 1, signs, longitudes: quiet, lagnaSign: 8 });
-    expect(moon.map((y) => y.key)).toEqual(["gaja-kesari", "neecha-bhanga-r1", "neecha-bhanga-r3"]);
+    expect(keys(moon)).toEqual(["gaja-kesari", "neecha-bhanga-r1", "neecha-bhanga-r3"]);
+  });
+
+  it("Vipreet Raja Yoga lands on the dusthana lord — shared pill name, per-sub-yoga tab id", () => {
+    // Aries lagna: Mars (L8) in Pisces (the 12th) → Sarala; Jupiter (L12) in Scorpio (the 8th) → Vimala
+    // (Mars and Jupiter are also in mutual reception here → a real Raja Yoga, filtered by keys())
+    const signs = signsWith({ mars: 12, jupiter: 8 });
+    const mars = computeYogas("mars", { dignity: dignityOf("mars", 12), house: 12, signs, longitudes: quiet, lagnaSign: 1 });
+    expect(keys(mars)).toEqual(["sarala"]);
+    expect(mars[0].name).toBe("Vipreet Raja Yoga");
+    expect(mars[0].flashcard).toEqual({ type: "yoga", id: "sarala" });
+
+    const jupiter = computeYogas("jupiter", { dignity: dignityOf("jupiter", 8), house: 8, signs, longitudes: quiet, lagnaSign: 1 });
+    expect(keys(jupiter)).toEqual(["vimala"]);
+    expect(jupiter[0].name).toBe("Vipreet Raja Yoga");
+  });
+
+  it("Raja Yoga flows through computeYogas onto both linked lords", () => {
+    // Aries lagna: Mars (Lagna lord) conjunct Saturn (Kendra L10) in Taurus → a
+    // generic "Raja Yoga" pill on each; Jupiter parked in Sagittarius (own sign,
+    // 8th from the Moon, no Gaja Kesari) so the assertion is clean
+    const signs = signsWith({ mars: 2, saturn: 2, jupiter: 9, moon: 2 });
+    const inp = { dignity: "neutral" as const, house: 2, signs, longitudes: quiet, lagnaSign: 1 };
+    const marsY = computeYogas("mars", inp).find((y) => y.key === "raja");
+    expect(marsY).toEqual({ key: "raja", name: "Raja Yoga", flashcard: { type: "yoga", id: "raja" } });
+    expect(computeYogas("saturn", inp).some((y) => y.key === "raja")).toBe(true);
   });
 });

@@ -28,6 +28,7 @@ export function Deck({
   initialCard = 0,
   flip = false,
   highlightFact,
+  activeTab,
   browse = true,
 }: {
   deck: DeckData;
@@ -37,6 +38,9 @@ export function Deck({
   flip?: boolean;
   /** Emphasize a front fact-row / back point on the INITIAL card only (chart links). */
   highlightFact?: string;
+  /** Open a tabbed back on this tab, on the INITIAL card only (a chart pill
+      opening its sub-yoga's tab). */
+  activeTab?: number;
   /** Browse the whole deck (nav arrows, progress bar, ←/→, swipe). When false,
       pin the single `initialCard` with no nav — the chart's link to one specific
       card. Default true (the /flashcards + landing decks). */
@@ -239,6 +243,7 @@ export function Deck({
                   deckAccent={deck.accent}
                   flipped={flipped}
                   highlightFact={i === initialCard ? highlightFact : undefined}
+                  activeTab={i === initialCard ? activeTab : undefined}
                   onOpenDiagram={setDiagramView}
                 />
               </div>

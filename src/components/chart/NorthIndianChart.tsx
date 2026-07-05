@@ -74,16 +74,46 @@ function rulerColor(sign: number): string {
 }
 
 /** The full chart SVG: ruler-tinted house polygons, an optional single-color
-    highlight wash (the activated-houses overlay), then the structural grid. */
-function buildGrid(ascSign: number, glowId: string, highlight?: number[]): string {
+    highlight wash (the activated-houses overlay), then the structural grid.
+    Each house is filled with a per-house RADIAL gradient in its ruler color
+    (brighter at the top, fading to a faint wash) + a strong ruler-color stroke,
+    so it reads dimensional and its hue is legible — the same richer tint as the
+    South Indian cells (owner-directed). `uid` keeps the gradient/filter ids
+    unique per chart instance (two charts can share the page). */
+function buildGrid(ascSign: number, uid: string, highlight?: number[]): string {
+  const gradId = (h: number) => "nicg-" + uid + "-" + h;
+  const glowId = "nicGlow-" + uid;
   let s =
     '<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block">';
+  const baseId = "nicbase-" + uid;
+  s += "<defs>";
+  // shared cell BASE: the South cell's surface→bg-2 ground, so North houses sit
+  // on the same lighter base (not the darker page bg) — matches the South tint.
+  s +=
+    '<linearGradient id="' + baseId + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="var(--surface)"/>' +
+    '<stop offset="100%" stop-color="var(--bg-2)"/>' +
+    "</linearGradient>";
+  // per-house ruler glow: soft, concentrated top-right (like the South's
+  // radial-gradient at 86% 6%), settling to a faint even base tint at the bottom.
   for (let h = 1; h <= 12; h++) {
     const col = rulerColor(signOfHouse(ascSign, h));
     s +=
-      '<polygon points="' + POLY[h] + '" fill="' + col +
-      '" fill-opacity="0.3" stroke="' + col +
-      '" stroke-opacity="0.75" stroke-width="1.2" stroke-linejoin="round"/>';
+      '<radialGradient id="' + gradId(h) + '" cx="0.8" cy="0.08" r="1.1">' +
+      '<stop offset="0%" stop-color="' + col + '" stop-opacity="0.3"/>' +
+      '<stop offset="45%" stop-color="' + col + '" stop-opacity="0.14"/>' +
+      '<stop offset="100%" stop-color="' + col + '" stop-opacity="0.08"/>' +
+      "</radialGradient>";
+  }
+  s += "</defs>";
+  for (let h = 1; h <= 12; h++) {
+    const col = rulerColor(signOfHouse(ascSign, h));
+    // base ground, then the ruler tint + a soft 48% ruler border (South's ring)
+    s += '<polygon points="' + POLY[h] + '" fill="url(#' + baseId + ')"/>';
+    s +=
+      '<polygon points="' + POLY[h] + '" fill="url(#' + gradId(h) +
+      ')" stroke="' + col +
+      '" stroke-opacity="0.5" stroke-width="1.4" stroke-linejoin="round"/>';
   }
   // activated houses: ONE color for every source (maha/antar, rules/occupies),
   // one wash per house (the dedupe upstream guarantees no doubling). Drawn as
@@ -128,9 +158,9 @@ export function NorthIndianChart({
   onSelectPlanet?: (key: PlanetKey) => void;
 }) {
   const ascSign = frame.ascSign;
-  // per-instance filter id — two highlighted charts on one page must not
-  // resolve url(#…) against each other's <filter>
-  const glowId = "nicGlow-" + useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  // per-instance id base — two charts on one page must not resolve url(#…)
+  // against each other's <filter>/<radialGradient>
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const byHouse = new Map<number, ChartBody[]>();
   for (const p of planets) {
     const arr = byHouse.get(p.house) ?? [];
@@ -140,7 +170,7 @@ export function NorthIndianChart({
 
   return (
     <div className="nic" role="img" aria-label="North Indian chart, houses colored by sign ruler">
-      <Svg className="nic-grid" html={buildGrid(ascSign, glowId, highlightHouses)} />
+      <Svg className="nic-grid" html={buildGrid(ascSign, uid, highlightHouses)} />
       {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => {
         const [cx, cy] = CENTROID[h];
         const sign = signOfHouse(ascSign, h);

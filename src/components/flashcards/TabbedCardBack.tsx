@@ -21,6 +21,7 @@
    ============================================================ */
 import { useRef, useState, useId, type CSSProperties, type KeyboardEvent } from "react";
 import type { CardTab } from "@/data/decks/types";
+import { SignificationsCloud } from "./SignificationsCloud";
 
 export function TabbedCardBack({
   title,
@@ -28,6 +29,7 @@ export function TabbedCardBack({
   intro,
   footnote,
   tabs,
+  initialTab = 0,
 }: {
   /** The back heading. Pass ONLY a distinct `backTitle` — omit it to skip the
       crown so the back doesn't just repeat the front title. */
@@ -40,8 +42,12 @@ export function TabbedCardBack({
       switch tabs) — e.g. a cross-deck pointer. */
   footnote?: string;
   tabs: CardTab[];
+  /** Tab to open on (deep-link targets — a chart pill opening its sub-yoga's
+      tab). Only honoured on mount / while the same card is pinned; paging to a
+      new card resets to tab 0 (see below). */
+  initialTab?: number;
 }) {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(initialTab);
   const baseId = useId();
   const tablistRef = useRef<HTMLDivElement>(null);
 
@@ -146,6 +152,11 @@ export function TabbedCardBack({
                 <ul className="tcard-bullets">
                   {t.bullets.map((b, k) => <li key={k}>{b}</li>)}
                 </ul>
+              )}
+              {t.cloud && (
+                <div className="tcard-cloud">
+                  <SignificationsCloud data={t.cloud} />
+                </div>
               )}
             </div>
           );

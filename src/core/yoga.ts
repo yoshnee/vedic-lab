@@ -18,7 +18,7 @@
    deck (src/data/decks/yogas.ts), which doubles as the per-yoga spec.
    ============================================================ */
 import type { Dignity, PlanetKey, YogaRef } from "./types";
-import { SIGN_RULER, EXALTATION, DEBILITATION } from "./constants";
+import { SIGN_RULER, EXALTATION, DEBILITATION, PLANET_ORDER } from "./constants";
 import { aspectsOnto } from "./vedic";
 
 const KENDRAS = new Set([1, 4, 7, 10]);
@@ -158,6 +158,106 @@ export function dhana2and11(
   return { key: "dhana-2-11", name: "Dhana Yoga", flashcard: { type: "yoga", id: "dhana-2-11" }, mode };
 }
 
+/** Vipreet Raja Yoga (the Yogas deck's "Vipreet Raja Yoga" card; its three
+    tabs Harsha / Sarala / Vimala are the spec). "Strength born from adversity":
+    a DUSTHANA lord — the ruler of the frame's 6th, 8th, or 12th house — that
+    itself OCCUPIES a dusthana house (6, 8, or 12). Three named sub-yogas, one
+    per dusthana lord:
+      Harsha — the 6th lord in a dusthana
+      Sarala — the 8th lord in a dusthana
+      Vimala — the 12th lord in a dusthana
+    The pill lands ONLY on the dusthana lord (a single-planet yoga). No planet
+    can rule two of houses 6/8/12: a planet's two signs are 1/3/5/7 houses apart
+    (Saturn/Mercury/Jupiter/Venus/Mars), never the 2/4/6 gaps within {6,8,12},
+    so L6/L8/L12 are always three DISTINCT planets and a planet forms at most one
+    sub-yoga (nodes rule nothing, so never form it). Source: Phaladeepika Ch. 6.
+    NB the deck's "commonly applied condition" (the dusthana lord should avoid
+    conjoining a Kendra/Trikona lord, or the yoga dilutes) is a QUALITY note, not
+    a detection gate — the same posture the engine takes for Gaja Kesari's
+    strength gate and Budhaditya's Kendra/Trikona quality tag. It stays on the
+    card, not in detection. */
+const DUSTHANAS = new Set([6, 8, 12]);
+/* The three sub-yogas per dusthana lord. `key`/`id` stay distinct so each pill
+   opens the card on ITS tab (flashcardLink.ts), but every pill READS the same
+   "Vipreet Raja Yoga" (owner-directed) — the sub-yoga name lives on the tab. */
+const VIPREET: Record<number, { key: string }> = {
+  6: { key: "harsha" }, // 6th lord in a dusthana
+  8: { key: "sarala" }, // 8th lord in a dusthana
+  12: { key: "vimala" }, // 12th lord in a dusthana
+};
+export function vipreetRaja(
+  planet: PlanetKey,
+  signs: Record<PlanetKey, number>,
+  lagnaSign: number,
+): YogaRef | null {
+  // the (unique) dusthana this planet rules, if any
+  const ruledHouse = [6, 8, 12].find(
+    (h) => SIGN_RULER[signOfHouse(h, lagnaSign) - 1] === planet,
+  );
+  if (ruledHouse === undefined) return null;
+  // ...and it must OCCUPY a dusthana house of the frame
+  if (!DUSTHANAS.has(positionFrom(signs[planet], lagnaSign))) return null;
+  const sub = VIPREET[ruledHouse];
+  return { key: sub.key, name: "Vipreet Raja Yoga", flashcard: { type: "yoga", id: sub.key } };
+}
+
+const KENDRA_HOUSES = [1, 4, 7, 10];
+const TRIKONA_HOUSES = [1, 5, 9];
+
+/** The set of planets ruling the given whole-sign houses of the frame. */
+function houseLords(houses: number[], lagnaSign: number): Set<PlanetKey> {
+  return new Set(houses.map((h) => SIGN_RULER[signOfHouse(h, lagnaSign) - 1]));
+}
+
+/** Two distinct planets "connected" for a lord-relationship yoga: same sign
+    (conjunction), mutual graha drishti (BOTH directions), or a sign exchange /
+    parivartana (each occupies a sign the other rules). Mirrors the three modes
+    named on the Raja Yoga and Parivartana deck cards. (Dhana 2/11 keeps its own
+    house-based exchange test; for that pair it is equivalent to this reception.) */
+function yogaLinked(a: PlanetKey, b: PlanetKey, signs: Record<PlanetKey, number>): boolean {
+  const sa = signs[a];
+  const sb = signs[b];
+  if (sa === sb) return true; // conjunction
+  if (
+    aspectsOnto(sb, signs).some((x) => x.planet === a) &&
+    aspectsOnto(sa, signs).some((x) => x.planet === b)
+  )
+    return true; // mutual graha drishti, both directions
+  return SIGN_RULER[sa - 1] === b && SIGN_RULER[sb - 1] === a; // exchange (parivartana)
+}
+
+/** Raja Yoga (the Yogas deck's "Raja Yoga" card is the spec): a Kendra lord
+    (of house 1/4/7/10) and a Trikona lord (of house 1/5/9) — two DISTINCT
+    planets — connected by conjunction, mutual aspect, or exchange. Detection is
+    GENERIC: one "Raja Yoga" pill on each participating lord (owner-directed —
+    the deck's lord-pair tabs are illustrations, never surfaced per pair). The
+    Lagna lord is BOTH a Kendra and a Trikona lord, so it pairs with any other
+    Kendra OR Trikona lord (the card's 1+5 / 1+9 examples). Two pure Kendra lords
+    (or two pure Trikona lords) do NOT form it — the pair must span both roles.
+    Nodes rule nothing, so never participate. No dignity gate: the union itself
+    is the yoga (strength was the removed "Activation & Strength" card's job),
+    matching the engine's detect-then-grade convention for the other yogas. */
+export function rajaYoga(
+  planet: PlanetKey,
+  signs: Record<PlanetKey, number>,
+  lagnaSign: number,
+): YogaRef | null {
+  const kendraLords = houseLords(KENDRA_HOUSES, lagnaSign);
+  const trikonaLords = houseLords(TRIKONA_HOUSES, lagnaSign);
+  const pKendra = kendraLords.has(planet);
+  const pTrikona = trikonaLords.has(planet);
+  if (!pKendra && !pTrikona) return null; // not a Kendra/Trikona lord (nodes land here)
+  for (const q of PLANET_ORDER) {
+    if (q === planet) continue;
+    // the connected pair must span BOTH roles: one Kendra lord + one Trikona lord
+    const cross = (pKendra && trikonaLords.has(q)) || (pTrikona && kendraLords.has(q));
+    if (cross && yogaLinked(planet, q, signs)) {
+      return { key: "raja", name: "Raja Yoga", flashcard: { type: "yoga", id: "raja" } };
+    }
+  }
+  return null;
+}
+
 /** Neecha Bhanga Raja Yoga (the Yogas deck's card; its four rules R1–R4 are the
     spec). Runs per DEBILITATED planet (the seven classicals only — nodes are
     never debilitated, dignityOf gives them "neutral"). Two rescuer identities
@@ -278,6 +378,10 @@ export function computeYogas(planet: PlanetKey, inp: YogaInputs): YogaRef[] {
   }
   const dhana = dhana2and11(planet, inp.signs, inp.lagnaSign); // self-selects: only the 2nd/11th lords
   if (dhana) out.push(dhana);
+  const vipreet = vipreetRaja(planet, inp.signs, inp.lagnaSign); // self-selects: only dusthana lords in a dusthana
+  if (vipreet) out.push(vipreet);
+  const raja = rajaYoga(planet, inp.signs, inp.lagnaSign); // self-selects: only linked Kendra/Trikona lords
+  if (raja) out.push(raja);
   if (planet === "sun" || planet === "moon") {
     for (const node of ["rahu", "ketu"] as const) {
       const g = grahana(planet, node, inp.signs, inp.longitudes);

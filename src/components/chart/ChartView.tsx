@@ -141,6 +141,10 @@ export function ChartView({ model }: { model: ChartModel }) {
   const [chart1, setChart1] = useState<Chart1Type>("d1");
   const [chart2, setChart2] = useState<Chart2Type>("transit");
 
+  // Chart style (North diamond vs South grid) is picked in the birth-details
+  // modal and FIXED here — it drives both charts; there is no in-page toggle.
+  const chartStyle = meta.chartStyle;
+
   /* ---- Activated-houses overlay (dasha rail toggle, off by default) ----
      The selected (MD, AD) lord pair defaults to the RUNNING chain; tapping a
      daśā row retargets it (state lives here so the rail, the mobile drawer,
@@ -246,6 +250,10 @@ export function ChartView({ model }: { model: ChartModel }) {
   // from the rasi degrees and hidden in varga mode, like nakshatra/pada.
   const karakas = useMemo(() => charaKarakas(chart.planets), [chart.planets]);
   const vargaLabel = varga1 ? VARGAS[varga1].short : undefined;
+  // South Indian centre kicker per chart, so each varga is identifiable (the
+  // North diamond ignores it). Chart 2 as Transit rides the natal D1 frame.
+  const center1 = varga1 ? VARGAS[varga1].short : "Rāśi · D1";
+  const center2 = chart2 === "transit" ? "Gochara · Transit" : varga2 ? VARGAS[varga2].short : "Rāśi · D1";
   // D2 (Horā) is the two-column wealth view, not a full chart — it carries no
   // per-planet panels and no element balance (owner-directed: the planet panels
   // stay for Chart 1 only, and even then only for the OTHER vargas, not D2).
@@ -359,6 +367,8 @@ export function ChartView({ model }: { model: ChartModel }) {
               <ChartCard
                 label="Chart 1"
                 value={chart1}
+                chartStyle={chartStyle}
+                centerLabel={center1}
                 options={CHART1_OPTIONS}
                 onChange={(v) => { if (v === "d1" || isVargaKey(v)) setChart1(v); }}
                 caption={c1.caption}
@@ -388,6 +398,8 @@ export function ChartView({ model }: { model: ChartModel }) {
               <ChartCard
                 label="Chart 2"
                 value={chart2}
+                chartStyle={chartStyle}
+                centerLabel={center2}
                 options={CHART2_OPTIONS}
                 onChange={(v) => { if (v === "transit" || v === "d1" || isVargaKey(v)) setChart2(v); }}
                 caption={c2.caption}
@@ -497,11 +509,12 @@ export function ChartView({ model }: { model: ChartModel }) {
           pills). Keyed by the target so a new panel link remounts it fresh. */}
       {fc && (
         <Deck
-          key={`${fc.deck.id}:${fc.index}:${fc.flip ? 1 : 0}:${fc.highlightFact ?? ""}:${fc.browse ? 1 : 0}`}
+          key={`${fc.deck.id}:${fc.index}:${fc.flip ? 1 : 0}:${fc.highlightFact ?? ""}:${fc.activeTab ?? ""}:${fc.browse ? 1 : 0}`}
           deck={fc.deck}
           initialCard={fc.index}
           flip={fc.flip}
           highlightFact={fc.highlightFact}
+          activeTab={fc.activeTab}
           browse={!!fc.browse}
           onClose={() => setFc(null)}
         />

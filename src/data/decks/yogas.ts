@@ -12,26 +12,12 @@
    link here by card title (flashcardLink.ts → "yoga"). */
 import type { Deck } from "./types";
 import { ACCENT } from "@/lib/design/colors";
-import { PLANET_NAMES, SIGN_NAMES, SIGN_RULER, EXALTATION, DEBILITATION } from "@/core/constants";
-import type { PlanetKey } from "@/core/types";
 
-/* "Resolved rescuers per debilitated planet" (the Neecha Bhanga card's back) —
-   GENERATED from the engine's validated dignity tables so the card can never
-   drift from the chart: dispositor = lord of the debilitation sign;
-   exaltation-lord = lord of the sign where the planet exalts; exalted
-   occupant = the planet exalted in the debilitation sign (none exalts in
-   Scorpio, so the Moon's row has none). */
-const SEVEN: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
-function rescuerRow(p: PlanetKey): string {
-  const debSign = DEBILITATION[p]!;
-  const dispositor = SIGN_RULER[debSign - 1];
-  const exaltLord = SIGN_RULER[EXALTATION[p]! - 1];
-  return (
-    `${PLANET_NAMES[p]} (${SIGN_NAMES[debSign - 1]})` +
-    ` · Dispositor: ${PLANET_NAMES[dispositor]}` +
-    ` · Exaltation-lord: ${PLANET_NAMES[exaltLord]}${exaltLord === p ? " (self)" : ""}`
-  );
-}
+/* The Grahana orb tiers (Purna / Strong / Mild), summarized as ONE front footer
+   shared by all four luminary-node cards so they can never drift. This replaced
+   the deleted "Grahana Yoga (Overview)" card, which used to hold these tiers. */
+const GRAHANA_ORB_FOOTER =
+  "Purna (complete) within 5°, the strongest · Strong within 10° · Mild same sign, more than 10° apart";
 
 export const yogas: Deck = {
   id: "yogas",
@@ -41,9 +27,9 @@ export const yogas: Deck = {
   accent: ACCENT,
   status: "available",
   cards: [
-    // ---- Raja Yogas ----
+    // ---- Raja Yoga ----
     {
-      title: "Raja Yoga (Core)",
+      title: "Raja Yoga",
       icon: { kind: "diamond" },
       body: "",
       facts: [
@@ -62,38 +48,37 @@ export const yogas: Deck = {
           value: "A Kendra-Trikona exchange is also called Maha Parivartana Yoga",
         },
       ],
-      points: [
-        "Lord-pair examples (illustrations, not the rule itself):",
-        "1 + 5: self-initiative with intelligence; creative leadership, charisma, inspiring others",
-        "1 + 9: identity with spiritual destiny; higher purpose, philosophy, dharma",
-        "4 + 5: emotional grounding through intellect or art; education, psychology, counseling",
-        "4 + 9: spiritual grace in the home; stable, sometimes sacred domestic life",
-        "7 + 5: entrepreneurship, romantic unions, creative collaborations",
-      ],
-    },
-    {
-      title: "Raja Yoga (Activation & Strength)",
-      icon: { kind: "diamond" },
-      body: "",
-      facts: [
-        { label: "Principle", value: "The union only sets the stage" },
+      // The lord-pair examples (illustrations, not the rule itself) — one tab
+      // each. No backTitle: the tabbed back opens straight into the tabs, with
+      // no heading. The live detector (core/yoga.ts rajaYoga) surfaces a single
+      // generic "Raja Yoga" pill, NOT the per-pair tab (owner-directed).
+      tabs: [
         {
-          label: "Delivery depends on",
-          value: "The house it occupies · the dignity of the planets involved",
+          label: "1/5",
+          bullets: ["Self-initiative with intelligence", "Creative leadership, charisma, inspiring others"],
         },
-      ],
-      points: [
-        "10th house union: career breakthroughs",
-        "9th house union: spiritual insight",
-        "Exalted or own sign: amplified, constructive results",
-        "Debilitated or enemy sign: struggles, delays, lessons",
-        "A benefic aspect, especially Jupiter's, amplifies the yoga",
-        "Dasha and transit timing decide when it activates",
+        {
+          label: "1/9",
+          bullets: ["Identity with spiritual destiny", "Higher purpose, philosophy, dharma"],
+        },
+        {
+          label: "4/5",
+          bullets: ["Emotional grounding through intellect or art", "Education, psychology, counseling"],
+        },
+        {
+          label: "4/9",
+          bullets: ["Spiritual grace in the home", "Stable, sometimes sacred domestic life"],
+        },
+        {
+          label: "7/5",
+          bullets: ["Entrepreneurship, romantic unions, creative collaborations"],
+        },
       ],
     },
     // ---- Parivartana Yogas ----
     {
       title: "Parivartana Yoga",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "mars", b: "sun" },
       body: "",
       facts: [
@@ -119,6 +104,7 @@ export const yogas: Deck = {
     },
     {
       title: "Maha Parivartana Yoga",
+      hideBackTitle: true,
       icon: { kind: "diamond" },
       body: "",
       facts: [
@@ -152,18 +138,73 @@ export const yogas: Deck = {
         { label: "Venus", value: "Malavya" },
         { label: "Saturn", value: "Sasa" },
       ],
-      points: [
-        "Ruchaka (Mars): courage, action, boldness",
-        "Bhadra (Mercury): intellect, eloquence, versatility",
-        "Hamsa (Jupiter): wisdom, integrity, spiritual strength",
-        "Malavya (Venus): grace, beauty, material enjoyment",
-        "Sasa (Saturn): discipline, endurance, mastery",
-        "Note: assess the Kendras from the Lagna and also from the Moon (Chandra lagna). This chart's automatic detection flags Lagna Kendras only, so check the Moon count yourself",
+      // back: one tab per Mahapurusha yoga (no backTitle → opens straight into
+      // the tabs). Each tab carries its planet as a bullet + a qualities cloud.
+      // The Moon-count caveat stays pinned as a footnote (owner-directed note).
+      tabs: [
+        {
+          label: "Ruchaka",
+          bullets: ["Mars"],
+          cloud: {
+            terms: [
+              { label: "Courage", weight: "medium" },
+              { label: "Action", weight: "medium" },
+              { label: "Boldness", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Bhadra",
+          bullets: ["Mercury"],
+          cloud: {
+            terms: [
+              { label: "Intellect", weight: "medium" },
+              { label: "Eloquence", weight: "medium" },
+              { label: "Versatility", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Hamsa",
+          bullets: ["Jupiter"],
+          cloud: {
+            terms: [
+              { label: "Wisdom", weight: "medium" },
+              { label: "Integrity", weight: "medium" },
+              { label: "Spiritual strength", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Malavya",
+          bullets: ["Venus"],
+          cloud: {
+            terms: [
+              { label: "Grace", weight: "medium" },
+              { label: "Beauty", weight: "medium" },
+              { label: "Material enjoyment", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Sasa",
+          bullets: ["Saturn"],
+          cloud: {
+            terms: [
+              { label: "Discipline", weight: "medium" },
+              { label: "Endurance", weight: "medium" },
+              { label: "Mastery", weight: "medium" },
+            ],
+          },
+        },
       ],
+      tabsFootnote:
+        "Assess the Kendras from the Lagna and also from the Moon (Chandra lagna). This chart's automatic detection flags Lagna Kendras only, so check the Moon count yourself.",
     },
     // ---- Dhana Yogas ----
     {
       title: "Gaja Kesari Yoga",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "jupiter", b: "moon" },
       body: "",
       facts: [
@@ -186,6 +227,7 @@ export const yogas: Deck = {
     },
     {
       title: "Venus & Mercury Conjunction",
+      hideBackTitle: true,
       sanskrit: "Śukra · Budha",
       icon: { kind: "conjunction", a: "venus", b: "mercury" },
       body: "",
@@ -203,6 +245,7 @@ export const yogas: Deck = {
     },
     {
       title: "Dhana Yoga (2nd & 11th Lords)",
+      hideBackTitle: true,
       icon: { kind: "chart", house: 2 },
       body: "",
       facts: [
@@ -221,6 +264,7 @@ export const yogas: Deck = {
     },
     {
       title: "Lakshmi Yoga",
+      hideBackTitle: true,
       icon: { kind: "chart", house: 9 },
       body: "",
       facts: [
@@ -241,6 +285,7 @@ export const yogas: Deck = {
     // ---- Budhaditya Yoga ----
     {
       title: "Budhaditya Yoga",
+      hideBackTitle: true,
       sanskrit: "Budha + Āditya",
       icon: { kind: "conjunction", a: "sun", b: "mercury" },
       body: "",
@@ -264,6 +309,7 @@ export const yogas: Deck = {
     // ---- Neecha Bhanga Raja Yoga ----
     {
       title: "Neecha Bhanga Raja Yoga",
+      hideBackTitle: true,
       icon: { kind: "diamond" },
       body: "",
       facts: [
@@ -284,43 +330,79 @@ export const yogas: Deck = {
         "R2: The exaltation-sign lord sits in a Kendra from the Lagna or the Moon",
         "R3: The debilitated planet is conjunct or aspected by its own sign lord or its exaltation-sign lord",
         "R4: The debilitated planet is in parivartana (exchange) with the lord of the sign it occupies",
-        "Any one rule cancels the debilitation; more than one only reinforces it",
         "Cancellation does not guarantee a full Raja Yoga: the rescuer ideally avoids ties to the 6th, 8th, or 12th, and dignity plus dasha decide the real outcome",
-        "For Mercury, the exaltation-sign lord is Mercury itself, so R2 and the exaltation-lord half of R3 do not apply",
-        "Resolved rescuers per debilitated planet:",
-        ...SEVEN.map(rescuerRow),
       ],
     },
-    // ---- Grahana Yoga ----
+    // ---- Vipreet Raja Yoga ----
     {
-      title: "Grahana Yoga (Overview)",
-      icon: { kind: "planet", id: "rahu" },
+      title: "Vipreet Raja Yoga",
+      icon: { kind: "diamond" },
       body: "",
       facts: [
+        { label: "Meaning", value: "Strength born from adversity" },
         {
           label: "Rule",
-          value: "A luminary (Sun or Moon) afflicted by a node (Rahu or Ketu) in the same sign",
+          value: "A dusthana lord (6, 8, 12) occupies a dusthana house",
         },
-        { label: "Also called", value: "Grahan Dosha" },
-        { label: "Purna (complete)", value: "Within 5°: strongest" },
-        { label: "Strong", value: "Within 10°" },
-        { label: "Mild", value: "Same sign, more than 10° apart" },
-        {
-          label: "Base pairs",
-          value: "Sun + Rahu · Sun + Ketu · Moon + Rahu · Moon + Ketu",
-        },
+        { label: "Source", value: "Phaladeepika, Ch. 6" },
       ],
-      points: [
-        "Eight combinations are possible: the four base pairs; Sun, Moon, and Rahu together (new moon); Sun, Moon, and Ketu together (new moon); Sun with Rahu while the Moon is with Ketu (full moon); Sun with Ketu while the Moon is with Rahu (full moon)",
-        "Closer degrees mean a more intimate blending of energies (Phaladeepika): a 3° conjunction behaves very differently from a 15° one, though both form the yoga",
-        "Jupiter's moderation: when Jupiter conjoins or aspects the combination, its grace softens the dosha, reducing destructive expression and channeling the node's energy more constructively. Jupiter's aspect purifies and protects",
-        "Eclipse layer: an actual eclipse is tighter and degree-based, not sign-based. A solar eclipse needs the Sun within about 18° of a node; a lunar eclipse needs the Moon within about 12°. This can be surfaced as a separate, stronger flag on top of the yoga",
+      footnote:
+        "Commonly applied condition: the dusthana lord should not conjunct kendra or trikona lords, or the yoga is diluted.",
+      // three sub-yogas, one per dusthana lord — the back's three tabs double as
+      // the spec for core/yoga.ts vipreetRaja (Harsha / Sarala / Vimala). Each
+      // chart pill opens the card flipped to its own tab (flashcardLink.ts).
+      tabs: [
+        {
+          label: "Harsha",
+          facts: [{ label: "Formed by", value: "6th lord in the 6th, 8th, or 12th" }],
+          cloud: {
+            terms: [
+              { label: "Victory over enemies", weight: "medium" },
+              { label: "Good fortune", weight: "medium" },
+              { label: "Strong body", weight: "medium" },
+              { label: "Happiness", weight: "medium" },
+              { label: "Illustrious friends", weight: "medium" },
+              { label: "Fears sin", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Sarala",
+          facts: [{ label: "Formed by", value: "8th lord in the 6th, 8th, or 12th" }],
+          cloud: {
+            terms: [
+              { label: "Long life", weight: "medium" },
+              { label: "Fearless", weight: "medium" },
+              { label: "Resolute", weight: "medium" },
+              { label: "Prosperous", weight: "medium" },
+              { label: "Success in undertakings", weight: "medium" },
+              { label: "Widely known", weight: "medium" },
+            ],
+          },
+        },
+        {
+          label: "Vimala",
+          facts: [{ label: "Formed by", value: "12th lord in the 6th, 8th, or 12th" }],
+          cloud: {
+            terms: [
+              { label: "Saves much spends little", weight: "medium" },
+              { label: "Independent", weight: "medium" },
+              { label: "Happy", weight: "medium" },
+              { label: "Respected conduct", weight: "medium" },
+              { label: "Good to all", weight: "medium" },
+            ],
+          },
+        },
       ],
     },
+    // ---- Grahana Yoga (four luminary-node pairs; the orb tiers summarize on
+    //      each card front via GRAHANA_ORB_FOOTER, replacing the Overview card) ----
     {
       title: "Grahana: Moon & Rahu",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "moon", b: "rahu" },
       body: "",
+      footnote: GRAHANA_ORB_FOOTER,
       facts: [
         {
           label: "Dynamic",
@@ -348,8 +430,10 @@ export const yogas: Deck = {
     },
     {
       title: "Grahana: Moon & Ketu",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "moon", b: "ketu" },
       body: "",
+      footnote: GRAHANA_ORB_FOOTER,
       facts: [
         {
           label: "Dynamic",
@@ -377,8 +461,10 @@ export const yogas: Deck = {
     },
     {
       title: "Grahana: Sun & Rahu",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "sun", b: "rahu" },
       body: "",
+      footnote: GRAHANA_ORB_FOOTER,
       facts: [
         {
           label: "Dynamic",
@@ -408,8 +494,10 @@ export const yogas: Deck = {
     },
     {
       title: "Grahana: Sun & Ketu",
+      hideBackTitle: true,
       icon: { kind: "conjunction", a: "sun", b: "ketu" },
       body: "",
+      footnote: GRAHANA_ORB_FOOTER,
       facts: [
         {
           label: "Dynamic",
