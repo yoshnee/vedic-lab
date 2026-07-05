@@ -21,7 +21,7 @@ import { Svg } from "@/components/Svg";
 import { body } from "@/celestial/celestial";
 import { PLANET_SANSKRIT } from "@/core/constants";
 import { HORA_COLUMNS, HORA_WEALTH, horaLuminaryOf, type HoraKey } from "@/data/horaWealth";
-import type { ChartBody } from "./NorthIndianChart";
+import type { ChartBody } from "./shared";
 import type { PlanetKey } from "@/core/types";
 
 const NAVAGRAHA: PlanetKey[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu"];

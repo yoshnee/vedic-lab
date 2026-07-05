@@ -17,16 +17,9 @@
 import { Svg } from "@/components/Svg";
 import { body, diamond } from "@/celestial/celestial";
 import { PLANET_COLORS } from "@/lib/design/colors";
-import { SIGN_RULER } from "@/core/constants";
+import { SIGN_RULER, SIGN_NAMES } from "@/core/constants";
 import type { PlanetKey } from "@/core/types";
-import type { ChartBody, ChartFrame } from "./NorthIndianChart";
-
-// Zodiac glyphs + English names by sign number (1 = Aries … 12 = Pisces).
-const ZODIAC = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
-const SIGN_NAMES = [
-  "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces",
-];
+import { ZODIAC, type ChartBody, type ChartFrame } from "./shared";
 
 // Fixed South Indian cell for each sign — [row, col], 1-indexed on a 4×4 grid.
 // Canonical layout (owner-directed): Pisces top-left, the ring runs CLOCKWISE
@@ -79,7 +72,7 @@ export function SouthIndianChart({
   const ascName = SIGN_NAMES[ascSign - 1];
 
   return (
-    <div className="si" role="img" aria-label={`South Indian chart, ${ascName} ascendant`}>
+    <div className="si" role="group" aria-label={`South Indian chart, ${ascName} ascendant`}>
       <div className="si-grid">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((sign) => {
           const [row, col] = CELL[sign];

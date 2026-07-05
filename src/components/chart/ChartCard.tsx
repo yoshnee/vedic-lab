@@ -10,7 +10,8 @@
    caption line under it. The card is the seam where natal / transit /
    divisionals all reuse one renderer — only frame + planets differ.
    ============================================================ */
-import { NorthIndianChart, type ChartBody, type ChartFrame } from "./NorthIndianChart";
+import { NorthIndianChart } from "./NorthIndianChart";
+import type { ChartBody, ChartFrame } from "./shared";
 import { SouthIndianChart } from "./SouthIndianChart";
 import { HoraChart } from "./HoraChart";
 import type { PlanetKey } from "@/core/types";

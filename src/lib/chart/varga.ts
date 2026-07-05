@@ -34,7 +34,7 @@ import { computeAvasthas } from "@/core/avastha";
 import { computeYogas } from "@/core/yoga";
 import { SIGN_ABBR, SIGN_RULER, MOOLTRIKONA, COMBUSTION_ORB } from "@/core/constants";
 import type { ChartData, PlanetData, PlanetKey } from "@/core/types";
-import type { ChartBody, ChartFrame } from "@/components/chart/NorthIndianChart";
+import type { ChartBody, ChartFrame } from "@/components/chart/shared";
 
 export type VargaKey = "d2" | "d3" | "d7" | "d9" | "d10" | "d12" | "d30";
 
