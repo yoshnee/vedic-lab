@@ -38,6 +38,7 @@ export async function generateChart(civil: EngineCivilBirth): Promise<ChartModel
       name: civil.name,
       ianaTz: civil.ianaTz ?? "",
       computedUtcISO: birth.birthDate.toISOString(),
+      chartStyle: civil.chartStyle ?? "north", // legacy persisted civils → North
     },
     panchanga: {
       tithiNumber: moon?.tithiNumber ?? null,

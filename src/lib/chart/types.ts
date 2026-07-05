@@ -7,10 +7,15 @@
    ============================================================ */
 import type { ChartData, TransitSet } from "@/core/types";
 
+/** How the chart is drawn — chosen once in the birth-details modal and FIXED on
+    /chart (no in-page toggle). North Indian diamond or South Indian fixed grid. */
+export type ChartStyle = "north" | "south";
+
 export interface ChartMeta {
   name?: string;
   ianaTz: string; // IANA birth zone (e.g. "Asia/Kolkata")
   computedUtcISO: string; // the resolved UT instant (birthDate.toISOString())
+  chartStyle: ChartStyle; // the birth-modal choice; drives BOTH charts on /chart
 }
 
 export interface Panchanga {

@@ -9,6 +9,7 @@
    BIRTH_DETAILS_KEY in sessionStorage as the cross-feature handoff.
    ============================================================ */
 import { utcOffsetHours } from "./time";
+import type { ChartStyle } from "./chart/types";
 
 export interface BirthPlace {
   label: string; // resolved display label, or the manual label
@@ -23,6 +24,7 @@ export interface BirthDetails {
   date: string; // "YYYY-MM-DD" from <input type="date">
   time: string; // "HH:mm" from <input type="time">
   place: BirthPlace;
+  chartStyle: ChartStyle; // North diamond vs South grid, picked in the modal
 }
 
 /** The shape src/core/index.ts `birthFromCivil()` accepts (+ optional name,
@@ -40,6 +42,7 @@ export interface EngineCivilBirth {
   placeLabel?: string;
   name?: string;
   ianaTz?: string; // carried for chart meta; ignored by the engine
+  chartStyle?: ChartStyle; // display choice; carried for /chart, ignored by the engine
 }
 
 /** sessionStorage key the /chart route reads to pick up the entered birth. */
@@ -75,5 +78,6 @@ export function toEngineCivil(details: BirthDetails): EngineCivilBirth {
     placeLabel: place.label,
     name: details.name?.trim() || undefined,
     ianaTz: place.timezone,
+    chartStyle: details.chartStyle,
   };
 }

@@ -181,12 +181,9 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   font-family: var(--font-body), sans-serif; font-size: 14px; color: var(--text); cursor: pointer;
   transition: border-color .16s, background .16s, box-shadow .16s;
 }
-.bd-style-opt:hover:not(.is-disabled) { border-color: color-mix(in srgb, var(--accent) 36%, var(--border-field)); }
+.bd-style-opt:hover { border-color: color-mix(in srgb, var(--accent) 36%, var(--border-field)); }
 .bd-style-opt:has(input:checked) { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.bd-style-opt.is-disabled { cursor: not-allowed; opacity: .55; }
 .bd-style-opt input { flex: none; width: 15px; height: 15px; margin: 0; accent-color: var(--accent); }
-.bd-style-opt input:disabled { cursor: not-allowed; }
-.bd-soon { color: var(--text-3); font-size: 11px; letter-spacing: .02em; white-space: nowrap; }
 .bd-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .7; filter: invert(.8) sepia(.5) saturate(3) hue-rotate(5deg); }
 .bd-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
@@ -815,6 +812,12 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; margin: 0; font-weigh
   content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px;
   border-radius: 1.5px; background: color-mix(in srgb, var(--accent) 80%, transparent); transform: rotate(45deg);
 }
+
+/* significations word-cloud inside a tab panel (Vipreet Raja Yoga sub-yogas) —
+   fills the space under the tab's rule fact, centered like the cloud backs */
+.tcard-cloud { flex: 1; min-height: 128px; display: flex; }
+.tcard-cloud .sig-cloud { flex: 1; }
+.tcard-cloud .sig-term--medium { font-size: 13.5px; }
 
 /* always-visible footnote pinned below the tab body (e.g. a cross-deck pointer) */
 .tcard-fn {

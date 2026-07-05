@@ -10,9 +10,12 @@
    caption line under it. The card is the seam where natal / transit /
    divisionals all reuse one renderer — only frame + planets differ.
    ============================================================ */
-import { NorthIndianChart, type ChartBody, type ChartFrame } from "./NorthIndianChart";
+import { NorthIndianChart } from "./NorthIndianChart";
+import type { ChartBody, ChartFrame } from "./shared";
+import { SouthIndianChart } from "./SouthIndianChart";
 import { HoraChart } from "./HoraChart";
 import type { PlanetKey } from "@/core/types";
+import type { ChartStyle } from "@/lib/chart/types";
 
 export interface ChartOption {
   value: string;
@@ -23,6 +26,8 @@ export interface ChartOption {
 export function ChartCard({
   label,
   value,
+  chartStyle = "north",
+  centerLabel,
   options,
   onChange,
   caption,
@@ -35,6 +40,11 @@ export function ChartCard({
 }: {
   label: string; // "Chart 1" / "Chart 2"
   value: string;
+  /** North Indian diamond (default) or South Indian fixed-sign grid. Applies to
+      every dataset EXCEPT D2 (Horā), which is always the two-column layout. */
+  chartStyle?: ChartStyle;
+  /** South Indian centre kicker (chart-type label, e.g. "Navāṁśa · D9"). */
+  centerLabel?: string;
   options: ChartOption[];
   onChange?: (v: string) => void;
   /** The line under the select row — plain text, or a node (e.g. transit's
@@ -77,10 +87,12 @@ export function ChartCard({
         <div className="chart-card-cap">{caption}{controls}</div>
       </header>
       {/* D2 (Horā) is NOT a twelve-house chart — render the two-column horā
-          layout instead of the diamond. D2 only; every other varga keeps the
-          diamond (overlay + panel-jump are D1-only, so they don't apply here). */}
+          layout instead of the diamond/grid. D2 only; every other varga follows
+          the selected chart style (North diamond or South fixed-sign grid). */}
       {value === "d2" ? (
         <HoraChart planets={planets} />
+      ) : chartStyle === "south" ? (
+        <SouthIndianChart frame={frame} planets={planets} centerLabel={centerLabel} highlightHouses={highlightHouses} onSelectPlanet={onSelectPlanet} />
       ) : (
         <NorthIndianChart frame={frame} planets={planets} highlightHouses={highlightHouses} onSelectPlanet={onSelectPlanet} />
       )}

@@ -13,7 +13,9 @@
    - "avastha"   → Planetary States deck → the tapped system's card
                    (id "baladi" | "jagradadi" | "lajjitadi")
    - "yoga"      → Yogas deck → the tapped yoga family's card
-                   (id "pancha-mahapurusha" | "gaja-kesari"; the panel yoga pills)
+                   (id "pancha-mahapurusha" | "gaja-kesari" | …; the panel yoga
+                   pills. "neecha-bhanga-r<N>" opens flipped to that rule;
+                   "harsha"/"sarala"/"vimala" open the Vipreet card on that tab)
    - "deck"      → ANY whole deck, browsable from its first card
                    (id = deck id, e.g. "houses"; the reading-notes step links)
    Returns the deck, the card index, and the resolved card for the popover.
@@ -32,6 +34,9 @@ export interface FlashcardTarget {
   highlightFact?: string;
   /** Open the popover already flipped — for targets whose highlight lives on the back. */
   flip?: boolean;
+  /** Open a tabbed back on this tab index (e.g. a Vipreet sub-yoga pill opening
+      its own tab). Only meaningful for cards with a tabbed back. */
+  activeTab?: number;
   /** When set, the popover lets the user browse the whole deck (prev/next + ←/→)
       starting at `index`, instead of pinning a single card. */
   browse?: boolean;
@@ -114,6 +119,7 @@ export function resolveFlashcard(
     // a planet-panel yoga pill opens its yoga family's card; fall back to the
     // deck's first card (all five Mahapurusha yogas share one card)
     const YOGA_CARDS: Record<string, string> = {
+      raja: "Raja Yoga",
       "pancha-mahapurusha": "Pancha Mahapurusha Yoga",
       "gaja-kesari": "Gaja Kesari Yoga",
       budhaditya: "Budhaditya Yoga",
@@ -135,6 +141,13 @@ export function resolveFlashcard(
       const n = Number(nb[1]);
       const target = byTitle(deck, "Neecha Bhanga Raja Yoga");
       return target ? { ...target, highlightFact: `R${n}:`, flip: true } : null;
+    }
+    // Vipreet Raja Yoga: the three sub-yogas share one tabbed card — each pill
+    // opens it FLIPPED to its own tab (Harsha / Sarala / Vimala).
+    const VIPREET_TABS: Record<string, number> = { harsha: 0, sarala: 1, vimala: 2 };
+    if (String(id) in VIPREET_TABS) {
+      const target = byTitle(deck, "Vipreet Raja Yoga");
+      return target ? { ...target, flip: true, activeTab: VIPREET_TABS[String(id)] } : null;
     }
     const title = YOGA_CARDS[String(id)];
     return (title && byTitle(deck, title)) || { deck, index: 0, card: deck.cards[0] };

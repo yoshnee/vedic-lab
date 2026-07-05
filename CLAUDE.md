@@ -199,9 +199,12 @@ src/
     Svg.tsx, flashcards/{Card,Deck,DeckGrid,SignificationsCloud,TraitCloud,TabbedCardBack,DiagramCard,NodesDiagram}
     home/{SiteHeader,AppHeader,AnalyzerHero,BirthDetailsModal,PlaceField,Footer,HomeApp}
     site/{PageHero,AboutPage,ResourcesPage,FaqPage}  (the About/Resources/FAQ content routes)
-    chart/                ChartView, NorthIndianChart (generic: frame+planets), HoraChart
+    chart/                ChartView, NorthIndianChart (generic diamond: frame+planets),
+                          SouthIndianChart (generic fixed-sign 4×4 grid; SAME props/data path,
+                          only the layout differs — see the chart-style choice below), HoraChart
                           (D2 two-column wealth layout — replaces the diamond for D2 only), ChartCard
-                          (title/type-selector wrapper; branches to HoraChart when value==="d2"),
+                          (title/type-selector wrapper; branches to HoraChart when value==="d2",
+                          else to South/North per the `chartStyle` prop),
                           ShadbalaGroups (built, currently UNMOUNTED — owner pulled it),
                           ElementBalance (element tally; rail on desktop, inline on mobile),
                           DashaRail (sticky/​drawer), Legend (symbol-key drawer), PlanetPanel
@@ -239,7 +242,9 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   Hora Prakash → `SITE.horaPrakashUrl`, JHora); FAQ is an accessible native-`<details>` accordion
   (first item open). Copy text is the design's verbatim — owner intends to refine it later.
 - **Birth-details popup** (`src/components/home/BirthDetailsModal.tsx` + `PlaceField.tsx`) — ported
-  from `design-reference/birth-modal/`. Optional name + date + time + place; place is an Open-Meteo
+  from `design-reference/birth-modal/`. Optional name + date + time + place + a **North/South
+  chart-style radio** (the one place the style is chosen — carried into `meta.chartStyle`, fixed on
+  /chart); place is an Open-Meteo
   autocomplete (debounced, abortable) with a manual lat/lon/timezone fallback and a confirmed-place
   card echoing coords + IANA zone + DST-aware UTC offset (Luxon). Deck-grade a11y (focus trap, Esc,
   backdrop, combobox + arrow-key suggestions). "Generate chart" persists the engine-ready civil shape
@@ -397,6 +402,32 @@ design-reference/         read-only design handoffs (flashcards, planet-panel, b
   **`VARGAS` registry** (`lib/chart/varga.ts`: key → label/short-label/mapping fn) — both
   dropdowns are generated from it, so a new varga = one registry entry + its `divisional.ts`
   function. Toggling is non-destructive (all datasets derive from the in-memory `ChartModel`).
+  **Chart style — North Indian diamond vs South Indian grid** (owner-directed, built from the Claude
+  Design handoff `rasi-chart/*`): the choice is made ONCE in the **birth-details modal** (the
+  `chartStyle` radio, North/South) and is **FIXED on /chart — there is NO in-page toggle**
+  (owner-directed). It threads through `BirthDetails → toEngineCivil → EngineCivilBirth` (persisted
+  in `sessionStorage`, so it survives a refresh/deep-link) → `generateChart` → **`ChartModel.meta.chartStyle`**
+  (legacy persisted civils without it default to North). ChartView reads `meta.chartStyle` and passes
+  it to BOTH `ChartCard`s, so natal and transit/varga read in the same layout (D2 Horā stays the
+  two-column view regardless). `ChartCard` branches `value==="d2"` → HoraChart, else
+  `chartStyle==="south"` → `SouthIndianChart`, else `NorthIndianChart`. **`SouthIndianChart` takes the SAME props**
+  (`frame` + `planets` + `highlightHouses` + `onSelectPlanet` + `centerLabel`) — signs sit in
+  FIXED 4×4 cells (**canonical layout: Pisces top-left, ring clockwise**, owner-corrected from the
+  design's shifted map; HOUSES rotate with the ascendant. Each cell = a compact top header (zodiac
+  glyph + `H{n}` label together, owner-directed — frees the body for grahas), **symbols only** (no
+  sign names), the grahas filling the body (**icon-only**, no per-planet degree — icons identify by
+  color/shape, degrees on hover/panels; keeps crowded cells clean), and the ruler-color gradient
+  tint. The **lagna cell is house 1** (labeled `H1` like the rest) and marked by a **WHITE corner
+  diagonal** (owner-directed — a gold box read as a Sun/Leo tint, so no gold on the ascendant). The
+  merged centre 2×2 shows the diamond mark + the chart-type kicker (`centerLabel`: "Rāśi · D1",
+  "Navāṁśa · D9", "Gochara · Transit" — so each varga is identifiable) + the ascendant read-out
+  (glyph · sign · degree). **Both chart styles now share the SAME tint recipe** (owner-directed):
+  a `--surface`→`--bg-2` dark-green base + a soft top-right ruler-color glow + a ~48% ruler-color
+  border — the border carries the hue at near-full strength so lookalike tints stay distinct
+  (Sun-gold vs Jupiter-orange, Saturn-blue vs Venus-purple; this is also why Jupiter was nudged to
+  `#C6701C`). The North chart's SVG polygons render this as per-house `radialGradient` +
+  base `linearGradient` (`NorthIndianChart.buildGrid`); the South cells as CSS gradients + inset
+  ring (`.si-*` in `chart.css`).
   **D2 (Horā) is the ONE varga NOT drawn as the diamond** (owner-directed): the D2 splits every
   sign between the two luminaries, so `ChartCard` branches `value==="d2"` to render `HoraChart`
   (`design-reference` source: claude.ai/design `hora-chart/D2 Hora Chart.html`) — TWO columns
@@ -649,14 +680,16 @@ Seven sign-rulers are tuned to stay clearly distinct (they tint the chart's hous
 nodes are muted and **rule nothing**.
 ```
 Sun     #F2C230   Moon    #C2D2E0   Mars    #E2503C
-Mercury #36B97A   Jupiter #B26A24   Venus   #B97FD6
+Mercury #36B97A   Jupiter #C6701C   Venus   #B97FD6
 Saturn  #3E78E0   Rahu    #969CB0   Ketu    #AC9B79
 ```
-> ✅ **Color authority (confirmed):** `celestial.js` `Celestial.colors` (above) is **canonical** —
-> it drives all rendered art and the flashcards. In particular **Jupiter is `#B26A24` and Saturn is
-> `#3E78E0`** (user-confirmed). The `--p-*` CSS variables at the top of the *Identity.html* prototype
-> are **stale and wrong** (they list Jupiter `#E8913A`, Saturn `#6473E6`) — **discard them**; encode
-> tokens from `Celestial.colors`.
+> ✅ **Color authority (confirmed):** `src/lib/design/colors.ts` `PLANET_COLORS` is the **single
+> source of truth** — `celestial.ts` (`Celestial.colors`) and `tokens.css` (`--p-*`) both mirror it,
+> and it drives all rendered art + flashcards. **Jupiter is `#C6701C`** (owner nudged it a tad more
+> orange 2026-07, from the earlier `#B26A24`, so its house tint reads clearly and separates from the
+> Sun's gold — app-wide: spheres, both chart styles, flashcards) **and Saturn is `#3E78E0`**
+> (user-confirmed). The `--p-*` CSS variables at the top of the *Identity.html* prototype are **stale
+> and wrong** (they list Jupiter `#E8913A`, Saturn `#6473E6`) — **discard them**.
 
 ### Typography
 - **Display / headings:** `Space Grotesk` (600).
